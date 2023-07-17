@@ -8,7 +8,7 @@
 #' @param outfile_prefix Prefix to outfile (Ex. "test." turns to "test.iterative.txt")
 #'
 #' @export
-thresh.analysis <- function(outfile_prefix,
+thresh.analysis <- function(outfile_prefix = "",
                             G,              # graph read from non-dimacs .wel graph file (igraph internally)
                             l = 0.5,        # Lower bound for thresholding 
                             u = 0.99,       # Upper bound for thresholding 
@@ -25,7 +25,8 @@ thresh.analysis <- function(outfile_prefix,
                             methods         # Set of flagged methods
                             ){
     # Rest of function below
-    print("Hello, graph thresholding!")
+    print("Hello, graph thresholding! testing build")
+    print(outfile_prefix)
 }
 
 #! FUTURE FUNCTIONS BELOW

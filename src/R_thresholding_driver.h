@@ -12,8 +12,24 @@ Last Modified: July 2023
 
 #include <R.h>
 #include <Rinternals.h>
-#include <stdio.h>
-#include <stdlib.h>
+
+#include <vector>     // std::vector
+#include <iostream>   // std::cout, std::cerr, std::endl
+#include <fstream>    // fopen, fclose (to read igraph), ofstream
+#include <algorithm>  // std::nth_element, std::min_element, std::max_element
+#include <math.h>     // pow, sqrt, fabs, M_PI
+#include <getopt.h>   // commandline argument parsing
+#include <stdlib.h>   // atoi, atof
+#include <sstream>    // stringstream
+#include <cmath>      // std::copysign
+#include <math.h>     // isnormal
+#include <set>        // sets
+#include <string>     // getline
+#include <csignal>    // signal
+
+//   *****************************************************
+// ***TEST THIS LATER --->> #include <igraph/igraph.h>   ***
+//  *********************************************************
 
 /* Utility functions used through programs */
 // #include "utils.h"
