@@ -10,11 +10,11 @@
 #' @export
 thresh.analysis <- function(outfile_prefix = "",
                             G,              # graph read from non-dimacs .wel graph file (igraph internally)
-                            l = 0.5,        # Lower bound for thresholding 
-                            u = 0.99,       # Upper bound for thresholding 
+                            l = 0.5,        # Lower bound for thresholding
+                            u = 0.99,       # Upper bound for thresholding
                             increment = 0.01,  # Threshold increment
-                            windowSize = 5,    # Sliding window size for spectral method 
-                            minimumpartitionsize = 10, 
+                            windowSize = 5,    # Sliding window size for spectral method
+                            minimumpartitionsize = 10,
                             minimum_cliquesize = 5,
                             min_alpha = 0,
                             max_alpha = 4,
@@ -22,7 +22,7 @@ thresh.analysis <- function(outfile_prefix = "",
                             num_samples = 0,
                             significance_alpha = 0.01,
                             bonferroni_corrected = 0,
-                            methods         # Set of flagged methods
+                            methods = ""      # Set of flagged methods
                             ){
     # Rest of function below
     print("Hello, graph thresholding! testing build")
@@ -30,7 +30,7 @@ thresh.analysis <- function(outfile_prefix = "",
 
     # Argument Checking?
 
-    #### Calling the C++ function from the driven main analysis function 
+    #### Calling the C++ function from the driven main analysis function
     # .Call("R_thresh_analysis", ...)
     #### Remember to cast parameters as a data type
     #### Pass on the graph file to the C code... let the error checking happen there
