@@ -1,2 +1,3 @@
+importFrom(Rcpp, sourceCpp)
 export(thresh.analysis)
 useDynLib(thresholding, .registration = TRUE)

@@ -15,6 +15,6 @@ SEXP R_thresh_analysis (SEXP outfile_prefix, SEXP G, SEXP l,
     SEXP R_data;
 
     R_data = 1;
-
+    
     return R_data;
 }

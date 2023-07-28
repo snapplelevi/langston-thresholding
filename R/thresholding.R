@@ -27,6 +27,16 @@ thresh.analysis <- function(outfile_prefix = "",
     # Rest of function below
     print("Hello, graph thresholding! testing build")
     print(outfile_prefix)
+
+    # Argument Checking?
+
+    #### Calling the C++ function from the driven main analysis function 
+    # .Call("R_thresh_analysis", ...)
+    #### Remember to cast parameters as a data type
+    #### Pass on the graph file to the C code... let the error checking happen there
+
+
+    # Print out Environment stuff?
 }
 
 #! FUTURE FUNCTIONS BELOW
