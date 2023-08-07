@@ -1,13 +1,12 @@
 Package: thresholding
 Type: Package
-Title: What the Package Does in One 'Title Case'
-     Line
-Version: 1.0
+Title: Langston Lab Thresholding Tools - V0
+Version: 0.1.0
 Date: 2023-08-07
 Author: Your Name
 Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the
-     package does as one or more full sentences.
+Description: First iteration of trying to build package 
+          under Rcpp.
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp
