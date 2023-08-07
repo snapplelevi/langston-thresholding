@@ -1,1 +1,0 @@
-../../external/alglib/ap.h
