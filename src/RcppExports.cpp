@@ -21,6 +21,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// print_vector
+void print_vector(int i);
+RcppExport SEXP _thresholding_print_vector(SEXP iSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    print_vector(i);
+    return R_NilValue;
+END_RCPP
+}
 // rcpp_hello_world
 List rcpp_hello_world();
 RcppExport SEXP _thresholding_rcpp_hello_world() {
@@ -34,6 +44,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_thresholding_function_test", (DL_FUNC) &_thresholding_function_test, 1},
+    {"_thresholding_print_vector", (DL_FUNC) &_thresholding_print_vector, 1},
     {"_thresholding_rcpp_hello_world", (DL_FUNC) &_thresholding_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };

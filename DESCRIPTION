@@ -1,6 +1,6 @@
 Package: thresholding
 Type: Package
-Title: Langston Lab Thresholding Tools - V0
+Title: Langston Lab Thresholding Tools - V2 (github test)
 Version: 0.1.0
 Date: 2023-08-07
 Author: Your Name
@@ -10,3 +10,4 @@ Description: First iteration of trying to build package
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp
+RoxygenNote: 7.2.3

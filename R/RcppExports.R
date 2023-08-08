@@ -5,6 +5,13 @@ function_test <- function(c) {
     .Call(`_thresholding_function_test`, c)
 }
 
+#' Prints out 10 numbers
+#' @param i - an integer that gets printed right back out
+#' @export
+print_vector <- function(i) {
+    invisible(.Call(`_thresholding_print_vector`, i))
+}
+
 rcpp_hello_world <- function() {
     .Call(`_thresholding_rcpp_hello_world`)
 }
