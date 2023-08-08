@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-
+#include <igraph.h>
 #include <vector>
 
 
@@ -7,6 +7,7 @@
 // [[Rcpp::export]]
 int function_test(int c){
   Rcpp::Rcout << "This is a test of Rcpp" << '\n';
+  igraph_t test;
   return c;
 }
 

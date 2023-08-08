@@ -7,7 +7,7 @@ function_test <- function(c) {
 
 #' Prints out 10 numbers
 #' @param i - an integer that gets printed right back out
-#' @export
+#' Manually exported in NAMESPACE
 print_vector <- function(i) {
     invisible(.Call(`_thresholding_print_vector`, i))
 }

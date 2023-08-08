@@ -1,0 +1,7 @@
+# CPPFLAGS += -I./external/igraph-0.8.0/include -I./external/alglib
+
+PKG_CPPFLAGS = -I../external/igraph-0.8.0/include -I../external/alglib
+
+# LDFLAGS += -L./lib  -ligraph-0.8.0
+
+PKG_LIBS = -L../lib -ligraph-0.8.0

@@ -7,7 +7,8 @@
 print_vector(i)
 }
 \arguments{
-\item{i}{- an integer that gets printed right back out}
+\item{i}{- an integer that gets printed right back out
+Manually exported in NAMESPACE}
 }
 \description{
 Prints out 10 numbers
