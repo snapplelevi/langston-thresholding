@@ -1,0 +1,12 @@
+# CPPFLAGS += -I../ext/igraph-0.8.0/include -I../ext/alglib
+
+PKG_CPPFLAGS = -I../external/igraph-0.8.0/include -I../external/alglib
+
+# LDFLAGS += -L../lib  -ligraph-0.8.0
+
+PKG_LIBS = -L../lib -ligraph-0.8.0
+
+BUILDIR = $(PWD)/build
+IGRAPHDIR = igraph-0.8.0
+INCLUDEDIR = $(PWD)/include
+LIBDIR = $(PWD)/lib

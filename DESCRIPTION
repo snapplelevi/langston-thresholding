@@ -1,8 +1,9 @@
 Package: thresholding
 Type: Package
-Title: Langston Lab Thresholding Tools - V2 (github test)
+Title: Langston Lab Thresholding Tools - V3 (Makefile.win github test)
 Version: 0.1.0
 Date: 2023-08-07
+Encoding: UTF-8
 Author: Your Name
 Maintainer: Your Name <your@email.com>
 Description: First iteration of trying to build package 

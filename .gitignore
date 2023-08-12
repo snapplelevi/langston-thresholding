@@ -6,4 +6,3 @@ src/*.o
 src/*.so
 src/*.dll
 existing_thresholding_files/*
-external/*
