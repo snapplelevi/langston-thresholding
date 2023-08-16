@@ -25,6 +25,7 @@ all: igraph_extract
 igraph_extract:
 	tar -zxvf ../external/$(IGRAPHDIR).tar.gz -C ../external/
 	tar -zxvf ../lib/$(IGRAPHLIBS).tar.gz -C ../lib/
+	echo "IS THIS RUNNING FOR WINDOWS?"
 
 .PHONY: igraph
 igraph:
