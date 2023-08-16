@@ -1,23 +1,30 @@
 # Makefile to build the igraph external C library  upon installation of the thresholding package.
 # Execution may take a few seconds as the igraph library takes a minute or two to compile.
 
-CXX_FLAGS = -std=c++11 -g
 PKG_CPPFLAGS = -I../external/igraph-0.8.0/include -I../external/alglib
-PKG_LIBS = -L../lib -ligraph-0.8.0
-
+CXX = g++
+CXXSTD = -std=c++11
+CPPFLAGS = -Wall -I../external/igraph-0.8.0/include -I../external/alglib
+PKG_LIBS = -L../lib
 # PACKAGEDIR is to get access to the root folder - "thresholding" - for the package  (i.e. where the src, man, R, etc.
 # folders can be accessed from) in the user's installation folder. 
 # 
 # Because the Makefile.win file is currently in the "src" folder, the ".." after the CURDIR moves 
 # the directory scope from "src" to the root folder of the package ("thresholding")
-PACKAGEDIR = ${CURDIR}/..
+
 EXTERNALDIR = $(PACKAGEDIR)/external
 BUILDDIR = $(PACKAGEDIR)/build
 IGRAPHDIR = igraph-0.8.0
+IGRAPHLIBS = igraph-libs
 INCLUDEDIR = $(PACKAGEDIR)/include
 LIBDIR = $(PACKAGEDIR)/lib
 
-all: igraph
+all: igraph_extract 
+
+.PHONY: igraph_extract
+igraph_extract:
+	tar -zxvf ../external/$(IGRAPHDIR).tar.gz && \
+	tar -zxvf ../$(IGRAPHLIBS).tar.gz -C ../lib/
 
 .PHONY: igraph
 igraph:

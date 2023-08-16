@@ -1,17 +1,27 @@
-PKG_CPPFLAGS = -I../external/igraph-0.8.0/include -I../external/alglib
-PKG_LIBS = -L../lib -ligraph-0.8.0
+# Copy of Makefile.win, but this file should target Unix-like machines and build
+# the dependencies for the package
 
-EXTERNALDIR = $(PWD)/external
-BUILDDIR = $(PWD)/build
+
+EXTERNALDIR = $(PACKAGEDIR)/external
+BUILDDIR = $(PACKAGEDIR)/build
 IGRAPHDIR = igraph-0.8.0
-INCLUDEDIR = $(PWD)/include
-LIBDIR = $(PWD)/lib
+IGRAPHLIBS = igraph-libs
+INCLUDEDIR = $(PACKAGEDIR)/include
+LIBDIR = $(PACKAGEDIR)/lib
 
-all: igraph
+all: igraph_extract 
+
+.PHONY: igraph_extract
+igraph_extract:
+# Extract igraph files from the tar file
+	tar -zxvf ../external/$(IGRAPHDIR).tar.gz 
+# Extract linked libraries from the tar file   
+	tar -zxvf ../$(IGRAPHLIBS).tar.gz -C ../lib/
 
 .PHONY: igraph
 igraph:
 	mkdir -p $(BUILDDIR)
+	mkdir -p $(INCLUDEDIR)
 	cd $(EXTERNALDIR) && \
 	tar -zxvf $(IGRAPHDIR).tar.gz && \
 	cd $(IGRAPHDIR) && \
@@ -24,3 +34,4 @@ igraph:
 clean:
 		rm ./src/*.o
 		rm ./src/thresholding.dll
+		rm -r ./external/$(IGRAPHDIR)
