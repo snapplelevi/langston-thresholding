@@ -1,4 +1,4 @@
-useDynLib(thresholding, .registration=TRUE)
+useDynLib(thresholding)
 importFrom(Rcpp, evalCpp)
 export("function_test")
 export("print_vector")
