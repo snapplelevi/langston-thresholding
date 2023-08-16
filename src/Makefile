@@ -16,7 +16,7 @@ igraph_extract:
 # Extract igraph files from the tar file
 	tar -zxvf ../external/$(IGRAPHDIR).tar.gz -C ../external
 # Extract linked libraries from the tar file   
-	tar -zxvf ../$(IGRAPHLIBS).tar.gz -C ../lib/
+	tar -zxvf ../lib/$(IGRAPHLIBS).tar.gz -C ../lib/
 
 .PHONY: igraph
 igraph:
