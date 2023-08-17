@@ -24,7 +24,7 @@ all: igraph_extract
 .PHONY: igraph_extract
 igraph_extract:
 	tar -zxvf ../external/$(IGRAPHDIR).tar.gz && \
-	tar -zxvf ../$(IGRAPHLIBS).tar.gz -C ../lib/
+	tar -zxvf ../lib/$(IGRAPHLIBS).tar.gz -C ../lib/
 
 .PHONY: igraph
 igraph:
