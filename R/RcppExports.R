@@ -2,17 +2,17 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 function_test <- function(c) {
-    .Call(`_thresholding_function_test`, c)
+    .Call('_thresholding_function_test', PACKAGE = 'thresholding', c)
 }
 
 #' Prints out 10 numbers
 #' @param i - an integer that gets printed right back out
 #' Manually exported in NAMESPACE
 print_vector <- function(i) {
-    invisible(.Call(`_thresholding_print_vector`, i))
+    invisible(.Call('_thresholding_print_vector', PACKAGE = 'thresholding', i))
 }
 
 rcpp_hello_world <- function() {
-    .Call(`_thresholding_rcpp_hello_world`)
+    .Call('_thresholding_rcpp_hello_world', PACKAGE = 'thresholding')
 }
 

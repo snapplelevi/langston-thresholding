@@ -1,17 +1,18 @@
 # Add make file info here (Test version for Windows local pkg build 8-16-23)
 
 
-CXX = g++
 CXXSTD = -std=c++11
-CPPFLAGS = -Wall -I../external/igraph-0.8.0/include -I../external/alglib
+PKG_CPPFLAGS = -Wall -I../external/igraph-0.8.0/include -I../external/alglib
 PKG_LIBS = -L../lib
 
-all: $(SHLIB)
 
-$(SHLIB): extract_igraph
+all: extract_igraph $(SHLIB) 
 
 extract_igraph:
-    (tar -xvzf ../external/igraph-0.8.0.tar.gz -C ../external)
+	tar -xvzf ../external/igraph-0.8.0.tar.gz -C ../external
+	echo "PLEASE RUN"
+	echo "PLEAES RUN"
+	echo "PLEASE RUN"
    
-   
-   
+  
+.PHONY: all extract_igraph

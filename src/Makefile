@@ -17,6 +17,7 @@ igraph_extract:
 	tar -zxvf ../external/$(IGRAPHDIR).tar.gz -C ../external
 # Extract linked libraries from the tar file   
 	tar -zxvf ../lib/$(IGRAPHLIBS).tar.gz -C ../lib/
+	echo "IS THIS THE DEFAULT BEING RUN???"
 
 .PHONY: igraph
 igraph:
