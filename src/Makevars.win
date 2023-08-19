@@ -10,6 +10,7 @@ all: extract_igraph $(SHLIB)
 
 extract_igraph:
 	tar -xvzf ../external/igraph-0.8.0.tar.gz -C ../external
+	tar -xvzf ../lib/igraph-libs.tar.gz -C ../lib
 	echo "PLEASE RUN"
 	echo "PLEAES RUN"
 	echo "PLEASE RUN"
