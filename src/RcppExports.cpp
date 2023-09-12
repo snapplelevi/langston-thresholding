@@ -31,6 +31,19 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// thresholdAnalysis
+int thresholdAnalysis(double thing, int other_thing, int optional);
+RcppExport SEXP _thresholding_thresholdAnalysis(SEXP thingSEXP, SEXP other_thingSEXP, SEXP optionalSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type thing(thingSEXP);
+    Rcpp::traits::input_parameter< int >::type other_thing(other_thingSEXP);
+    Rcpp::traits::input_parameter< int >::type optional(optionalSEXP);
+    rcpp_result_gen = Rcpp::wrap(thresholdAnalysis(thing, other_thing, optional));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_hello_world
 List rcpp_hello_world();
 RcppExport SEXP _thresholding_rcpp_hello_world() {
@@ -45,6 +58,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_thresholding_function_test", (DL_FUNC) &_thresholding_function_test, 1},
     {"_thresholding_print_vector", (DL_FUNC) &_thresholding_print_vector, 1},
+    {"_thresholding_thresholdAnalysis", (DL_FUNC) &_thresholding_thresholdAnalysis, 3},
     {"_thresholding_rcpp_hello_world", (DL_FUNC) &_thresholding_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };

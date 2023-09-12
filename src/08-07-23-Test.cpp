@@ -1,9 +1,10 @@
 #include <Rcpp.h>
+
 #include <igraph.h>
 #include <vector>
 
 
-// 'Manually exported in NAMESPACE
+//' Manually exported in NAMESPACE
 // [[Rcpp::export]]
 int function_test(int c){
   Rcpp::Rcout << "This is a test of Rcpp" << '\n';

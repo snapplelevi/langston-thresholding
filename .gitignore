@@ -6,3 +6,7 @@ src/*.o
 src/*.so
 src/*.dll
 existing_thresholding_files/*
+lib/lib/*
+external/igraph-0.8.0/*
+external/igraph-0.10.6/*
+external/igraph-0.9.9/*

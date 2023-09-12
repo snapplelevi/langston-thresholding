@@ -1,19 +1,54 @@
 # Add make file info here (Test version for Windows local pkg build 8-16-23)
 
+# This file is called first in Unix-like systems during the R package build process. 
 
+# This file is called first in Windows systems during the R package build process before other steps proceed.
+# The external library code (igraph C library and some alglib functions) are required for the thresholding analysis
+# and thresholding method codes.
+
+# Extension for source files
+SRCEXT = cpp
+
+SRCDIR=${CURDIR}
+EXTERNALDIR="$(SRCDIR)/../external"
+BUILDDIR="$(SRCDIR)/../build"
+LIBDIR="$(SRCDIR)/../lib"
+
+IGRAPH_VER=igraph-0.9.9
+IGRAPHDIR="$(EXTERNALDIR)/$(IGRAPH_VER)"
 CXXSTD = -std=c++11
-PKG_CPPFLAGS = -Wall -I../external/igraph-0.8.0/include -I../external/alglib
-PKG_LIBS = -L../lib
+
+PKG_CPPFLAGS = -Wall \
+								-I$(IGRAPHDIR)/include \
+								-I$(IGRAPHDIR)/build/include \
+								-I../external/alglib \
+								-I../include
+
+ALGLIB_SOURCES  = $(shell find $(SRCDIR) -xtype f -name "alglib*".$(SRCEXT))
+ALGLIB_OBJECTS  = $(patsubst $(SRCDIR)/%,$(SRCDIR)/%,$(ALGLIB_SOURCES:.$(SRCEXT)=.o))
+
+# fix this later with changing how the lib tar file is created...
+# Even later, see if the build process can simply placed the library files
+# into the folder...
+PKG_LIBS = -ligraph -L../lib
 
 
+.PHONY: all extract_igraph 
 all: extract_igraph $(SHLIB) 
 
 extract_igraph:
-	tar -xvzf ../external/igraph-0.8.0.tar.gz -C ../external
-	tar -xvzf ../lib/igraph-libs.tar.gz -C ../lib
-	echo "PLEASE RUN"
-	echo "PLEAES RUN"
-	echo "PLEASE RUN"
-   
-  
-.PHONY: all extract_igraph
+# Below is for igraph-0.8.0 - problems on Windows
+#ls -l $(EXTERNALDIR)
+#tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz && \
+#cd $(IGRAPHDIR) &&  \
+#./configure --libdir=$(LIBDIR) --prefix=$(BUILDDIR) && \
+#$(MAKE) MAKEFLAGS= && \
+#$(MAKE) install
+
+# First attempt at igraph-0.9.9 with Cmake
+	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
+	@mkdir -p $(IGRAPHDIR)/build
+	cd $(IGRAPHDIR)/build && cmake ..
+	cd $(IGRAPHDIR)/build && cmake --build .
+	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
+	
