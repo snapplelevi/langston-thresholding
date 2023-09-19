@@ -13,10 +13,18 @@ print_vector <- function(i) {
     invisible(.Call('_thresholding_print_vector', PACKAGE = 'thresholding', i))
 }
 
-#' Driver code for primary graph analysis
-#' ADD INFO FOR PARAMS
-thresholdAnalysis <- function(thing, other_thing, optional = 0L) {
-    .Call('_thresholding_thresholdAnalysis', PACKAGE = 'thresholding', thing, other_thing, optional)
+#' Display argument information on terminal for thresholding::thresholdAnalysis()
+#' 
+help <- function() {
+    invisible(.Call('_thresholding_help', PACKAGE = 'thresholding'))
+}
+
+#' Main graph thresholding analysis function
+#' @param infile: Name of .ncol graph file to read in for analysis
+#' @param outfile_prefix: Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
+#' @param methods: Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
+thresholdAnalysis <- function(infile, outfile_prefix, methods = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
+    .Call('_thresholding_thresholdAnalysis', PACKAGE = 'thresholding', infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected)
 }
 
 rcpp_hello_world <- function() {

@@ -32,7 +32,7 @@ ALGLIB_OBJECTS  = $(patsubst $(SRCDIR)/%,$(SRCDIR)/%,$(ALGLIB_SOURCES:.$(SRCEXT)
 PKG_LIBS = -ligraph -L../lib
 
 
-.PHONY: all extract_igraph 
+.PHONY: all extract_igraph clean
 all: extract_igraph  $(SHLIB) 
 
 extract_igraph:
@@ -51,3 +51,5 @@ extract_igraph:
 	cd $(IGRAPHDIR)/build && cmake --build .
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 
+clean:
+	rm $(SRCDIR)/*.o

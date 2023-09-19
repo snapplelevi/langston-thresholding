@@ -2,12 +2,33 @@
 % Please edit documentation in R/RcppExports.R
 \name{thresholdAnalysis}
 \alias{thresholdAnalysis}
-\title{Driver code for primary graph analysis
-ADD INFO FOR PARAMS}
+\title{Main graph thresholding analysis function}
 \usage{
-thresholdAnalysis(thing, other_thing, optional = 0L)
+thresholdAnalysis(
+  infile,
+  outfile_prefix,
+  methods = "",
+  lower = 0.5,
+  upper = 0.99,
+  increment = 0.01,
+  window_size = 5L,
+  min_partition_size = 10L,
+  min_clique_size = 5L,
+  min_alpha = 0,
+  max_alpha = 4,
+  alpha_increment = 0.1,
+  num_samples = 0L,
+  significance_alpha = 0.01,
+  bonferroni_corrected = 0L
+)
+}
+\arguments{
+\item{infile:}{Name of .ncol graph file to read in for analysis}
+
+\item{outfile_prefix:}{Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )}
+
+\item{methods:}{Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)}
 }
 \description{
-Driver code for primary graph analysis
-ADD INFO FOR PARAMS
+Main graph thresholding analysis function
 }

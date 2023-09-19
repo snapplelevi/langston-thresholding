@@ -33,8 +33,8 @@ ALGLIB_OBJECTS  = $(patsubst $(SRCDIR)/%,$(SRCDIR)/%,$(ALGLIB_SOURCES:.$(SRCEXT)
 PKG_LIBS = -ligraph -L../lib
 
 
-.PHONY: all extract_igraph 
-all: extract_igraph $(SHLIB) 
+.PHONY: all extract_igraph clean
+all: extract_igraph  $(SHLIB) 
 
 extract_igraph:
 # Below is for igraph-0.8.0 - problems on Windows
@@ -51,4 +51,7 @@ extract_igraph:
 	cd $(IGRAPHDIR)/build && cmake ..
 	cd $(IGRAPHDIR)/build && cmake --build .
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
+
+clean:
+	rm $(SRCDIR)/*.o
 	
