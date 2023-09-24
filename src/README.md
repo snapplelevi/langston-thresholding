@@ -8,6 +8,12 @@ or expanding to multiple help() functions depending on the function
 - Update README.md to have proper outline of the package
 - **Structure package so that it can be submitted to CRAN potentially (get rid of tar files, executables, etc; shorten directory names)
 - Error check the string argument parsing for invalid input in the str_methods
-    - (i.e. text instead of numbers, expressions instead of numbers)
-    - eventually could add the feature to type a certain method instead of use numbers, 
-      but for now this will be the way the function will be written
+  - (i.e. text instead of numbers, expressions instead of numbers)
+  - eventually could add the feature to type a certain method instead of use numbers, 
+    but for now this will be the way the function will be written
+- Add note in main README.md for troubleshooting such as:
+  - If there is an issue with CMakeCache (naivgate to and delete from igraph/build dir)
+  - Attempt a different method of installation if devtools::install_github() doesn't work
+    (.tar file extraction with devtools::install(), install.packages(), etc.)
+  - Reach out for any issues with the build process, installation of tools, or any general questions
+  

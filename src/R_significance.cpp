@@ -1,7 +1,5 @@
+#include <Rcpp.h>
 #include "significance.h"
-
-
-
 
 double control_statistical_errors(double significance_alpha,
 								  int num_samples,
@@ -10,9 +8,9 @@ double control_statistical_errors(double significance_alpha,
 				                  std::string& outfile_name
 				                  ){
 	if(num_samples <= 4){
-    	std::cerr << "**************************************************\n";
-		std::cerr << "Warning: Cannot compute significance errors with num_samples <= 4.\n";
-    	std::cerr << "**************************************************\n";
+    	Rcpp::Rcerr << "**************************************************\n";
+		Rcpp::Rcerr << "Warning: Cannot compute significance errors with num_samples <= 4.\n";
+    	Rcpp::Rcerr << "**************************************************\n";
 
 		return 0;
 	}
@@ -22,7 +20,7 @@ double control_statistical_errors(double significance_alpha,
     out.open(outfile_name.c_str(), std::ofstream::out);
     // is it open
     if (out.fail()) {
-        std::cerr << "Error opening file for writing: " << outfile_name << "\n";
+        Rcpp::Rcerr << "Error opening file for writing: " << outfile_name << "\n";
         return 0;
     }
 
@@ -47,7 +45,7 @@ double control_statistical_errors(double significance_alpha,
     header_type1 << significance_alpha << " with sample size of " << num_samples << " is ";
     header_type1 << r_crit;
     out << header_type1.str();
-    out << std::endl;
+    out << '\n';
 
 	///////////////////////////////////////////////////////////////////////
 	// Control Type II
@@ -57,7 +55,7 @@ double control_statistical_errors(double significance_alpha,
     header_type2 << "r";
     header_type2 << "\t" << "power";
     out << header_type2.str();
-    out << std::endl;
+    out << '\n';
 
 	// This code based on pwr.r.test (sort-of)
 	// Under H_a: rho=r,
@@ -79,7 +77,7 @@ double control_statistical_errors(double significance_alpha,
         message << r_alternative;
         message << "\t" << power;
         out << message.str();
-        out << std::endl;
+        out << '\n';
     }
 
     out.close();

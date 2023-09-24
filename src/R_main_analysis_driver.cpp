@@ -1,9 +1,12 @@
 #include <Rcpp.h>
 #include <igraph.h>
 
+
+#include "igraph_ext.h"
+#include "significance.h"
+#include "local_global.h"
 #include "math_ext.h"
 #include "spectral_methods.h"
-#include "igraph_ext.h"
 
 #include <cstdio>
 #include <fstream>
@@ -15,8 +18,6 @@
 #include <algorithm>
 #include <vector>
 #include <set>
-
-
 
 
 /////////////// update later after basic functionality of analysis program works //////////////
@@ -56,122 +57,6 @@ void help(){
     exit(0);
 }
 
-/*
-int argument_parser(std::string &infile, 
-                    std::string &outfile_prefix,
-                    std::string methods, 
-                    double &lower,
-                    double &upper,
-                    double &increment,
-                    int &window_size,
-                    int &min_partition_size,
-                    int &min_clique_size,
-                    double &min_alpha,
-                    double &max_alpha,
-                    double &alpha_increment,
-                    int &num_samples,
-                    double &significance_alpha,
-                    bool &bonferroni_corrected)
-{
-    int next_option;
-
-    const char* const short_options = "hl:u:i:w:p:n:bc:m:" ;
-    const struct option long_options[] =
-        {    //name,                    has_arg,    flag,        val
-            { "help",                   0,          NULL,        'h'},
-            { "lower",                  1,          NULL,        'l'},
-            { "upper",                  1,          NULL,        'u'},
-            { "increment",              1,          NULL,        'i'},
-            { "windowsize",             1,          NULL,        'w'},
-            { "minimumpartitionsize",   1,          NULL,        'p'},
-            { "num_samples",            1,          NULL,        'n'},
-            { "bonferroni_correction",  0,          NULL,        'b'},
-            { "minimum_cliquesize",     1,          NULL,        'c'},
-            { "methods",                1,          NULL,        'm'},
-            { NULL, 0, NULL, 0 }
-        };
-
-    // Parse options
-    while (1) {
-        // Obtain an option
-        next_option = getopt_long(argc, argv,
-                                  short_options, long_options, NULL);
-
-        if (next_option == -1)
-            break; // No more options. Break loop.
-
-        switch (next_option){
-
-            case 'h' : // -h or --help
-                help(argv[0]);
-                break;
-
-            case 'l' : // -l or --lower
-                lower=atof(optarg);
-                break;
-
-             case 'u' : // -u or --upper
-                upper=atof(optarg);
-                break;
-
-             case 'i' : // -i or --increment
-                increment=atof(optarg);
-                break;
-
-            case 'w' : // -w or --windowsize
-                windowsize=atoi(optarg);
-                break;
-
-            case 'p' : // -p or --minimumpartitionsize
-                minimumpartitionsize=atoi(optarg);
-                break;
-
-            case 'n' : // -p or --minimumpartitionsize
-                num_samples=atoi(optarg);
-                break;
-
-            case 'b' : // -p or --minimumpartitionsize
-                bonferroni_corrected=1;
-                break;
-
-            case 'c' : // -p or --minimumpartitionsize
-                minimum_cliquesize=atoi(optarg);
-                break;
-
-            case 'm' : // -m or --methods
-                methods=optarg;
-                break;
-
-            case '?' : // Invalid option
-                help(argv[0]); // Return help
-
-            case -1 : // No more options
-                break;
-
-            default : // Something unexpected? Aborting
-                return(1);
-        }
-    }
-
-    // Mandatory arguments
-    // Current index (optind) < than the total number of arguments
-    //std::cout<<argc<<" number of arguments\n";
-    //std::cout<<"optind: "<<optind<<"\n";
-    if(optind == argc){
-        Rcpp::Rcerr << "\n Mandatory argument(s) missing\n";
-        help();
-    }
-    // Iterate over rest of the arguments (i.e. in argv[optind])
-    if (argc - optind != 2){
-         Rcpp::Rcerr << "\n Mandatory argument(s) missing\n";
-        help();
-    }
-    infile = argv[optind];
-    optind++;
-    outfile = argv[optind];
-
-    return 0;
-} */
 
 // Internal function -- add character or expanded keywords from a string (methods)
 // and insert the method into a set (in case the user passes more than one of the 
@@ -180,7 +65,9 @@ int argument_parser(std::string &infile,
 // Invalid arguments will cause the program to exit with an error and alert the user
 // of the incorrect argument passed and output information about the types of methods
 // that are allowed to be passed to the function
-int parse_string_methods(std::set<int> &analysis_methods, const std::string &str_methods){
+
+// TODO: strip white space from beginning and end of str_methods
+void parse_string_methods(std::set<int> &analysis_methods, const std::string &str_methods){
     if(str_methods == "" ){
         analysis_methods.insert({-1});
     }
@@ -197,7 +84,6 @@ int parse_string_methods(std::set<int> &analysis_methods, const std::string &str
         }
         analysis_methods.insert(int_methods.begin(), int_methods.end());
     }
-    
 }
 
 // Manually exported in NAMESPACE
@@ -223,14 +109,10 @@ int thresholdAnalysis(std::string infile,
                       bool bonferroni_corrected=0)
 {
     Rcpp::Rcout << "TESTING 1,2,3 THIS IS THE OPTIONAL PARAMETER lower: " << lower << '\n';
-
-    // NOTE TO SELF: figure out a way to parse the string methods into something useful
-    // similar to how it did inside of argument_parser, but without 
-    /* check_args(infile, outfile_prefix, methods,
-                lower, upper, increment, window_size,
-                min_partition_size, min_clique_size, 
-                min_alpha, max_alpha, alpha_increment, 
-                num_sampes, significance_alpha, bonferroni_corrected); */
+    
+    // Stores the outfile name passed to analysis functions at multiple points throughout 
+    // the analysis exeuction
+    std::string outfile_name;
 
     // Ensure output file prefix exists
     if(outfile_prefix.empty()){
@@ -284,16 +166,6 @@ int thresholdAnalysis(std::string infile,
         return 1;
     }
 
-
-    // check that output file path exists
-    std::ofstream out;
-    out.open(outfile_prefix.c_str(), std::ofstream::out);
-    // is it open
-    if (out.fail()) {
-        Rcpp::Rcerr << "Error opening file for writing: " << outfile_prefix << "\n";
-        return 0;
-    }
-
     Rcpp::Rcout << "\n";
     Rcpp::Rcout << "------------------------------------------------\n";
     Rcpp::Rcout << "input graph file:      "  << infile << "\n";
@@ -303,24 +175,54 @@ int thresholdAnalysis(std::string infile,
     Rcpp::Rcout << "threshold increment:   "  << increment << "\n";
     Rcpp::Rcout << "------------------------------------------------\n";
 
+
+    // Ensure that the analysis_methods are valid before continuing the analysis process
+    // and put the methods into the set for later analysis operations
+    std::set<int> analysis_methods;
+    parse_string_methods(analysis_methods, methods);
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // 1 = Method for finding significance and power calculations (only valid for Pearson CC)
+    // Type I error (false positive rate) and
+    // Type II error (false negative rate) control
+    // Have to have n - number of samples (not number of variables)
+    if(analysis_methods.find(1) != analysis_methods.end()){
+        outfile_name = outfile_prefix + ".statistical_errors.txt";
+        control_statistical_errors(significance_alpha,
+                                  num_samples,
+                                  0, //E
+                                  bonferroni_corrected,
+                                  outfile_name);
+        analysis_methods.erase(1);
+    }
+
+    // End program if the only method desired was the significance and power calculations
+    if (analysis_methods.size() == 0){
+        return 0;
+    }
+
+    // Turn on attribute handling
+    // For igraph to handle edge weights
+    igraph_i_set_attribute_table(&igraph_cattribute_table);
+
     // Hold the result of the thresholding analysis process
     int status = 0;
 
-    
-    igraph_t G;
+    // ***************************************************** //
+    // NOTE on 9-20-23 for future work:
+        // R session crashes likely due to the std::cout in igraph_ext.cpp.
+        // resolve this so function doesn't crash when this is run
+    // ***************************************************** // 
 
+    // Load graph   
     // Ensure path to infile containing graph info is valid
     // read_graph checks to make sure that file opened is an existing file and passes
     // the file to the igraph_read_graph_ncol function
-
-    // NOTE FOR FUTURE 9-20-23 work:
-        // R session crashes likely due to the std::cout in igraph_ext.cpp.
-        // resolve this so function doesn't crash when this is run
+    igraph_t G;
     Rcpp::Rcout << "Loading graph..." << '\n';
     read_graph(infile, G, IGRAPH_ADD_WEIGHTS_YES);
     Rcpp::Rcout << "Done! Graph has been loaded." << '\n';
     
-    // Perform graph thresholding analysis
     igraph_integer_t E = igraph_ecount(&G); // number edges
     igraph_integer_t V = igraph_vcount(&G); // number vertices
 
@@ -334,27 +236,97 @@ int thresholdAnalysis(std::string infile,
     Rcpp::Rcout << '\n';
     Rcpp::Rcout << "------------------------------------------------\n\n";
 
+    ///////////////////////////////////////////////////////////////////////
+    // Non-loop methods
+    ///////////////////////////////////////////////////////////////////////
 
-    //std::set<int> &analysis_methods;
-    /*
-    parse_string_methods(analysis_methods, methods);
-
-    if(methods.find(2)!=methods.end()){
-        outfile_name = outfile_prefix + "local_global.txt";
+    ///////////////////////////////////////////////////////////////////////
+    // local-global (guzzi2014, rank)
+    if(analysis_methods.find(2) != analysis_methods.end()){
+        outfile_name = outfile_prefix + ".local_global.txt";
         local_global_method(G,
                      min_alpha,
                      max_alpha,
                      alpha_increment,
-                     windowsize,
-                     minimumpartitionsize,
+                     window_size,
+                     min_partition_size,
                      outfile_name);
-        methods.erase(2);
+        analysis_methods.erase(2);
     }
 
-    if (methods.size() == 0){
+    // Exit program if no only non-loop methods were requested
+    if (analysis_methods.size() == 0){
         return 0;
-    } */
+    }
 
+    ///////////////////////////////////////////////////////////////////////
+    // Threshold loop
+    // loop destroys the graph
+    ///////////////////////////////////////////////////////////////////////
+
+    // Ready the output file
+    outfile_name = outfile_prefix + ".iterative.txt";
+    std::ofstream out;
+    out.open(outfile_name.c_str(), std::ofstream::out);
+    // Is the iterative file open for writing?
+    if (out.fail()) {
+        Rcpp::Rcerr << "Error opening file for writing: " << outfile_name << "\n";
+        return 0;
+    }
+
+    // Output header for iterative file contents
+    std::stringstream header;
+    header << "threshold";
+    header << "\tvertex-count\tedge-count";
+    header << "\tconnected-component-count";
+    header << "\tdensity\tdensity-orig-V";
+    header << "\tlargest-cc-size\t2nd-largest-cc-size";
+    header << "\tclustering-coefficient\trandom-clustering-coefficient";
+    header << "\t2nd-eigenvalue\talmost-disconnected-component-count";
+    header << "\tmaximal-clique-count\tclique-number";
+    header << "\tpoisson-chi2\tpoisson-pvalue";
+    header << "\tgoe-chi2\tgoe-pvalue";
+    header << "\tscale-free-KS\tscale-free-KS-p-value\tscale-free-alpha";
+    out << header.str();
+    out << '\n';
+
+    // Get the threshold increments - range() function from math_ext
+    double t;
+    static const std::vector<double> t_vector = range(lower, upper, increment);
+    int num_increments = t_vector.size();
+    Rcpp::Rcout << "Iterative thresholding\n";
+    Rcpp::Rcout << "Number steps: " << num_increments << '\n';
+
+    // Initialise necessary stuff
+    int nearly_disconnected_components      = -1;
+    igraph_real_t  second_eigenvalue        = std::nan("");
+
+    igraph_integer_t    clique_count        = -1;   // number maximal cliques
+    igraph_integer_t    clique_number       = -1;   // maximum clique size
+
+    double  density                         = std::nan("");
+    double  density_orig_V                  = std::nan("");
+
+    double  poi_chi_sq_stat                 = std::nan("");
+    double  goe_chi_sq_stat                 = std::nan("");
+
+    double  poi_chi_sq_pvalue               = std::nan("");
+    double  goe_chi_sq_pvalue               = std::nan("");
+
+    igraph_integer_t     cc_count           = -1;
+    igraph_integer_t     largest_cc_size    = -1;
+    igraph_integer_t     largest2_cc_size   = -1;
+
+    double  scale_free_pvalue               = std::nan("");
+    double  scale_free_KS                   = std::nan("");
+    double  scale_free_xmin                 = std::nan("");
+    double  scale_free_alpha                = std::nan("");
+
+    igraph_real_t clustering_coefficient    = std::nan("");
+    igraph_real_t clustering_coefficient_r  = std::nan("");
+
+
+    Rcpp::Rcout << "End of the function as of 9-24-23!" << '\n';
     igraph_destroy(&G);
     return status;
 }

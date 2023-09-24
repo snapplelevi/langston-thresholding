@@ -1,3 +1,4 @@
+#include <Rcpp.h>
 #include "local_global.h"
 
 int local_global_pruning(igraph_t& G,
@@ -127,14 +128,14 @@ int local_global_method(igraph_t& G,
     static const std::vector<double> alpha_vector = range(min_alpha, max_alpha, alpha_increment);
     int num_increments = alpha_vector.size();
 
-    std::cout << "Local-Global thresholding" << std::endl;
-    std::cout << "Number steps: " << num_increments <<"\n" << std::endl;
+    Rcpp::Rcout << "Local-Global thresholding" << '\n';
+    Rcpp::Rcout << "Number steps: " << num_increments <<"\n" << '\n';
 
 	std::ofstream out;
     out.open(outfile_name.c_str(), std::ofstream::out);
     // is it open
     if (out.fail()) {
-        std::cerr << "Error opening file for writing: " << outfile_name << "\n";
+        Rcpp::Rcerr << "Error opening file for writing: " << outfile_name << "\n";
         return 0;
     }
 
@@ -148,7 +149,7 @@ int local_global_method(igraph_t& G,
     header << "\tlargest-cc-size\t2nd-largest-cc-size";
     header << "\t2nd-eigenvalue\talmost-disconnected-component-count";
     out << header.str();
-    out << std::endl;
+    out << '\n';
 
 	igraph_t new_G;
     igraph_t G_cc;
@@ -156,13 +157,13 @@ int local_global_method(igraph_t& G,
     for (int i_alpha=0; i_alpha < num_increments; i_alpha++){
         alpha = alpha_vector[i_alpha];
 
-        std::cout << "Step: " << i_alpha +1 << ", alpha: " << alpha << std::flush;
+        Rcpp::Rcout << "Step: " << i_alpha +1 << ", alpha: " << alpha << '\n';
 
         double mean_k;
 
 	  	local_global_pruning(G, alpha, new_G, mean_k);
 
-	  	std::cout <<"\tmean_k: " << mean_k << std::endl;
+	  	Rcpp::Rcout <<"\tmean_k: " << mean_k << '\n';
 
 		igraph_integer_t E = igraph_ecount(&new_G);
     	igraph_integer_t V = igraph_vcount(&new_G);
@@ -197,9 +198,9 @@ int local_global_method(igraph_t& G,
         message << "\t" << largest_cc_size   << "\t" << largest2_cc_size;
         message << "\t" << second_eigenvalue << "\t" << nearly_disconnected_components;
         out << message.str();
-        out << std::endl;
+        out << '\n';
     }
-    std::cout << "\n------------------------------------------------\n";
+    Rcpp::Rcout << "\n------------------------------------------------\n";
 
     igraph_destroy(&new_G);
     igraph_destroy(&G_cc);
