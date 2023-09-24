@@ -22,5 +22,5 @@ igraph:
 
 .PHONY: clean
 clean:
-		rm ./src/*.o
-		rm ./src/thresholding.dll
+	echo $(CURDIR)
+	rm ./src/*.o

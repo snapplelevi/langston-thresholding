@@ -1,5 +1,5 @@
-#include "igraph_ext.h"
-
+ /*
+ #include "igraph_ext.h"
 ///////////////////////////////////////////////////////////////////////////////
 //     IO functions                                                          //
 ///////////////////////////////////////////////////////////////////////////////
@@ -8,14 +8,14 @@
 int read_graph(std::string& graph_file_path,
                igraph_t& G,
                igraph_add_weights_t is_weighted,
-               igraph_bool_t names /*default false*/){
+               igraph_bool_t names ///default false){
 
     FILE *graph_file;
     graph_file = fopen(graph_file_path.c_str(), "r");
 
     // Test if file exists
     if (graph_file == NULL){
-        std::cerr << "Error - Unable to open file: " << graph_file_path << std::endl;
+        std::cerr << "Error - Unable to open file: " << graph_file_path << '\n';
         exit(-1);
     }
 
@@ -311,4 +311,4 @@ int get_weighted_adjacency(igraph_t &G, igraph_matrix_t &Adj){
 
     return 0;
 }
-
+*/
