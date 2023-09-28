@@ -1,12 +1,16 @@
 #include <Rcpp.h>
 #include <igraph.h>
 
-
-#include "igraph_ext.h"
-#include "significance.h"
-#include "local_global.h"
 #include "math_ext.h"
+#include "igraph_ext.h"
+
+#include "random_matrix_theory.h"
 #include "spectral_methods.h"
+#include "scale_free.h"
+#include "maximal_cliques.h"
+#include "local_global.h"
+#include "significance.h"
+#include "local_rank.h"
 
 #include <cstdio>
 #include <fstream>
@@ -108,7 +112,7 @@ int thresholdAnalysis(std::string infile,
                       double significance_alpha=0.01,
                       bool bonferroni_corrected=0)
 {
-    Rcpp::Rcout << "TESTING 1,2,3 THIS IS THE OPTIONAL PARAMETER lower: " << lower << '\n';
+    Rcpp::Rcout << "!!!TESTING 1,2,3 THIS IS THE OPTIONAL PARAMETER lower: " << lower << "!!!\n";
     
     // Stores the outfile name passed to analysis functions at multiple points throughout 
     // the analysis exeuction
@@ -203,7 +207,7 @@ int thresholdAnalysis(std::string infile,
 
     // Turn on attribute handling
     // For igraph to handle edge weights
-    igraph_i_set_attribute_table(&igraph_cattribute_table);
+    igraph_set_attribute_table(&igraph_cattribute_table);
 
     // Hold the result of the thresholding analysis process
     int status = 0;
@@ -294,6 +298,7 @@ int thresholdAnalysis(std::string infile,
     double t;
     static const std::vector<double> t_vector = range(lower, upper, increment);
     int num_increments = t_vector.size();
+
     Rcpp::Rcout << "Iterative thresholding\n";
     Rcpp::Rcout << "Number steps: " << num_increments << '\n';
 
@@ -325,8 +330,190 @@ int thresholdAnalysis(std::string infile,
     igraph_real_t clustering_coefficient    = std::nan("");
     igraph_real_t clustering_coefficient_r  = std::nan("");
 
+    ///////////////////////////////////////////////////////////////////////
+    // If methods includes clustering coefficient,
+    // then need a copy of G to threshold
+    // Rewiring at each threshold takes longer (?)
+    igraph_t G_random;
+    if (analysis_methods.find(7) != analysis_methods.end()){
+        igraph_copy(&G_random, &G);
 
-    Rcpp::Rcout << "End of the function as of 9-24-23!" << '\n';
+        // igraph rewire loses edge weights,
+        // need to save them and reassign back ()
+        igraph_rewire(&G_random, E, IGRAPH_REWIRING_SIMPLE);
+
+        igraph_vector_t edge_weights;
+        igraph_vector_init(&edge_weights, E);
+
+        igraph_cattribute_EANV(&G, "weight", igraph_ess_all(IGRAPH_EDGEORDER_ID), &edge_weights);
+        igraph_cattribute_EAN_setv(&G_random, "weight", &edge_weights);
+
+        igraph_vector_destroy(&edge_weights);
+    }
+  
+    // Main threshold loop
+    for(int i_t = 0; i_t < num_increments; i_t++){
+        t = t_vector[i_t];
+
+        Rcpp::Rcout << "\nStep: " << i_t +1  << ", Threshold: " << t << '\n';
+
+        // Threshold step
+        int threshold_status = threshold_graph(t, G);
+        V = igraph_vcount(&G);
+        E = igraph_ecount(&G);
+
+
+        if(threshold_status == 1){
+            // 1 = all edges removed, stop
+            Rcpp::Rcout <<" Graph is empty, finished. " << '\n';
+            break;
+        }
+        else if( threshold_status == 3){
+            // 3 = no edges removed, only skip if not first iteration
+            if(i_t > 0){
+                Rcpp::Rcout << " No edges removed, skipping. " << '\n';
+                continue;
+            }
+            else{
+                Rcpp::Rcout << "\t\tVertices: " << V << "\tEdges: " << E;
+                Rcpp::Rcout << '\n';
+            }
+        }
+        else if(threshold_status == 2){
+            // 2 = some edges are removed, keep going
+            // make sure graph is large enough to continue
+            if ( (V < min_partition_size) || (E < min_partition_size) ){
+                //not large enough
+                Rcpp::Rcout <<" Graph too small, finished. " << '\n';
+                break;
+            }
+            else{
+                Rcpp::Rcout << "\t\tVertices: " << V << "\tEdges: " << E;
+                Rcpp::Rcout << '\n';
+            }
+        }
+        else{
+            Rcpp::Rcerr << " Something went wrong during thresholding loop" << '\n';
+            return -1;
+        }
+
+        ///////////////////////////////////////////////////////////////////////
+        // Metrics to do by default
+        ///////////////////////////////////////////////////////////////////////
+
+        // Density
+        density        = (double) E / ( 0.5 * V * (V -1) );
+        density_orig_V = (double) E / orig_max_E;
+
+
+        ///////////////////////////////////////////////////////////////////////
+        // Metrics to only do if requested
+        ///////////////////////////////////////////////////////////////////////
+
+        for (auto& m : analysis_methods) {
+                ///////////////////////////////////////////////////////////////
+                // None
+                if(m==-1){
+                    break;
+                }
+
+                else if(m==5 || m==8){
+                    ///////////////////////////////////////////////////////////////////////
+                    //  Largest connected component sizes
+                    // (basically percolation)
+                    igraph_t G_cc;
+                    largest_connected_component(G, G_cc, cc_count,
+                        largest_cc_size, largest2_cc_size);
+
+                    // Spectral Methods
+                    if(m == 5){
+                        if(largest_cc_size >= min_partition_size){
+                            spectral_methods(G_cc,
+                               window_size,
+                               min_partition_size,
+                               second_eigenvalue,
+                               nearly_disconnected_components);
+                        }
+                    }
+                    igraph_destroy(&G_cc);
+                }
+
+                ///////////////////////////////////////////////////////////////
+                // Maximal Clique Number
+                else if(m==4){
+                    maximal_cliques(G, min_clique_size,
+                                    clique_count, clique_number);
+                }
+
+                ///////////////////////////////////////////////////////////////
+                // Scale free
+                else if(m==3){
+                    igraph_plfit_result_t scale_free_result;
+                    scale_free_test(G, V, scale_free_result);
+                    scale_free_pvalue = scale_free_result.p;
+                    scale_free_KS = scale_free_result.D;
+                    scale_free_xmin = scale_free_result.xmin;
+                    scale_free_alpha = scale_free_result.alpha;
+                }
+
+                ///////////////////////////////////////////////////////////////
+                // Random Matrix Theory
+                else if(m==6){
+                    random_matrix_theory(G,
+                                         V,
+                                         poi_chi_sq_stat,
+                                         goe_chi_sq_stat,
+                                         poi_chi_sq_pvalue,
+                                         goe_chi_sq_pvalue);
+                }
+
+                ///////////////////////////////////////////////////////////////
+                // Clustering coefficient
+                else if(m==7){
+                    // plain clustering coefficient
+                    igraph_transitivity_undirected(&G, &clustering_coefficient, IGRAPH_TRANSITIVITY_NAN);
+
+                    // threshold G_random an d get random clustering coefficient
+                    int threshold_status2 = threshold_graph(t, G_random);
+                    //std::cout << "\n" <<  threshold_status2 << "   " << igraph_vcount(&G_random) << "  " << igraph_ecount(&G_random) << std::endl;
+                    igraph_transitivity_undirected(&G_random, &clustering_coefficient_r, IGRAPH_TRANSITIVITY_NAN);
+                }
+
+                ///////////////////////////////////////////////////////////////
+                else{
+                    //std::cerr << "Unknown method " << m << std::endl;
+                    Rcpp::Rcerr << "Unknown method: " << m << ". Continuing analysis...\n";
+                    continue;
+                }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        // Make results into a string
+        std::stringstream message;
+        message << t;
+        message << "\t" << V                 << "\t" << E;
+        message << "\t" << cc_count;
+        message << "\t" << density          << "\t" << density_orig_V;
+        message << "\t" << largest_cc_size   << "\t" << largest2_cc_size;
+        message << "\t" << clustering_coefficient;
+        message << "\t" << clustering_coefficient_r;
+        message << "\t" << second_eigenvalue;
+        message << "\t" << nearly_disconnected_components;
+        message << "\t" << clique_count      << "\t" << clique_number;
+        message << "\t" << poi_chi_sq_stat   << "\t" << poi_chi_sq_pvalue;
+        message << "\t" << goe_chi_sq_stat   << "\t" << goe_chi_sq_pvalue;
+        message << "\t" << scale_free_KS     << "\t" << scale_free_pvalue;
+        message << "\t" << scale_free_alpha;
+        out << message.str();
+        out << '\n';
+    }
+
+    if (analysis_methods.find(7) != analysis_methods.end()){
+        igraph_destroy(&G_random);
+    }
+  
+    out.close();
+    Rcpp::Rcout << "End of the function as of 9-25-23!" << '\n';
+
     igraph_destroy(&G);
     return status;
 }
