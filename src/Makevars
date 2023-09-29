@@ -30,14 +30,6 @@ PKG_LIBS =  -ligraph -L../lib -fopenmp
 all: extract_igraph  $(SHLIB) 
 
 extract_igraph:
-# Below is for igraph-0.8.0 - problems on Windows
-#ls -l $(EXTERNALDIR)
-#tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz && \
-#cd $(IGRAPHDIR) &&  \
-#./configure --libdir=$(LIBDIR) --prefix=$(BUILDDIR) && \
-#$(MAKE) MAKEFLAGS= && \
-#$(MAKE) install
-
 # First attempt at igraph-0.9.9 with Cmake
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
 	@mkdir -p $(IGRAPHDIR)/build

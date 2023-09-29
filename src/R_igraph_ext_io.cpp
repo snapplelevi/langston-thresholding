@@ -17,7 +17,8 @@ int read_graph(std::string& graph_file_path,
     // Test if file exists
     if (graph_file == NULL){
         Rcpp::Rcerr << "Error - Unable to open file: " << graph_file_path << '\n';
-        exit(-1);
+        Rcpp::stop("Input file does not exist. Ending analysis early.");
+        // exit(-1); --> R will crash when this is called. Rcpp::stop will handle program execution
     }
 
     // Read in file as graph
@@ -43,7 +44,8 @@ int write_graph(std::string& graph_file_path,
 
     if(graph_file == NULL){
         Rcpp::Rcerr << "Error - Unable to open graph output file: " << graph_file_path << '\n';
-        exit(-1);
+        Rcpp::stop("Output file does not exist. Ending analysis early.");
+        //exit(-1); --> R will crash when this is called. Rcpp::stop will handle program execution
     }
     // write in file as weighted edge list
     igraph_write_graph_ncol(&G, graph_file, "name", "weight");

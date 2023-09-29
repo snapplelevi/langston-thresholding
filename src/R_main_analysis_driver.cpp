@@ -58,7 +58,6 @@ void help(){
     Rcpp::Rcerr <<  "                                                   8 - percolation\n";
     Rcpp::Rcerr <<  "      -h  --help                               print this help and exit\n";
     Rcpp::Rcerr <<  "\n";
-    exit(0);
 }
 
 
@@ -96,7 +95,7 @@ void parse_string_methods(std::set<int> &analysis_methods, const std::string &st
 //' @param outfile_prefix: Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
 //' @param methods: Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
 // [[Rcpp::export]]
-int thresholdAnalysis(std::string infile, 
+void thresholdAnalysis(std::string infile, 
                       std::string outfile_prefix,
                       std::string methods="", 
                       double lower=0.5,
@@ -112,17 +111,16 @@ int thresholdAnalysis(std::string infile,
                       double significance_alpha=0.01,
                       bool bonferroni_corrected=0)
 {
-    Rcpp::Rcout << "!!!TESTING 1,2,3 THIS IS THE OPTIONAL PARAMETER lower: " << lower << "!!!\n";
-    
     // Stores the outfile name passed to analysis functions at multiple points throughout 
     // the analysis exeuction
     std::string outfile_name;
 
     // Ensure output file prefix exists
+    // Return one for 
     if(outfile_prefix.empty()){
-        Rcpp::Rcerr << "Error - No output prefix specified." << '\n';
+        Rcpp::Rcerr << "Error - No output file prefix specified." << '\n';
         Rcpp::Rcerr << "Use thresholding::help() to get more information on thresholdAnalysis() inputs." << '\n';
-        return 1;
+        Rcpp::stop("empty output file prefix. Ending analysis early.");
     }
 
     // Ensure the window size is less than the minimum partition size
@@ -136,41 +134,17 @@ int thresholdAnalysis(std::string infile,
         min_partition_size = 10;
     }
 
-    /*  Note to self:
-            Only include this depending on the type of weights provided by the .wel
-            0 < t < 1 is what is used for the correlation values. Look at the output of the 
-            histogram program to see what the range of upper and lower can be. Delete these
-            checks if the recommended upper and lower exceed 1.0.
-    // Ensure thresholding bounds of upper and lower are within acceptable bounds
-    if(lower < 0){
-        Rcpp::Rcerr << "Error in thresholding limits:";
-        Rcpp::Rcerr << "cannot have a lower bound below 0 (lower < 0).\n";
-        Rcpp::Rcerr << "Please restart with a lower bound greater than or equal to 0.\n";
-        Rcpp::Rcerr << "If a lower bound isn't specified to the function, ";
-        Rcpp::Rcerr << "the default lower bound will be 0.5." << '\n';
-        return 1;
-    }
-    else if(upper > 1.0){
-        Rcpp::Rcerr << "Error in thresholding limits:";
-        Rcpp::Rcerr << "cannot have an upper bound greater than 0 (upper > 1.0).\n";
-        Rcpp::Rcerr << "Please restart with an upper bound less than or equal to 1.\n";
-        Rcpp::Rcerr << "If an upper bound isn't specified to the function, ";
-        Rcpp::Rcerr << "the default upper bound will be 0.99." << '\n';
-        return 1;
-    }
-
-    */
-
     // Ensure lower does not exceed the value of upper
     if(upper <= lower){
         Rcpp::Rcerr << "Error in threshold limits: ";
         Rcpp::Rcerr << "cannot have lower >= upper.\n";
         Rcpp::Rcerr << "Please restart with corrected lower and upper bounds." << '\n';
         Rcpp::Rcerr << "Use thresholding::help() to get more information on thresholdAnalysis() inputs." << '\n';
-        return 1;
+        Rcpp::stop("invalid upper and lower limits. Ending analysis early.");
     }
 
     Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "Initial analysis parameters" << '\n';
     Rcpp::Rcout << "------------------------------------------------\n";
     Rcpp::Rcout << "input graph file:      "  << infile << "\n";
     Rcpp::Rcout << "output file prefix:    "  << outfile_prefix << "\n";
@@ -202,7 +176,7 @@ int thresholdAnalysis(std::string infile,
 
     // End program if the only method desired was the significance and power calculations
     if (analysis_methods.size() == 0){
-        return 0;
+        return;
     }
 
     // Turn on attribute handling
@@ -211,13 +185,7 @@ int thresholdAnalysis(std::string infile,
 
     // Hold the result of the thresholding analysis process
     int status = 0;
-
-    // ***************************************************** //
-    // NOTE on 9-20-23 for future work:
-        // R session crashes likely due to the std::cout in igraph_ext.cpp.
-        // resolve this so function doesn't crash when this is run
-    // ***************************************************** // 
-
+    
     // Load graph   
     // Ensure path to infile containing graph info is valid
     // read_graph checks to make sure that file opened is an existing file and passes
@@ -260,7 +228,7 @@ int thresholdAnalysis(std::string infile,
 
     // Exit program if no only non-loop methods were requested
     if (analysis_methods.size() == 0){
-        return 0;
+        return;
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -275,7 +243,7 @@ int thresholdAnalysis(std::string infile,
     // Is the iterative file open for writing?
     if (out.fail()) {
         Rcpp::Rcerr << "Error opening file for writing: " << outfile_name << "\n";
-        return 0;
+        Rcpp::stop("output file was unable to be opened for writing. Ending analysis early.");
     }
 
     // Output header for iterative file contents
@@ -394,7 +362,7 @@ int thresholdAnalysis(std::string infile,
         }
         else{
             Rcpp::Rcerr << " Something went wrong during thresholding loop" << '\n';
-            return -1;
+            Rcpp::stop("weirdness occured during thresholding loop...");
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -512,9 +480,8 @@ int thresholdAnalysis(std::string infile,
     }
   
     out.close();
-    Rcpp::Rcout << "End of the function as of 9-25-23!" << '\n';
+    Rcpp::Rcout << "End of the function as of 9-28-23!" << '\n';
 
     igraph_destroy(&G);
-    return status;
 }
 
