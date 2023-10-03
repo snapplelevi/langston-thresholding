@@ -8,6 +8,4 @@ src/*.dll
 existing_thresholding_files/*
 lib/lib/*
 lib/*.a
-external/igraph-0.8.0/*
-external/igraph-0.10.6/*
-external/igraph-0.9.9/*
+external/igraph*

@@ -50,6 +50,7 @@
         "streambuf": "cpp",
         "cfenv": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "iomanip": "cpp"
     }
 }

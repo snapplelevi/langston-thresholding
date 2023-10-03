@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <vector>
 #include <set>
+#include <iomanip>
 
 
 /////////////// update later after basic functionality of analysis program works //////////////
@@ -31,6 +32,7 @@
 //' 
 // [[Rcpp::export]]
 void help(){
+    /*
     Rcpp::Rcerr <<  "\n";
     Rcpp::Rcerr <<  "    Usage: \n";
     Rcpp::Rcerr <<  "    " << "thresholdAnaylsis"  << " [-OPTIONS]... <GRAPH FILE PATH> <OUTPUT FILE PATH> \n\n";
@@ -58,6 +60,34 @@ void help(){
     Rcpp::Rcerr <<  "                                                   8 - percolation\n";
     Rcpp::Rcerr <<  "      -h  --help                               print this help and exit\n";
     Rcpp::Rcerr <<  "\n";
+    */
+    Rcpp::Rcout <<  "\n";
+    Rcpp::Rcout <<  "--------------Langston Lab Thresholding Analysis Techniques (2023)---------------\n";
+    Rcpp::Rcout <<  "                               thresholdAnalysis()                               \n";
+    Rcpp::Rcout <<  "Synopsis:\n";
+    Rcpp::Rcout <<  "    thresholdAnalysis(std::string infile, std::string outfile_prefix,\n";
+    Rcpp::Rcout <<  "                      std::string methods="", double lower=0.5, double upper=0.99, \n";
+    Rcpp::Rcout <<  "                      double increment=0.01, int window_size=5, int min_partition_size=10, \n";
+    Rcpp::Rcout <<  "                      int min_clique_size=5, double min_alpha=0, double max_alpha=4,\n";
+    Rcpp::Rcout <<  "                      double alpha_increment=0.1, int num_samples=0,\n";
+    Rcpp::Rcout <<  "                      double significance_alpha=0.01, bool bonferroni_corrected=0)\n";
+    Rcpp::Rcout <<  "\n";
+    Rcpp::Rcout <<  "Arguments to thresholdAnalysis():\n";
+    Rcpp::Rcout <<  "\tRequired:\n";
+    Rcpp::Rcout <<  "\t\t1.) infile: string input\n";
+    Rcpp::Rcout <<  "\t\t        The weighted edge list (.wel) file input. This file is in the .ncol format as specified by\n";
+    Rcpp::Rcout <<  "\t\t        the Large Graph Layout group: https://lgl.sourceforge.net/#FileFormat.\n\n";
+    
+    Rcpp::Rcout <<  "\t\t        In this application, the graph input file is simple, weighted, undirected. The vertices in the .wel\n";
+    Rcpp::Rcout <<  "\t\t        file follow the following format where the arrow represents whitespace: \n";
+    Rcpp::Rcout <<  "\t\t          vertex1⇥vertex2⇥weight1,2\n";
+    Rcpp::Rcout <<  "\t\t          vertex1⇥vertex3⇥weight1,3\n";
+    Rcpp::Rcout <<  "\t\t          ...\n\n";
+
+    Rcpp::Rcout <<  "\t\t         NOTE: vertiex names cannot contain whitespace.\n\n";
+
+    Rcpp::Rcout <<  "\t\t2.) outfile_prefix: string input\n";
+
 }
 
 

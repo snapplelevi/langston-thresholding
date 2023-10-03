@@ -7,22 +7,23 @@
 # and thresholding method codes.
 
 # Extension for source files
-SRCEXT = cpp
+SRCEXT=cpp
 
 SRCDIR=${CURDIR}
-EXTERNALDIR="$(SRCDIR)/../external"
-BUILDDIR="$(SRCDIR)/../build"
-LIBDIR="$(SRCDIR)/../lib"
+INCLUDEDIR=$(SRCDIR)/../include
+EXTERNALDIR=$(SRCDIR)/../external
+BUILDDIR=$(SRCDIR)/../build
+LIBDIR=$(SRCDIR)/../lib
 
 IGRAPH_VER=igraph-0.9.9
-IGRAPHDIR="$(EXTERNALDIR)/$(IGRAPH_VER)"
-CXXSTD = -std=c++11
+IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
 
+CXXSTD = -std=c++11
 PKG_CPPFLAGS = -Wall \
 								-I$(IGRAPHDIR)/include \
 								-I$(IGRAPHDIR)/build/include \
-								-I../external/alglib \
-								-I../include
+								-I$(EXTERNALDIR)/alglib \
+								-I$(INCLUDEDIR)
 
 # Linking flags for build process
 PKG_LIBS =  -ligraph -L../lib -fopenmp
@@ -33,8 +34,9 @@ all: extract_igraph  $(SHLIB)
 # Extract igraph tar file and use cmake to configure igraph 
 # and create static library file
 extract_igraph:
-# First attempt at igraph-0.9.9 with Cmake
+# First attempt at compiling igraph (v > 0.9) with CMake
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
+	echo $(IGRAPHDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 	cd $(IGRAPHDIR)/build && cmake ..
 	cd $(IGRAPHDIR)/build && cmake --build .

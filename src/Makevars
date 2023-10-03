@@ -9,19 +9,20 @@
 SRCEXT = cpp
 
 SRCDIR=${CURDIR}
-EXTERNALDIR="$(SRCDIR)/../external"
-BUILDDIR="$(SRCDIR)/../build"
-LIBDIR="$(SRCDIR)/../lib"
+INCLUDEDIR=$(SRCDIR)/../include
+EXTERNALDIR=$(SRCDIR)/../external
+BUILDDIR=$(SRCDIR)/../build
+LIBDIR=$(SRCDIR)/../lib
 
 IGRAPH_VER=igraph-0.9.9
-IGRAPHDIR="$(EXTERNALDIR)/$(IGRAPH_VER)"
-CXXSTD = -std=c++11
+IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
 
+CXXSTD = -std=c++11
 PKG_CPPFLAGS = -Wall \
 								-I$(IGRAPHDIR)/include \
 								-I$(IGRAPHDIR)/build/include \
-								-I../external/alglib \
-								-I../include
+								-I$(EXTERNALDIR)/alglib \
+								-I$(INCLUDEDIR)
 
 PKG_LIBS =  -ligraph -L../lib -fopenmp
 
@@ -30,7 +31,8 @@ PKG_LIBS =  -ligraph -L../lib -fopenmp
 all: extract_igraph  $(SHLIB) 
 
 extract_igraph:
-# First attempt at igraph-0.9.9 with Cmake
+# First attempt at compiling igraph with CMake
+	@mkdir -p $(IGRAPHDIR)
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 	cd $(IGRAPHDIR)/build && cmake ..
