@@ -2,10 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+
 src/*.o
 src/*.so
 src/*.dll
-existing_thresholding_files/*
-lib/lib/*
+
 lib/*.a
+
 external/igraph*

@@ -65,29 +65,52 @@ void help(){
     Rcpp::Rcout <<  "--------------Langston Lab Thresholding Analysis Techniques (2023)---------------\n";
     Rcpp::Rcout <<  "                               thresholdAnalysis()                               \n";
     Rcpp::Rcout <<  "Synopsis:\n";
-    Rcpp::Rcout <<  "    thresholdAnalysis(std::string infile, std::string outfile_prefix,\n";
-    Rcpp::Rcout <<  "                      std::string methods="", double lower=0.5, double upper=0.99, \n";
-    Rcpp::Rcout <<  "                      double increment=0.01, int window_size=5, int min_partition_size=10, \n";
-    Rcpp::Rcout <<  "                      int min_clique_size=5, double min_alpha=0, double max_alpha=4,\n";
-    Rcpp::Rcout <<  "                      double alpha_increment=0.1, int num_samples=0,\n";
-    Rcpp::Rcout <<  "                      double significance_alpha=0.01, bool bonferroni_corrected=0)\n";
+    Rcpp::Rcout <<  "    thresholdAnalysis(infile, outfile_prefix,\n";
+    Rcpp::Rcout <<  "                      methods="",  lower=0.5,  upper=0.99, \n";
+    Rcpp::Rcout <<  "                      increment=0.01,  window_size=5,  min_partition_size=10, \n";
+    Rcpp::Rcout <<  "                      min_clique_size=5,  min_alpha=0,  max_alpha=4,\n";
+    Rcpp::Rcout <<  "                      alpha_increment=0.1,  num_samples=0,\n";
+    Rcpp::Rcout <<  "                      significance_alpha=0.01,  bonferroni_corrected=0)\n";
     Rcpp::Rcout <<  "\n";
     Rcpp::Rcout <<  "Arguments to thresholdAnalysis():\n";
-    Rcpp::Rcout <<  "\tRequired:\n";
-    Rcpp::Rcout <<  "\t\t1.) infile: string input\n";
-    Rcpp::Rcout <<  "\t\t        The weighted edge list (.wel) file input. This file is in the .ncol format as specified by\n";
-    Rcpp::Rcout <<  "\t\t        the Large Graph Layout group: https://lgl.sourceforge.net/#FileFormat.\n\n";
+    Rcpp::Rcout <<  "Required:\n";
+    Rcpp::Rcout <<  "\t1.) infile: string input\n";
+    Rcpp::Rcout <<  "\t        The weighted edge list (.wel) file input. This file is in the .ncol format as specified by\n";
+    Rcpp::Rcout <<  "\t        the Large Graph Layout group: https://lgl.sourceforge.net/#FileFormat.\n\n";
     
-    Rcpp::Rcout <<  "\t\t        In this application, the graph input file is simple, weighted, undirected. The vertices in the .wel\n";
-    Rcpp::Rcout <<  "\t\t        file follow the following format where the arrow represents whitespace: \n";
-    Rcpp::Rcout <<  "\t\t          vertex1⇥vertex2⇥weight1,2\n";
-    Rcpp::Rcout <<  "\t\t          vertex1⇥vertex3⇥weight1,3\n";
-    Rcpp::Rcout <<  "\t\t          ...\n\n";
+    Rcpp::Rcout <<  "\t        In this application, the graph input file is simple, weighted, undirected. The vertices in the .wel\n";
+    Rcpp::Rcout <<  "\t        file follow the following format where the arrow represents whitespace: \n";
+    Rcpp::Rcout <<  "\t          vertex1⇥vertex2⇥weight1,2\n";
+    Rcpp::Rcout <<  "\t          vertex1⇥vertex3⇥weight1,3\n";
+    Rcpp::Rcout <<  "\t          ...\n\n";
 
-    Rcpp::Rcout <<  "\t\t         NOTE: vertiex names cannot contain whitespace.\n\n";
+    Rcpp::Rcout <<  "\t         NOTE: vertex names cannot contain whitespace.\n\n";
 
-    Rcpp::Rcout <<  "\t\t2.) outfile_prefix: string input\n";
+    Rcpp::Rcout <<  "\t2.) outfile_prefix: string input\n";
+    Rcpp::Rcout <<  "\t        Prefix to the output files to the analysis file(s).\n";
+    Rcpp::Rcout <<  "\t        Example: If the prefix is \"graph-output\", the output is graph-output.<method_name>.txt";
+    Rcpp::Rcout <<  "\t                 where method name is the type of analysis performed, such as iterative or statistical_errors\n";
+    Rcpp::Rcout <<  "\t                 The method(s) are controlled by the optional \"methods\" argument.\n\n";
 
+    Rcpp::Rcout <<  "Optional:\n";
+    Rcpp::Rcout <<  "\t3.) methods: string input  (defaults to empty string)\n";
+    Rcpp::Rcout <<  "\t        Comma separated list of analysis operations to complete. These methods are represented by an integer";
+    Rcpp::Rcout <<  "\t        which is mapped to its corresponding method internally. The following methods are currently available:\n\n";
+    Rcpp::Rcout <<  "\t             0 - all (methods 1-7 will be performed)\n";
+    Rcpp::Rcout <<  "\t             1 - significance and power calculations (only valid for Pearson CC)\n";
+    Rcpp::Rcout <<  "\t             2 - local-global\n";
+    Rcpp::Rcout <<  "\t             3 - scale free\n";
+    Rcpp::Rcout <<  "\t             4 - maximal cliques\n";
+    Rcpp::Rcout <<  "\t             5 - spectral methods\n";
+    Rcpp::Rcout <<  "\t             6 - random matrix theory\n";
+    Rcpp::Rcout <<  "\t             7 - clustering coefficient\n";
+    Rcpp::Rcout <<  "\t             8 - percolation\n\n";
+    Rcpp::Rcout <<  "\t        Example: methods=\"7, 5, 2\" (Note: methods will be performed in numerical order internally, but the order";
+    Rcpp::Rcout <<  "\t                 which they are passed to the function doesn't matter.)\n\n";
+    Rcpp::Rcout <<  "\t4.) lower: floating point input  (defaults to 0.5)\n";
+    Rcpp::Rcout <<  "\t        Lower initial starting bound for the thresholding loop. The loop ends when the upper bound limit.\n";
+    Rcpp::Rcout <<  "\t        Note: lower must be less than or equal to upper (lower <= upper) for function to continue.\n\n";
+    Rcpp::Rcout <<  "\t        Example: lower=0.6";
 }
 
 
@@ -234,8 +257,7 @@ void thresholdAnalysis(std::string infile,
     
     Rcpp::Rcout << "Number vertices:  " << V << "\n";
     Rcpp::Rcout << "Number edges:     " << E;
-    Rcpp::Rcout << "  (maximum possible number edges " << int(orig_max_E) << ")";
-    Rcpp::Rcout << '\n';
+    Rcpp::Rcout << "  (maximum possible number edges " << int(orig_max_E) << ")\n";
     Rcpp::Rcout << "------------------------------------------------\n\n";
 
     ///////////////////////////////////////////////////////////////////////
@@ -510,7 +532,7 @@ void thresholdAnalysis(std::string infile,
     }
   
     out.close();
-    Rcpp::Rcout << "End of the function as of 9-28-23!" << '\n';
+    Rcpp::Rcout << "Thresholding completed - all analysis methods completed.\n";
 
     igraph_destroy(&G);
 }

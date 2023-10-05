@@ -1,4 +1,7 @@
 Tenative things to come back to:
+- Figure out solution for unique names when multiple methods are passed to the analysis function
+  - Specifying two iterative methods in the package's current state will lead to writing to the same
+  iterative file, which would make the results unreadable and not helpful to the user.
 - Documentation / error message output for igraph_ext_alg and igraph_ext_io
 - Documentation and other helper functions with thresholdAnalysis
 - Updating or modifying thresholding::help() to get more specific instructions for thresholdAnalysis
