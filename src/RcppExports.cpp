@@ -40,9 +40,9 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// thresholdAnalysis
-void thresholdAnalysis(std::string infile, std::string outfile_prefix, std::string methods, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, double min_alpha, double max_alpha, double alpha_increment, int num_samples, double significance_alpha, bool bonferroni_corrected);
-RcppExport SEXP _thresholding_thresholdAnalysis(SEXP infileSEXP, SEXP outfile_prefixSEXP, SEXP methodsSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP min_alphaSEXP, SEXP max_alphaSEXP, SEXP alpha_incrementSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP bonferroni_correctedSEXP) {
+// analysis
+void analysis(std::string infile, std::string outfile_prefix, std::string methods, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, double min_alpha, double max_alpha, double alpha_increment, int num_samples, double significance_alpha, bool bonferroni_corrected);
+RcppExport SEXP _thresholding_analysis(SEXP infileSEXP, SEXP outfile_prefixSEXP, SEXP methodsSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP min_alphaSEXP, SEXP max_alphaSEXP, SEXP alpha_incrementSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP bonferroni_correctedSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type infile(infileSEXP);
@@ -60,7 +60,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type num_samples(num_samplesSEXP);
     Rcpp::traits::input_parameter< double >::type significance_alpha(significance_alphaSEXP);
     Rcpp::traits::input_parameter< bool >::type bonferroni_corrected(bonferroni_correctedSEXP);
-    thresholdAnalysis(infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected);
+    analysis(infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected);
     return R_NilValue;
 END_RCPP
 }
@@ -79,7 +79,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_thresholding_function_test", (DL_FUNC) &_thresholding_function_test, 1},
     {"_thresholding_print_vector", (DL_FUNC) &_thresholding_print_vector, 1},
     {"_thresholding_help", (DL_FUNC) &_thresholding_help, 0},
-    {"_thresholding_thresholdAnalysis", (DL_FUNC) &_thresholding_thresholdAnalysis, 15},
+    {"_thresholding_analysis", (DL_FUNC) &_thresholding_analysis, 15},
     {"_thresholding_rcpp_hello_world", (DL_FUNC) &_thresholding_rcpp_hello_world, 0},
     {NULL, NULL, 0}
 };

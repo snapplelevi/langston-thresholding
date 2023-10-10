@@ -28,7 +28,7 @@
 /////////////// update later after basic functionality of analysis program works //////////////
 // Helper code to print out help information if inputs are incorrect
 
-//' Display argument information on terminal for thresholding::thresholdAnalysis()
+//' Display argument information on terminal for thresholding::analysis()
 //' 
 // [[Rcpp::export]]
 void help(){
@@ -63,16 +63,16 @@ void help(){
     */
     Rcpp::Rcout <<  "\n";
     Rcpp::Rcout <<  "--------------Langston Lab Thresholding Analysis Techniques (2023)---------------\n";
-    Rcpp::Rcout <<  "                               thresholdAnalysis()                               \n";
+    Rcpp::Rcout <<  "                               analysis()                               \n";
     Rcpp::Rcout <<  "Synopsis:\n";
-    Rcpp::Rcout <<  "    thresholdAnalysis(infile, outfile_prefix,\n";
+    Rcpp::Rcout <<  "    analysis(infile, outfile_prefix,\n";
     Rcpp::Rcout <<  "                      methods="",  lower=0.5,  upper=0.99, \n";
     Rcpp::Rcout <<  "                      increment=0.01,  window_size=5,  min_partition_size=10, \n";
     Rcpp::Rcout <<  "                      min_clique_size=5,  min_alpha=0,  max_alpha=4,\n";
     Rcpp::Rcout <<  "                      alpha_increment=0.1,  num_samples=0,\n";
     Rcpp::Rcout <<  "                      significance_alpha=0.01,  bonferroni_corrected=0)\n";
     Rcpp::Rcout <<  "\n";
-    Rcpp::Rcout <<  "Arguments to thresholdAnalysis():\n";
+    Rcpp::Rcout <<  "Arguments to analysis():\n";
     Rcpp::Rcout <<  "Required:\n";
     Rcpp::Rcout <<  "\t1.) infile: string input\n";
     Rcpp::Rcout <<  "\t        The weighted edge list (.wel) file input. This file is in the .ncol format as specified by\n";
@@ -105,12 +105,44 @@ void help(){
     Rcpp::Rcout <<  "\t             6 - random matrix theory\n";
     Rcpp::Rcout <<  "\t             7 - clustering coefficient\n";
     Rcpp::Rcout <<  "\t             8 - percolation\n\n";
-    Rcpp::Rcout <<  "\t        Example: methods=\"7, 5, 2\" (Note: methods will be performed in numerical order internally, but the order";
+    Rcpp::Rcout <<  "\t        Example: methods=\"2, 5\""; 
+    Rcpp::Rcout <<  "\t                 methods=\"6, 1\"  (Note: methods will be performed in numerical order internally, but the order";
     Rcpp::Rcout <<  "\t                 which they are passed to the function doesn't matter.)\n\n";
+
     Rcpp::Rcout <<  "\t4.) lower: floating point input  (defaults to 0.5)\n";
-    Rcpp::Rcout <<  "\t        Lower initial starting bound for the thresholding loop. The loop ends when the upper bound limit.\n";
-    Rcpp::Rcout <<  "\t        Note: lower must be less than or equal to upper (lower <= upper) for function to continue.\n\n";
-    Rcpp::Rcout <<  "\t        Example: lower=0.6";
+    Rcpp::Rcout <<  "\t        Initial lower bound for  thresholding loop. The loop ends when the current threshold value surpasses the upper bound limit.\n";
+    Rcpp::Rcout <<  "\t        NOTe: lower must be less than or equal to upper (lower <= upper) for function to continue.\n\n";
+    Rcpp::Rcout <<  "\t        Example: lower=0.6\n\n";
+
+    Rcpp::Rcout <<  "\t5.) upper: floating point input (defaults to 0.99)\n";
+    Rcpp::Rcout <<  "\t        Upper bound for the thresholding loop; Thresholding ends when the current threshold value is greater than";
+    Rcpp::Rcout <<  "\t        this parameter.\n";
+    Rcpp::Rcout <<  "\t        NOTE: the upper must be greater than or equal to the lower input (lower <= upper) for the function to continue.\n\n";
+    Rcpp::Rcout <<  "\t        Example: upper=0.93\n\n";
+
+    Rcpp::Rcout <<  "\t6.) increment: floating point input (defaults to 0.01)\n";
+    Rcpp::Rcout <<  "\t        This value controls the step of the thresholding loop. On each pass, the graph is thresholded at the current";
+    Rcpp::Rcout <<  "\t        thresholding value.\n";
+    Rcpp::Rcout <<  "\t        After the thresholding step, the value is incremented by the increment parameter (which is 0.01 by default).\n";
+    Rcpp::Rcout <<  "\t        The increment parameter gives finer control to which thresholding values are used in the analysis. This parameter can also\n";
+    Rcpp::Rcout <<  "\t        work alongside the lower and upper parameters to limit the scope and depth of thresholding userd.\n\n";
+    Rcpp::Rcout <<  "\t        Example: increment=0.0001  - finer grain thresholding\n";
+    Rcpp::Rcout <<  "\t                increment=0.05    - coarser thresholding\n\n";
+
+    Rcpp::Rcout <<  "\t7.) window_size: integer input (defaults to 5)\n";
+    Rcpp::Rcout <<  "\t         NOTE: this parameter is only used for spectral graph methods, which are used in the local-global (#2) and spectral (#5) analysis methods\n";
+    Rcpp::Rcout <<  "\t         Used in spectral methods to create a differences vector with the specified sliding window width.\n";
+    Rcpp::Rcout <<  "\t         window_size controls the size of the difference vector and the distance of the window between each difference pair.\n";
+    Rcpp::Rcout <<  "\t         For example, a vector of size 10 with elements [0,1,2,3,4,5,6,7,8,9] exists.\n";
+    Rcpp::Rcout <<  "\t         IF window_size=7, the output vector will have a size of 3. The first elements compared are 0 [ind = 0] and 7 [ind = 7].\n";
+    Rcpp::Rcout <<  "\t         This difference is then stored. Next, the window is shifted by one. The next elements compared are\n";
+    Rcpp::Rcout <<  "\t         1 [ind = 1] and 8 [ind = 8]. This process repeats until the window extends past the end of the vector.\n";
+    Rcpp::Rcout <<  "\t         The vector that this internal difference function makes is then [7, 7, 7].\n\n";
+    Rcpp::Rcout <<  "\t         Example: window_size=10   (NOTE: window_size should be greater than the min_partition_size. If this is not true, then\n";
+    Rcpp::Rcout <<  "\t         the default values for each parameter will be used.)\n\n";
+
+    Rcpp::Rcout <<  "\t8.) min_partition_size: integer input (defaults to 10)\n";
+    Rcpp::Rcout <<  "\t";        
 }
 
 
@@ -148,21 +180,21 @@ void parse_string_methods(std::set<int> &analysis_methods, const std::string &st
 //' @param outfile_prefix: Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
 //' @param methods: Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
 // [[Rcpp::export]]
-void thresholdAnalysis(std::string infile, 
-                      std::string outfile_prefix,
-                      std::string methods="", 
-                      double lower=0.5,
-                      double upper=0.99,
-                      double increment=0.01,
-                      int window_size=5,
-                      int min_partition_size=10,
-                      int min_clique_size=5,
-                      double min_alpha=0,
-                      double max_alpha=4,
-                      double alpha_increment=0.1,
-                      int num_samples=0,
-                      double significance_alpha=0.01,
-                      bool bonferroni_corrected=0)
+void analysis(std::string infile, 
+              std::string outfile_prefix,
+              std::string methods="", 
+              double lower=0.5,
+              double upper=0.99,
+              double increment=0.01,
+              int window_size=5,
+              int min_partition_size=10,
+              int min_clique_size=5,
+              double min_alpha=0,
+              double max_alpha=4,
+              double alpha_increment=0.1,
+              int num_samples=0,
+              double significance_alpha=0.01,
+              bool bonferroni_corrected=0)
 {
     // Stores the outfile name passed to analysis functions at multiple points throughout 
     // the analysis exeuction
@@ -172,7 +204,7 @@ void thresholdAnalysis(std::string infile,
     // Return one for 
     if(outfile_prefix.empty()){
         Rcpp::Rcerr << "Error - No output file prefix specified." << '\n';
-        Rcpp::Rcerr << "Use thresholding::help() to get more information on thresholdAnalysis() inputs." << '\n';
+        Rcpp::Rcerr << "Use thresholding::help() to get more information on thresholding::analysis() inputs." << '\n';
         Rcpp::stop("empty output file prefix. Ending analysis early.");
     }
 
@@ -192,7 +224,7 @@ void thresholdAnalysis(std::string infile,
         Rcpp::Rcerr << "Error in threshold limits: ";
         Rcpp::Rcerr << "cannot have lower >= upper.\n";
         Rcpp::Rcerr << "Please restart with corrected lower and upper bounds." << '\n';
-        Rcpp::Rcerr << "Use thresholding::help() to get more information on thresholdAnalysis() inputs." << '\n';
+        Rcpp::Rcerr << "Use thresholding::help() to get more information on analysis() inputs." << '\n';
         Rcpp::stop("invalid upper and lower limits. Ending analysis early.");
     }
 
