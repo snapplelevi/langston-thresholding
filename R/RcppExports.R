@@ -3,20 +3,20 @@
 
 #' Manually exported in NAMESPACE
 function_test <- function(c) {
-    .Call('_thresholding_function_test', PACKAGE = 'thresholding', c)
+    .Call(`_thresholding_function_test`, c)
 }
 
 #' Prints out 10 numbers
 #' @param i - an integer that gets printed right back out
 #' Manually exported in NAMESPACE
 print_vector <- function(i) {
-    invisible(.Call('_thresholding_print_vector', PACKAGE = 'thresholding', i))
+    invisible(.Call(`_thresholding_print_vector`, i))
 }
 
-#' Display argument information on terminal for thresholding::thresholdAnalysis()
+#' Display argument information on terminal for thresholding::analysis()
 #' 
 help <- function() {
-    invisible(.Call('_thresholding_help', PACKAGE = 'thresholding'))
+    invisible(.Call(`_thresholding_help`))
 }
 
 #' Main graph thresholding analysis function
@@ -24,10 +24,10 @@ help <- function() {
 #' @param outfile_prefix: Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
 #' @param methods: Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
 analysis <- function(infile, outfile_prefix, methods = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
-    invisible(.Call('_thresholding_analysis', PACKAGE = 'thresholding', infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected))
+    invisible(.Call(`_thresholding_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected))
 }
 
 rcpp_hello_world <- function() {
-    .Call('_thresholding_rcpp_hello_world', PACKAGE = 'thresholding')
+    .Call(`_thresholding_rcpp_hello_world`)
 }
 

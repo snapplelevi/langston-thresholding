@@ -2,10 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{help}
 \alias{help}
-\title{Display argument information on terminal for thresholding::thresholdAnalysis()}
+\title{Display argument information on terminal for thresholding::analysis()}
 \usage{
 help()
 }
 \description{
-Display argument information on terminal for thresholding::thresholdAnalysis()
+Display argument information on terminal for thresholding::analysis()
 }

@@ -1,6 +1,7 @@
-useDynLib(thresholding)
+useDynLib(thresholding, .registration = TRUE)
 importFrom(Rcpp, evalCpp)
 export("function_test")
 export("print_vector")
 export("analysis")
 export("help")
+export("edge_hist")
