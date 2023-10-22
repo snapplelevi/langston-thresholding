@@ -4,12 +4,12 @@
 \alias{edge_hist}
 \title{edge_hist}
 \usage{
-edge_hist(infile, bin_width, sep = "\\t")
+edge_hist(infile, bin_width = 0.01, sep = "\\t")
 }
 \arguments{
 \item{infile}{tab separated .ncol formatted graph file (list of weighted edges - wel)}
 
-\item{bin_width}{width of each histogram bin}
+\item{bin_width}{width of each histogram bin (default is 0.01)}
 
 \item{sep}{determines how the wel file is separated (default is tab separated file)}
 }
