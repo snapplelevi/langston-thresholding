@@ -9,7 +9,9 @@ For R installation (also still figuring out the right command to build):
    then, run the install.packages function with the newly created tar file:
    
    **install.packages("./thresholding.tar.gz", type="source", repos=NULL)**  
-
+   Note: this command will install to a default library (first entry in R's .libPaths()).
+   To move this to a desired location, run the command with
+   **install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here)**
 ## Required tools for installation
 These thresholding codes depend on the external **igraph** C library for graph creation and manipulation. 
 Some external functions from **alglib** are also used. 
