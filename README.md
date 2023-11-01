@@ -2,6 +2,14 @@
 R package for Langston Lab's C++ thresholding techniques
 Package still in development... 
 
+For R installation (also still figuring out the right command to build):
+1. devtools::install_github("snapplelevi/threhsolding")  // use install.packages(devtools) if devtools does not exist already)
+2. First, tar the clone git repo directory (**tar -cvfz thresholding.tar.gz ./thresholding**).
+
+   then, run the install.packages function with the newly created tar file:
+   
+   **install.packages("./thresholding.tar.gz", type="source", repos=NULL)**  
+
 ## Required tools for installation
 These thresholding codes depend on the external **igraph** C library for graph creation and manipulation. 
 Some external functions from **alglib** are also used. 
