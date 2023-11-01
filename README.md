@@ -10,8 +10,11 @@ For R installation (also still figuring out the right command to build):
    
    **install.packages("./thresholding.tar.gz", type="source", repos=NULL)**  
    Note: this command will install to a default library (first entry in R's .libPaths()).
+   
    To move this to a desired location, run the command with
-   **install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here)**
+   
+   **install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here")**
+   
 ## Required tools for installation
 These thresholding codes depend on the external **igraph** C library for graph creation and manipulation. 
 Some external functions from **alglib** are also used. 
@@ -23,8 +26,15 @@ R package.
 ### Windows users
 - Rtools (version #)
     - Purpose of Rools
-- CMake (version #)
-    - Purpose of CMake
+- CMake (minimum version 3.18)
+    - CMake is required to create the shared object/.dll file from the igraph external dependency.
+    - When R builds the package, it will run the Makevars.win in **src**, which runs the igraph CMake calls.
 
 ### *Nix users
-- List tools needed
+- CMake (minimum version 3.18)
+    - CMake is required to create the shared object/.dll file from the igraph external dependency.
+    - When R builds the package, it will run the Makevars file in **src** which runs the igraph CMake calls.
+- Current Issue: building igraph during package installation
+   - Error during linking process of shared object that asks to recompiled certain files with -fPIC (position independent code) flag enabled.
+     We are still looking for how to resolve this. This problem has happened during the install.packages() testing, but devtools::install_github()
+     hasn't been tested yet. 
