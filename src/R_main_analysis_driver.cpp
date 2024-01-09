@@ -11,6 +11,7 @@
 #include "local_global.h"
 #include "significance.h"
 #include "local_rank.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <fstream>
@@ -200,6 +201,9 @@ void analysis(std::string infile,
     // the analysis exeuction
     std::string outfile_name;
 
+    // Get the pid to create unique file names if the same input file is run multiple times
+    std::string str_pid = get_str_pid();
+
     // Ensure output file prefix exists
     // Return one for 
     if(outfile_prefix.empty()){
@@ -250,7 +254,7 @@ void analysis(std::string infile,
     // Type II error (false negative rate) control
     // Have to have n - number of samples (not number of variables)
     if(analysis_methods.find(1) != analysis_methods.end()){
-        outfile_name = outfile_prefix + ".statistical_errors.txt";
+        outfile_name = outfile_prefix + str_pid + ".statistical_errors.txt";
         control_statistical_errors(significance_alpha,
                                   num_samples,
                                   0, //E
@@ -299,7 +303,7 @@ void analysis(std::string infile,
     ///////////////////////////////////////////////////////////////////////
     // local-global (guzzi2014, rank)
     if(analysis_methods.find(2) != analysis_methods.end()){
-        outfile_name = outfile_prefix + ".local_global.txt";
+        outfile_name = outfile_prefix + str_pid + ".local_global.txt";
         local_global_method(G,
                      min_alpha,
                      max_alpha,
@@ -321,7 +325,7 @@ void analysis(std::string infile,
     ///////////////////////////////////////////////////////////////////////
 
     // Ready the output file
-    outfile_name = outfile_prefix + ".iterative.txt";
+    outfile_name = outfile_prefix + str_pid + ".iterative.txt";
     std::ofstream out;
     out.open(outfile_name.c_str(), std::ofstream::out);
     // Is the iterative file open for writing?
