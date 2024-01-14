@@ -23,7 +23,7 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(EXTERNALDIR)/alglib \
 								-I$(INCLUDEDIR)
 
-PKG_LIBS =  -ligraph -L../lib -fopenmp
+PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp
 
 
 .PHONY: all extract_igraph clean
@@ -34,7 +34,7 @@ extract_igraph:
 	@mkdir -p $(IGRAPHDIR)
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
 	@mkdir -p $(IGRAPHDIR)/build
-	cd $(IGRAPHDIR)/build && cmake ..
+	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 	cd $(IGRAPHDIR)/build && cmake --build .
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 
