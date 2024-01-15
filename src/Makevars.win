@@ -20,7 +20,7 @@ IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
 
 CXXSTD = -std=c++11
 PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
-								-I$(IGRAPHDIR)/build/include \
+								 -I$(IGRAPHDIR)/build/include \
 								-I$(EXTERNALDIR)/alglib \
 								-I$(INCLUDEDIR)
 

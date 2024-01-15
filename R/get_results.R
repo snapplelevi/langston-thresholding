@@ -216,7 +216,6 @@ get_iterative_t_values <- function(files,
   D$D['aplestin'] <- min(df$threshold[dNsv_dt > 0])
   
   
-  
   # same logic as above but for clustering coefficient
   if(!all(is.nan(df$clustering.coefficient))){
     # gupta clustering coefficient
@@ -445,15 +444,15 @@ get_results <- function(outfile_prefix){
         print(paste0("File #", i, file))
         i = i + 1
       }
-      print("Running get_iterative_t_values")
+      print("Starting get_iterative_t_values")
       df <- get_iterative_t_values(files, D)
     } 
     else if(method == "significance_result"){
-      print("Running get_significance_t_values")
+      print("Starting get_significance_t_values")
       power_df <- get_significance_t_values(files, D, min_power=0.8)
     } 
     else if(method == "local_global_result"){
-      print("Running get_local_global_alpha value")
+      print("Starting get_local_global_alpha value")
       df_and_alpha <- get_local_global_alpha_value(files)
     }
   }
