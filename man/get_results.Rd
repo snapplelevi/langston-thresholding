@@ -8,7 +8,7 @@ after running thresholding::analysis()}
 get_results(outfile_prefix)
 }
 \arguments{
-\item{outfile}{filename or file path for resulting output file from 
+\item{outfile_prefix}{filename or file path for resulting output file from 
 running the analysis function (file would be <prefix>.iterative.txt)}
 }
 \description{
