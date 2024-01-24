@@ -1,19 +1,78 @@
-# Translated from Carissa Bleker's Thresholding helper functions
-# for quicker analysis of thresholding analysis results
-#
-# The link to Carissa's Github repo: 
-#     https://github.com/carissableker/thresholding
-# The link to the combine_analysis_results functions: 
-#     https://github.com/carissableker/thresholding/blob/master/example/combine_analysis_results.py
+##############################################################################
+#'                          get_iter_t_vals()
+#' User wrapper function for get_iterative_t_values
+#' Returns the thresholding data frame created by the internal
+#' get_iterative_t_values, which does not return anything to the user.
+#' 
+#' The returned data frame includes graph and graph method values for each 
+#' increment of the threshold. 
+#' 
+#' 
+#' @param outfile_prefix Prefix of output file, which can have several
+#' output file paths if the same prefix is run several. This assumes
+#' that the desired file(s) are in the current working directory
+#' (pwd)
+#' 
+#' Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
+#' on all files names iter-prefix-###.iterative.txt where ### is the process
+#' ID of the internal process (like 4318, 3341, 414143, etc.).
+#' @export
+get_iter_t_vals <- function(outfile_prefix){
+  
+  # Use glob matches to find all files with outfile_prefix
+  it_fnames <- Sys.glob(file.path(getwd(), 
+                                  paste0(outfile_prefix, "*.iterative.txt")))
+  
+  # Create regex pattern to match files with exact format
+  patt <- paste0("^", outfile_prefix, ".*\\.iterative\\.txt$")
+  
+  # Use below if intereted in only using PID format in file name:
+  # patt <- paste0("^", outfile_prefix, "-[[:digit:]]+\\.iterative\\.txt$")
+  
+  # Find all possible files with the given file prefix
+  it_fnames <- list.files(path=".", pattern=patt)
+  
+  if(length(it_fnames) == 0){
+    message(paste0("No files found for ", outfile_prefix, "."))
+    message("Please check the iterative file prefix and try again.")
+    message("Iterative files will have the format of: outfile_prefix-####.iterative.txt")
+    message("   Note: #### represents the integer value of the process ID for the")
+    message("         running process when the file was created>")
+    stop("\rExiting get_iter_t_vals...")
+  }
+  
+  # Run the iterative analysis on the found files
+  iter_df <- suppressWarnings(get_iterative_t_values(it_fnames))
+  
+  return(iter_df)
+}
 
-# Helper function for thresholding::get_results()
-# Gets thresholding values from the iterative results
-# Reads in tab the separated .iterative.txt files from 
-# thresholding::analysis
+##############################################################################
+#' Translated from Carissa Bleker's Thresholding helper functions
+#' for quicker analysis of thresholding analysis results
+#'
+#' The link to Carissa's Github repo: 
+#'   https://github.com/carissableker/thresholding
+#' The link to the combine_analysis_results functions: 
+#'   https://github.com/carissableker/thresholding/blob/master/example/combine_analysis_results.py
+
+#' Helper function for thresholding::get_results()
+#' Gets thresholding values from the iterative results
+#' Reads in tab the separated .iterative.txt files from 
+#' thresholding::analysis
+#' 
+#' @param files Vector of file paths or just one file path
+#' @param D Optional argument that accepts a list. This can be used
+#' to capture the thresholding results by a certain method. If just
+#' using get_iter_t_vals, then D can be left unspecified. Otherwise,
+#' get_results fills out and returns this value automatically
+#' @param d_min_t INTERNAL CONTROL
+#' @export
 get_iterative_t_values <- function(files,
-                                   D,
+                                   D=NULL,
                                    d_min_t=list(general=0)){
-  print(paste0("D before: ", D$D))
+  
+
   # print(paste0("files inside: ", files))
   # Create array of data frames read in from files array
   all_dfs <- c()
@@ -21,7 +80,10 @@ get_iterative_t_values <- function(files,
     df <- read.csv(file, sep="\t")
     
     # if no rows, continue in loop
-    print(nrow(df))
+    writeLines("------------------- Files and the number of rows ------------------- ")
+    writeLines(paste0("File: ", file, "        nrows: ", nrow(df)))
+    writeLines("")
+    
     if(nrow(df) == 0)
       next
     # otherwise, append to array
@@ -41,9 +103,13 @@ get_iterative_t_values <- function(files,
           dplyr::distinct()  %>% 
           dplyr::arrange(threshold)
   
+  # print(colnames(df))
+  
+  writeLines("")
+  writeLines("")
   # Reset index
   row.names(df) <- NULL
-  print(colnames(df))
+
   D$D['aplestin'] <- NaN
   D$D['cc_inflection'] <- NaN
   D$D['density_min'] <- NaN
@@ -66,7 +132,6 @@ get_iterative_t_values <- function(files,
   
   # Single component
   # First point before more than one cc appears
-  
   D$D['single_component'] <- max(subset(df, 
                                   connected.component.count == 1,
                                   select = threshold
@@ -108,13 +173,13 @@ get_iterative_t_values <- function(files,
     row.names(subdf) <- NULL
   }
   else{
-    #######################################################
-    # May need to change this if df is passed by reference#
-    #######################################################
+    ########################################################
+    # May need to change this if df is passed by reference #
+    ########################################################
     subdf <- df
   }
                 
-  print(subdf$almost.disconnected.component.count)
+  #print(subdf$almost.disconnected.component.count)
   
   # Change values in subdf that are negative to be NaN
   # Otherwise, stay the same
@@ -213,6 +278,9 @@ get_iterative_t_values <- function(files,
   Nsv <- df$edge.count / df$vertex.count
   dNsv_dt <- pracma::gradient(Nsv, df$threshold)
   df <- base::cbind(df, dNsv_dt)
+  #print("error checking")
+  #print(df$threshold[dNsv_dt > 0])
+  
   D$D['aplestin'] <- min(df$threshold[dNsv_dt > 0])
   
   
@@ -270,14 +338,14 @@ get_iterative_t_values <- function(files,
     
   } # end outer if
   
-  print("##### get_iterative_t_values - DONE #####")
+  writeLines("############# get_iterative_t_values - DONE #############\n")
   #print(paste0("D after: ", D$D))
   
   return(df)
 }
 
 
-
+##############################################################################
 # Helper function for thresholding::get_results()
 # Gets the significance thresholding values from significance results
 get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
@@ -325,12 +393,12 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   
   D$D[paste0("Power-", min_power)] <- min(power_df[power_df["power"] >= min_power]["r"])
   
-  print("##### get_significance_t_values - DONE #####")
+  writeLines("############# get_significance_t_values - DONE #############\n")
   return(power_df)
 }
 
 
-
+##############################################################################
 # Helper function for thresholding::get_results()
 # Gets the alpha value from the local/global results
 #   D_local_global is a part of Carissa's function implementation, but get_results
@@ -396,12 +464,12 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
     return(data.frame())
   }
   
-  print("##### get_local_global_alpha_value - DONE")
+  writeLines("############# get_local_global_alpha_value - DONE #############\n")
   return(df)
 }
 
 
-
+##############################################################################
 #' Prints the resulting analysis method thresholding values
 #' after running thresholding::analysis()
 #' 
@@ -433,6 +501,22 @@ get_results <- function(outfile_prefix){
   D$D <- list()   # Hash-map/Dictionary of method/threshold value pairs
   alpha <- NaN  # Alpha significance level
   
+  
+  # Create validation state for plot_t_vs_ev (simple boolean to determine)
+  # if the D passed to that function is the list itself or the output from 
+  # this function - get_results().
+  D$D['ARTFUL.CHECK'] <- TRUE
+  
+  
+  # Used later to suppress warnings in analysis helper functions. These functions
+  # use max() and min() from base, which return Inf/-Inf when the vector 
+  # passed to them is empty (which may arise if a certain condition is not met)
+  # though analysis. 
+  #
+  # We use a temporary wrapper workaround for the longe "suppressWarnings" by 
+  # storing the function name in a shorter variable.
+  supWarn <- suppressWarnings
+  
   # Loop through all results
   for(res in all_results){
     method <- res[[1]]  # string value
@@ -445,27 +529,29 @@ get_results <- function(outfile_prefix){
         i = i + 1
       }
       print("Starting get_iterative_t_values")
-      df <- get_iterative_t_values(files, D)
+      # Supress min() and max() warnings returning Inf
+      df <- supWarn(get_iterative_t_values(files, D))
     } 
     else if(method == "significance_result"){
       print("Starting get_significance_t_values")
-      power_df <- get_significance_t_values(files, D, min_power=0.8)
+      power_df <- supWarn(get_significance_t_values(files, D, min_power=0.8))
     } 
     else if(method == "local_global_result"){
       print("Starting get_local_global_alpha value")
-      df_and_alpha <- get_local_global_alpha_value(files)
+      df_and_alpha <- supWarn(get_local_global_alpha_value(files))
     }
   }
   
-  print("get_result - DONE")
+  writeLines("############# get_result - DONE #############\n")
   
-  # accessible by <out_variable>$D ; <out_variable>$alpha
+  # Results accessible by <out_variable>$D ; <out_variable>$alpha
   # or
   #               <out_variable>["D"] ; <out_variable>["alpha"]
   #
   # ex. OUTPUT <- get_results("FILE-PREFIX")
-  #     whole list:       OUTPUT$D
-  #     specific element: OUTPUT$D$cc_inflection 
+  #     to get whole list:         OUTPUT$D
+  #     to get a specific element: OUTPUT$D$cc_inflection 
   D <- D$D
   return(list(D = D, alpha = alpha))
 }
+

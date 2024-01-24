@@ -25,6 +25,7 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(INCLUDEDIR)
 
 # Linking flags for build process
+# PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp - added -lm and -llapack for unix building
 PKG_LIBS =  -ligraph -L../lib -fopenmp
 
 .PHONY: all extract_igraph clean
@@ -37,6 +38,8 @@ extract_igraph:
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
 	echo $(IGRAPHDIR)
 	@mkdir -p $(IGRAPHDIR)/build
+# This option works in Unix (Makevars) - so far Windows builds work without it
+# cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 	cd $(IGRAPHDIR)/build && cmake ..
 	cd $(IGRAPHDIR)/build && cmake --build .
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)

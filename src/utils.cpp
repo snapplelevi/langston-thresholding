@@ -9,7 +9,7 @@ int output_results(std::ofstream outfile, std::string& message){
 // https://stackoverflow.com/a/53230284/4996681
 std::string get_str_pid(){
     int pid = getpid();
-    char str_pid[6];   // ex. 34567
+    char str_pid[20];   // ex. 34567
     sprintf(str_pid, "%d", pid);
     return str_pid;
 }

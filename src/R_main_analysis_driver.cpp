@@ -254,7 +254,7 @@ void analysis(std::string infile,
     // Type II error (false negative rate) control
     // Have to have n - number of samples (not number of variables)
     if(analysis_methods.find(1) != analysis_methods.end()){
-        outfile_name = outfile_prefix + str_pid + ".statistical_errors.txt";
+        outfile_name = outfile_prefix + "-" + str_pid + ".statistical_errors.txt";
         control_statistical_errors(significance_alpha,
                                   num_samples,
                                   0, //E
@@ -303,7 +303,7 @@ void analysis(std::string infile,
     ///////////////////////////////////////////////////////////////////////
     // local-global (guzzi2014, rank)
     if(analysis_methods.find(2) != analysis_methods.end()){
-        outfile_name = outfile_prefix + str_pid + ".local_global.txt";
+        outfile_name = outfile_prefix + "-" + str_pid + ".local_global.txt";
         local_global_method(G,
                      min_alpha,
                      max_alpha,
@@ -325,7 +325,7 @@ void analysis(std::string infile,
     ///////////////////////////////////////////////////////////////////////
 
     // Ready the output file
-    outfile_name = outfile_prefix + str_pid + ".iterative.txt";
+    outfile_name = outfile_prefix + "-" + str_pid + ".iterative.txt";
     std::ofstream out;
     out.open(outfile_name.c_str(), std::ofstream::out);
     // Is the iterative file open for writing?
