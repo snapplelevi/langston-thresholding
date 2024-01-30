@@ -338,7 +338,7 @@ get_iterative_t_values <- function(files,
     
   } # end outer if
   
-  writeLines("############# get_iterative_t_values - DONE #############\n")
+  writeLines("############# get_iterative_t_values - DONE #############")
   #print(paste0("D after: ", D$D))
   
   return(df)
@@ -525,8 +525,8 @@ get_results <- function(outfile_prefix){
     if(method == "iterative_result"){
       i <- 1
       for(file in files){
-        print(paste0("File #", i, file))
-        i = i + 1
+        print(paste0("File #", i, ": ", file))
+        i <- i + 1
       }
       print("Starting get_iterative_t_values")
       # Supress min() and max() warnings returning Inf
