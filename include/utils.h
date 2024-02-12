@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <Rcpp.h>     // for replacing std::cout with Rcpp::Rcout
+
 #include <vector>     // std::vector
 #include <iostream>   // std::cout, std::cerr, std::endl
 #include <fstream>    // fopen, fclose (to read igraph)

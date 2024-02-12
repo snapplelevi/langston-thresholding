@@ -45,5 +45,8 @@ extract_igraph:
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 
 clean:
-	rm $(SRCDIR)/*.o
-	
+	echo "${SRCDIR}"
+	if [ "${SRCDIR}" != '/' ]; then
+		rm -f "${SRCDIR}"/*.o
+		rm -f "${SRCDIR}"/*.dll
+	fi

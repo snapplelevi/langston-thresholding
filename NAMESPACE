@@ -1,7 +1,9 @@
 useDynLib(thresholding, .registration = TRUE)
+
 importFrom(Rcpp, evalCpp)
-export("function_test")
-export("print_vector")
+importFrom(magrittr, "%>%")
+importFrom(stringr, str_extract_all)
+
 export("analysis")
 export("help")
 export("edge_hist")

@@ -1,7 +1,7 @@
 #ifndef SPECTRAL_METHODS_H
 #define SPECTRAL_METHODS_H
 
-#include <igraph.h>
+
 
 #include <vector>     // std::vector
 #include <iostream>   // std::cout, std::cerr, std::endl
@@ -12,6 +12,7 @@
 #include <stdlib.h>   // atoi, atof
 #include <sstream>    // stringstream
 #include <cmath>      // std::copysign
+
 
 #include "igraph_ext.h"
 #include "utils.h"

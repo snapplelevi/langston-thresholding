@@ -5,7 +5,6 @@
 
 
 //' Manually exported in NAMESPACE
-// [[Rcpp::export]]
 int function_test(int c){
   Rcpp::Rcout << "This is a test of Rcpp" << '\n';
   igraph_t test;
@@ -15,7 +14,6 @@ int function_test(int c){
 //' Prints out 10 numbers
 //' @param i - an integer that gets printed right back out
 //' Manually exported in NAMESPACE
-// [[Rcpp::export]]
 void print_vector(int i){
   std::vector<int> tmp;
   Rcpp::Rcout << "your i value: " << i << '\n';

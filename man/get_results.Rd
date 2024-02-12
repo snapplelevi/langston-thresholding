@@ -5,7 +5,7 @@
 \title{Prints the resulting analysis method thresholding values
 after running thresholding::analysis()}
 \usage{
-get_results(outfile_prefix)
+get_results(outfile_prefix, plot_iterative = FALSE)
 }
 \arguments{
 \item{outfile_prefix}{filename or file path for resulting output file from 

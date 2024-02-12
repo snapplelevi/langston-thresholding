@@ -1,0 +1,312 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `thresholding'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {thresholding: Langston Lab Graph Thresholding Tools}}}{}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdfauthor = {Gabriel Johnson; Carissa Bleker}}}{}
+\begin{description}
+\raggedright{}
+\item[Type]\AsIs{Package}
+\item[Title]\AsIs{Langston Lab Graph Thresholding Tools}
+\item[Version]\AsIs{1.0.0}
+\item[Date]\AsIs{2023-10-17}
+\item[Encoding]\AsIs{UTF-8}
+\item[Maintainer]\AsIs{Levi Hochstetler }\email{lhochste@vols.utk.edu}\AsIs{}
+\item[Description]\AsIs{This package encapsulates several graph thresholding utilities and analysis tools. 
+Thresholding a graph helps remove lesser important edges from a graph, and potentially 
+shrinking the graph by pruning off disconnected vertices. The analysis tools take in a graph input file, 
+and the user specifies what operations to perform on the graph to help determine the optimal threshold 
+for the graph. These thresholding tools rely on the igraph C library for graph creation and manipulation. 
+Other functionalities are used from the alglib mathematical library as well. }
+\item[URL]\AsIs{}\url{https://github.com/carissableker/thresholding}\AsIs{}
+\item[License]\AsIs{GPL (>= 2)}
+\item[Imports]\AsIs{Rcpp (>= 1.0.11), ggplot2, dplyr, magrittr, stringr, pracma}
+\item[Depends]\AsIs{Rcpp (>= 1.0.11)}
+\item[LinkingTo]\AsIs{Rcpp}
+\item[RoxygenNote]\AsIs{7.2.3}
+\item[NeedsCompilation]\AsIs{yes}
+\item[Author]\AsIs{Levi Hochstetler [cre],
+Gabriel Johnson [aut],
+Carissa Bleker [aut]}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{thresholding-package}{A short title line describing what the package does}{thresholding.Rdash.package}
+\aliasA{thresholding}{thresholding-package}{thresholding}
+\keyword{package}{thresholding-package}
+%
+\begin{Description}
+A more detailed description of what the package does. A length
+of about one to five lines is recommended.
+\end{Description}
+%
+\begin{Details}
+This section should provide a more detailed overview of how to use the
+package, including the most important functions.
+\end{Details}
+%
+\begin{Author}
+Your Name, email optional.
+
+Maintainer: Your Name <your@email.com>
+\end{Author}
+%
+\begin{References}
+This optional section can contain literature or other references for
+background information.
+\end{References}
+%
+\begin{SeeAlso}
+Optional links to other man pages
+\end{SeeAlso}
+%
+\begin{Examples}
+\begin{ExampleCode}
+  ## Not run: 
+     ## Optional simple examples of the most important functions
+     ## These can be in \dontrun{} and \donttest{} blocks.   
+  
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\inputencoding{utf8}
+\HeaderA{analysis}{Main graph thresholding analysis function}{analysis}
+%
+\begin{Description}
+Main graph thresholding analysis function
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+analysis(
+  infile,
+  outfile_prefix,
+  methods = "",
+  lower = 0.5,
+  upper = 0.99,
+  increment = 0.01,
+  window_size = 5L,
+  min_partition_size = 10L,
+  min_clique_size = 5L,
+  min_alpha = 0,
+  max_alpha = 4,
+  alpha_increment = 0.1,
+  num_samples = 0L,
+  significance_alpha = 0.01,
+  bonferroni_corrected = 0L
+)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{infile:}] Name of .ncol graph file to read in for analysis
+
+\item[\code{outfile\_prefix:}] Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
+
+\item[\code{methods:}] Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{edge\_hist}{edge\_hist}{edge.Rul.hist}
+%
+\begin{Description}
+Histogram function for displaying edge weight frequencies
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+edge_hist(infile, bin_width = 0.01, sep = "\t")
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{infile}] tab separated .ncol formatted graph file (list of weighted edges - wel)
+
+\item[\code{bin\_width}] width of each histogram bin (default is 0.01)
+
+\item[\code{sep}] determines how the wel file is separated (default is tab separated file)
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{function\_test}{Manually exported in NAMESPACE}{function.Rul.test}
+%
+\begin{Description}
+Manually exported in NAMESPACE
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+function_test(c)
+\end{verbatim}
+\end{Usage}
+\inputencoding{utf8}
+\HeaderA{get\_iterative\_t\_values}{Translated from Carissa Bleker's Thresholding helper functions for quicker analysis of thresholding analysis results}{get.Rul.iterative.Rul.t.Rul.values}
+%
+\begin{Description}
+The link to Carissa's Github repo: 
+https://github.com/carissableker/thresholding
+The link to the combine\_analysis\_results functions: 
+https://github.com/carissableker/thresholding/blob/master/example/combine\_analysis\_results.py
+Helper function for thresholding::get\_results()
+Gets thresholding values from the iterative results
+Reads in tab the separated .iterative.txt files from 
+thresholding::analysis
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+get_iterative_t_values(files, D = NULL, d_min_t = list(general = 0))
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{files}] Vector of file paths or just one file path
+
+\item[\code{D}] Optional argument that accepts a list. This can be used
+to capture the thresholding results by a certain method. If just
+using get\_iter\_t\_vals, then D can be left unspecified. Otherwise,
+get\_results fills out and returns this value automatically
+
+\item[\code{d\_min\_t}] INTERNAL CONTROL
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{get\_iter\_t\_vals}{get\_iter\_t\_vals() User wrapper function for get\_iterative\_t\_values Returns the thresholding data frame created by the internal get\_iterative\_t\_values, which does not return anything to the user.}{get.Rul.iter.Rul.t.Rul.vals}
+%
+\begin{Description}
+The returned data frame includes graph and graph method values for each 
+increment of the threshold.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+get_iter_t_vals(outfile_prefix)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{outfile\_prefix}] Prefix of output file, which can have several
+output file paths if the same prefix is run several. This assumes
+that the desired file(s) are in the current working directory
+(pwd)
+
+Ex.) get\_iter\_t\_vals("iter-prefix") will execute get\_iterative\_t\_values
+on all files names iter-prefix-\#\#\#.iterative.txt where \#\#\# is the process
+ID of the internal process (like 4318, 3341, 414143, etc.).
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{get\_results}{Prints the resulting analysis method thresholding values after running thresholding::analysis()}{get.Rul.results}
+%
+\begin{Description}
+Note: This function assumes that the .iterative anaylsis() output file
+is in the current directory unless the path to the file is provided.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+get_results(outfile_prefix, plot_iterative = FALSE)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{outfile\_prefix}] filename or file path for resulting output file from 
+running the analysis function (file would be <prefix>.iterative.txt)
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{help}{Display argument information on terminal for thresholding::analysis()}{help}
+%
+\begin{Description}
+Display argument information on terminal for thresholding::analysis()
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+help()
+\end{verbatim}
+\end{Usage}
+\inputencoding{utf8}
+\HeaderA{plot\_t\_vs\_ev}{Plots the edge (E) and vertex (V)count of a graph at varying thresholds Marks non-null methods and their optimal thresholds against the  V/E line plots}{plot.Rul.t.Rul.vs.Rul.ev}
+%
+\begin{Description}
+Plots the edge (E) and vertex (V)count of a graph at varying thresholds
+Marks non-null methods and their optimal thresholds against the 
+V/E line plots
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+plot_t_vs_ev(plot_df, D)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{plot\_df}] Dataframe with threshold values - returned from 
+output of get\_iterative\_results, which contains the detailed
+analysis of the graph at each increment of the thresholding
+process
+
+\item[\code{D}] List of methods and their optimal thresholds from 
+calling get\_results. The user can either pass the resulting variable
+from get\_results or the list itself (i.e. D=variable\$D instead of D=variable).
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{print\_vector}{Prints out 10 numbers}{print.Rul.vector}
+%
+\begin{Description}
+Prints out 10 numbers
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+print_vector(i)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{i}] - an integer that gets printed right back out
+Manually exported in NAMESPACE
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{rcpp\_hello\_world}{Simple function using Rcpp}{rcpp.Rul.hello.Rul.world}
+%
+\begin{Description}
+Simple function using Rcpp
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+rcpp_hello_world()	
+\end{verbatim}
+\end{Usage}
+%
+\begin{Examples}
+\begin{ExampleCode}
+## Not run: 
+rcpp_hello_world()
+
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+\printindex{}
+\end{document}

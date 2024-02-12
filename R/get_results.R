@@ -72,7 +72,7 @@ get_iterative_t_values <- function(files,
                                    D=NULL,
                                    d_min_t=list(general=0)){
   
-
+  
   # print(paste0("files inside: ", files))
   # Create array of data frames read in from files array
   all_dfs <- c()
@@ -357,7 +357,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     
     lines <- readLines(file)
     line1 <- lines[[1]]
-    vals <- stringr::extract_all(line1, "\\d*(\\.)?\\d+")
+    vals <- stringr::str_extract_all(line1, "\\d*(\\.)?\\d+")
     
     alpha <- vals[[1]]
     sample_size <- vals[[2]]
@@ -431,7 +431,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   df <- all_dfs %>%
         dplyr::group_by(alpha) %>%
         dplyr::filter(alpha = max(alpha)) %>%
-        dplr::distinct()
+        dplyr::distinct()
   
   # Reset index
   row.names(df) <- NULL
@@ -479,7 +479,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' @param outfile_prefix filename or file path for resulting output file from 
 #' running the analysis function (file would be <prefix>.iterative.txt)
 #' @export
-get_results <- function(outfile_prefix){
+get_results <- function(outfile_prefix, plot_iterative=FALSE){
  
     # Make so that all file with outfile_prefix are fetched
   it_fnames <- Sys.glob(file.path(getwd(), 
@@ -543,6 +543,14 @@ get_results <- function(outfile_prefix){
   }
   
   writeLines("############# get_result - DONE #############\n")
+  
+  #print(plot_iterative)
+  # Plot vertex and edge counts by threshold value if user specifies
+  # instead of making seperate call to plot_t_vs_ev()
+  if(plot_iterative){
+    writeLines("############# plot_t_vs_ev() called #############\n")
+    plot_t_vs_ev(df, D)
+  }
   
   # Results accessible by <out_variable>$D ; <out_variable>$alpha
   # or

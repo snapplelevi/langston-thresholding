@@ -4,7 +4,11 @@ Title: Langston Lab Graph Thresholding Tools
 Version: 1.0.0
 Date: 2023-10-17
 Encoding: UTF-8
-Author: Levi Hochstetler
+Authors@R: c(
+              person("Levi", "Hochstetler", email="lhochste@vols.utk.edu", role="cre"),
+              person("Gabriel", "Johnson", email="gjohns57@vols.utk.edu", role="aut"),
+              person("Carissa", "Bleker", role="aut")
+            )
 Maintainer: Levi Hochstetler <lhochste@vols.utk.edu>
 Description: This package encapsulates several graph thresholding utilities and analysis tools. 
   Thresholding a graph helps remove lesser important edges from a graph, and potentially 
@@ -12,12 +16,14 @@ Description: This package encapsulates several graph thresholding utilities and 
   and the user specifies what operations to perform on the graph to help determine the optimal threshold 
   for the graph. These thresholding tools rely on the igraph C library for graph creation and manipulation. 
   Other functionalities are used from the alglib mathematical library as well. 
+URL: https://github.com/carissableker/thresholding
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.11),
-          ggplot2,
-          dplyr,
-          stringr,
-          pracma
+Imports: Rcpp (>= 1.0.11), ggplot2, dplyr, magrittr, stringr, pracma
 Depends: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp
 RoxygenNote: 7.2.3
+NeedsCompilation: yes
+Packaged: 2024-02-10 21:47:04 UTC; levij
+Author: Levi Hochstetler [cre],
+  Gabriel Johnson [aut],
+  Carissa Bleker [aut]

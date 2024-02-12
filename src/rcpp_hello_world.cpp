@@ -2,7 +2,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// [[Rcpp::export]]
 List rcpp_hello_world() {
 
     CharacterVector x = CharacterVector::create( "foo", "bar" )  ;

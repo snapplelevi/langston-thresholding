@@ -8,22 +8,31 @@
 #' process
 #' @param D List of methods and their optimal thresholds from 
 #' calling get_results. The user can either pass the resulting variable
-#' from get_results or the list itself (i.e. D=variable$D instead of D=variable).
+#' from get_results or the list itfself (i.e. D=variable$D instead of D=variable).
 #' @export 
 plot_t_vs_ev <- function(plot_df, D){
-  
-  # UNCOMMENT OUT AFTER PLOT TESTING
+ 
   annotations <- list()
   labels <- list()
-
+  
+  # Check if user passed the direct list from get_results() (D$D) or if they
+  # passed just the outer variable D.
+  if( ! ("ARTFUL.CHECK" %in% names(D)) ){
+    D <- D$D
+  }
+  
+  # Then remove ARTFUL.CHECK from the list before running the annotations
+  # and labels loop
+  D['ARTFUL.CHECK'] <- NULL
+  
   index <- 1
   # Loop through items of D
   for(cur_val in D){
     method_name <- names(D)[index]
-
+    print(paste0(method_name, ": ", cur_val))
     # If the method produced a non-zero value, add the method name (annotation)
     # and its corresponding value to the plotting sets.
-    if(is.nan(cur_val) == FALSE){
+    if(is.nan(cur_val) == FALSE && is.infinite(cur_val) == FALSE){
 
       is_in <- FALSE
 
@@ -33,36 +42,59 @@ plot_t_vs_ev <- function(plot_df, D){
       for(annot_val in annotations){
         # String value of annotation name
         annot <- names(annotations)[annot_index]
-
+        if(method_name == 'spectral_methods'){
+          
+          print(paste0(cur_val, " and ", annot_val))
+          print(paste0("method_name: ", method_name, " and ", annot))
+          print(dplyr::near(cur_val, annot_val, tol=1e-09))
+        }        
+        
         if(dplyr::near(cur_val, annot_val, tol=1e-09)){
-          labels$annot <- append(annotations$annot, method_name)
-          annotations$annot <- mean(cur_val, annot_val)
-
+          print(paste0("adding ", method_name, " to the ", annot, " vector"))
+          labels[[annot]] <- c(labels[[annot]], method_name)
+          annotations[[annot]] <- mean(cur_val, annot_val)
           # Make sure the element does not get added to the labels
           # since it is close to the current value and already in the set
           is_in <- TRUE
-
-          # Increment name index as well
-          annot_index <- annot_index + 1
         }
+        
+        # Increment name index as well
+        annot_index <- annot_index + 1
       }
 
       # Only add if the method hasn't been seen before
       if(is_in == FALSE){
-        labels$method_name <- c(method_name)  # start list of labels, hashed on name
-        annotations$method_name <- cur_val    # value that corresponds to label name(s)
+        print(paste0("adding: ", method_name))
+        labels[[method_name]] <- c(method_name)   # start vector of labels, hashed on name
+        annotations[[method_name]] <- cur_val    # value that corresponds to label name(s)
       }
-
+      print(paste0("labels after", method_name))
+      print(labels)
+      print(paste0("annotations after ", method_name))
+      print(annotations)
     }  # end outer is.nan if
 
     # Increment the index to get the string name of the method
     index <- index + 1
 
   } # end for loop
-  print(head(plot_df))
+  
+  
+  print("Annotations: ")
+  print(annotations)
+  
+  print("labels: ")
+  print(labels)
+  
+  #print(head(plot_df))
   
   v_count <- plot_df$vertex.count[1]
   e_count <- plot_df$edge.count[1]
+  t_begin <- plot_df$threshold[1]
+  t_end <- utils::tail(plot_df$threshold, n=1)
+  
+  xaxis_stop <- 1.0    # end point for x-axis (assumes 0-1.0 threshold values)
+  step_inc <- 0.05     # x axis tick increment
   
   if(v_count == 0){
     stop("Empty vertices in vertex.count. Ending plot utility")
@@ -75,9 +107,12 @@ plot_t_vs_ev <- function(plot_df, D){
   # edge_count_name <- "Edge Count"
   # vertex_count_name <- "Vertex Count"
   
+  # Ensure that title is centered later
+  ggplot2::theme_update(plot.title=ggplot2::element_text(hjust = 0.5))
+  
   # ADD DOCUMENTATION TO EACH STEP!
-  ggplot2::ggplot(data=plot_df,
-                  ggplot2::aes(x=threshold)) + 
+  PLOT <- ggplot2::ggplot(data=plot_df,
+                           ggplot2::aes(x=threshold)) + 
     # Dummy comment
     ggplot2::geom_line(ggplot2::aes(y=edge.count / factor, 
                                     color="Edge Count")
@@ -88,6 +123,10 @@ plot_t_vs_ev <- function(plot_df, D){
     ) +
     ggplot2::xlab("Threshold Value") +
     ggplot2::ylab("Edge Count") +
+    ggplot2::ggtitle("Edge and Vertex Count by Threshold Value") + 
+    ggplot2::scale_x_continuous(
+      breaks = seq(t_begin, xaxis_stop, step_inc)
+    ) +
     ggplot2::scale_y_continuous(
       "Vertex Count", 
       sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
@@ -97,8 +136,10 @@ plot_t_vs_ev <- function(plot_df, D){
                                 values=c("Edge Count" = "red",
                                          "Vertex Count" = "blue"
                                          )
-                                ) 
+                                ) +
+    ggplot2::annotate(geom="text", label="Method")
   
+    show(PLOT)
   # Plotting stuff down here
   # number vertices and number edges vs thresholds
   # with sns.plotting_context("paper"):
