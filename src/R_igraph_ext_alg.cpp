@@ -50,7 +50,7 @@ int threshold_graph(double t, igraph_t &G){
         igraph_degree(&G, &vertex_degrees, igraph_vss_all(), IGRAPH_ALL, false);
 
         for(long int i=0; i<igraph_vcount(&G); i++){
-            if(VECTOR(vertex_degrees)[i] == 0){
+            if(VECTOR_IG(vertex_degrees)[i] == 0){
                 igraph_vector_push_back(&vertex_indices, i);
             }
         }
@@ -102,7 +102,7 @@ int largest_connected_component(igraph_t &G, igraph_t &G_cc,
     int max_cc_index;
     int this_cc_size;
     for(int i =0; i<cc_count; i++){
-        this_cc_size = VECTOR(csize)[i];
+        this_cc_size = VECTOR_IG(csize)[i];
         if(this_cc_size > V_cc){
             max_cc_index = i;
             V_cc = this_cc_size;
@@ -117,7 +117,7 @@ int largest_connected_component(igraph_t &G, igraph_t &G_cc,
     // TODO what to do if there is more that 1?
     //int num_max_cc = 0;
     //for(int i=0; i<cc_count; i++){
-    //    this_cc_size = VECTOR(csize)[i];
+    //    this_cc_size = VECTOR_IG(csize)[i];
     //    if(this_cc_size == max_cc_size){
     //        num_max_cc++;
     //    }
@@ -126,7 +126,7 @@ int largest_connected_component(igraph_t &G, igraph_t &G_cc,
     // get the size of the second largest CC
     V2_cc = 0;
     for(int i =0; i<cc_count; i++){
-        this_cc_size = VECTOR(csize)[i];
+        this_cc_size = VECTOR_IG(csize)[i];
         if( (this_cc_size > V2_cc) && (this_cc_size < V_cc) ){
             V2_cc = this_cc_size;
         }
@@ -138,8 +138,8 @@ int largest_connected_component(igraph_t &G, igraph_t &G_cc,
 
     int j = 0; // index in vertices_in_cc
     for(int i=0; j<V_cc; i++){
-        if(VECTOR(membership)[i] == max_cc_index){
-            VECTOR(vertices_in_cc)[j] = i;
+        if(VECTOR_IG(membership)[i] == max_cc_index){
+            VECTOR_IG(vertices_in_cc)[j] = i;
             j += 1;
         }
     }
@@ -200,11 +200,11 @@ int Fiedler_vector(igraph_t &G,
     igraph_lapack_dsyevr(&laplacian, IGRAPH_LAPACK_DSYEV_SELECT, 0, 0, 0, 1, 2, 1e-8, &values, &vectors, 0);
 
     // should be 0.0 (or there abouts)
-    //std::cout << " 1st eigenvalue: " << VECTOR(values)[0] << std::endl;
-    //std::cout << " 2nd eigenvalue: " << VECTOR(values)[1] << std::endl;
+    //std::cout << " 1st eigenvalue: " << VECTOR_IG(values)[0] << std::endl;
+    //std::cout << " 2nd eigenvalue: " << VECTOR_IG(values)[1] << std::endl;
 
     // set eigenvalue and eigenvector of interest
-    eigenvalue = VECTOR(values)[1];
+    eigenvalue = VECTOR_IG(values)[1];
     igraph_matrix_get_col(&vectors, &eigenvector, 1);
 
     // remove laplacian, vectors and values
@@ -242,12 +242,12 @@ int get_weighted_adjacency(igraph_t &G, igraph_matrix_t &Adj){
         igraph_edge(&G, (igraph_integer_t) edge, &ffrom, &fto);
         from=ffrom;
         to=fto;
-        w = VECTOR(weights)[edge];
+        w = VECTOR_IG(weights)[edge];
 
-        MATRIX(Adj, from, to) = w;
+        MATRIX_IG(Adj, from, to) = w;
 
         if (from != to){
-            MATRIX(Adj, to, from) = w;
+            MATRIX_IG(Adj, to, from) = w;
         }
 
         IGRAPH_EIT_NEXT(edgeit);

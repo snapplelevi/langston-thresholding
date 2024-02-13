@@ -28,11 +28,11 @@ int random_matrix_theory(igraph_t& G,
 
     double this_eigenvalue, previous_eigenvalue;
 
-    this_eigenvalue = VECTOR(eigenvalues)[0] / largest_eigenvalue + 1;
+    this_eigenvalue = VECTOR_IG(eigenvalues)[0] / largest_eigenvalue + 1;
     eigenvalues_sorted.push_back(this_eigenvalue);
     previous_eigenvalue = this_eigenvalue;
     for(int i=1; i<igraph_vector_size(&eigenvalues); i++){
-        this_eigenvalue = VECTOR(eigenvalues)[i] / largest_eigenvalue + 1;
+        this_eigenvalue = VECTOR_IG(eigenvalues)[i] / largest_eigenvalue + 1;
         if(fabs(previous_eigenvalue - this_eigenvalue) > 0.00001){
             eigenvalues_sorted.push_back(this_eigenvalue);
             //std::cout << this_eigenvalue << "\n";

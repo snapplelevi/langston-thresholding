@@ -9,4 +9,4 @@ src/*.dll
 
 lib/*.a
 
-external/igraph*
+external/igraph-0.9.9/*

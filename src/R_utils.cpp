@@ -17,6 +17,6 @@ std::string get_str_pid(){
 void signal_handler( int signal_num ) {
 	Rcpp::Rcout << "The interrupt signal is (" << signal_num << "). \n";
 	// terminate program
-	exit(signal_num);
+    Rcpp::stop("exiting the process with signal: " + std::to_string(signal_num));
 }
 

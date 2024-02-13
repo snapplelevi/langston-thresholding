@@ -16,7 +16,7 @@ int rolling_difference_igraph(igraph_vector_t &x, std::vector<double> &out, int 
     for(int ind=0; ind < len_out; ind++) {
         // difference is between first and last elements
         // of the window
-        out[ind] = VECTOR(x)[ind+n-1] - VECTOR(x)[ind];
+        out[ind] = VECTOR_IG(x)[ind+n-1] - VECTOR_IG(x)[ind];
     }
 
     return 0;

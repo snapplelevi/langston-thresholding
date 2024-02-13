@@ -34,7 +34,7 @@ int local_rank(igraph_t& G,
 	  		//we're going to add all of these edges anyway
 		  	while (!IGRAPH_EIT_END(e_iterator)){
 	  			e_id = IGRAPH_EIT_GET(e_iterator);
-		  		VECTOR(bool_keep_edges)[e_id] = 1;
+		  		VECTOR_IG(bool_keep_edges)[e_id] = 1;
 		  		IGRAPH_EIT_NEXT(e_iterator);
 		  	}
   		}
@@ -52,7 +52,7 @@ int local_rank(igraph_t& G,
 		  		w = igraph_cattribute_EAN(&G, "weight", e_id);
 
 		  		incident_weights[i] = w;
-		  		VECTOR(incident_eids)[i] = e_id;
+		  		VECTOR_IG(incident_eids)[i] = e_id;
 
 		  		IGRAPH_EIT_NEXT(e_iterator);
 		  		i++;
@@ -63,8 +63,8 @@ int local_rank(igraph_t& G,
 
   			// convert to e_ids and save to bool_keep_edges
   			for (i=0; i<d_indices.size(); i++){
-  				e_id = VECTOR(incident_eids)[d_indices[i]];
-  				VECTOR(bool_keep_edges)[e_id] = 1;
+  				e_id = VECTOR_IG(incident_eids)[d_indices[i]];
+  				VECTOR_IG(bool_keep_edges)[e_id] = 1;
   			}
   		}
 
@@ -85,7 +85,7 @@ int local_rank(igraph_t& G,
 
   	while (!IGRAPH_EIT_END(all_e_iterator)){
   		e_id = IGRAPH_EIT_GET(all_e_iterator);
- 		if (VECTOR(bool_keep_edges)[e_id] ==1){
+ 		if (VECTOR_IG(bool_keep_edges)[e_id] ==1){
 			igraph_vector_push_back(&edge_indices, e_id);
 		}
   		IGRAPH_EIT_NEXT(all_e_iterator);

@@ -65,7 +65,7 @@ int local_global_pruning(igraph_t& G,
 		  		w = igraph_cattribute_EAN(&G, "weight", e_id);
 		  		if (fabs(w) > k){
 		  			// add 0.5 to new weights
-		  			VECTOR(edge_weights)[e_id] += 0.5;
+		  			VECTOR_IG(edge_weights)[e_id] += 0.5;
 		  		}
 		  		IGRAPH_EIT_NEXT(e_iterator);
 		  	}
@@ -73,7 +73,7 @@ int local_global_pruning(igraph_t& G,
 		else{
 			while (!IGRAPH_EIT_END(e_iterator)){
 		  		e_id = IGRAPH_EIT_GET(e_iterator);
-	  			VECTOR(edge_weights)[e_id] += 0.5;
+	  			VECTOR_IG(edge_weights)[e_id] += 0.5;
 		  		IGRAPH_EIT_NEXT(e_iterator);
 		  	}
 		}
@@ -97,7 +97,7 @@ int local_global_pruning(igraph_t& G,
 
   	while (!IGRAPH_EIT_END(all_e_iterator)){
   		e_id = IGRAPH_EIT_GET(all_e_iterator);
-  		w = VECTOR(edge_weights)[e_id];
+  		w = VECTOR_IG(edge_weights)[e_id];
   		if (w > 0){
 			igraph_vector_push_back(&edge_indices, e_id);
 		}
