@@ -177,9 +177,22 @@ void parse_string_methods(std::set<int> &analysis_methods, const std::string &st
 
 // Manually exported in NAMESPACE
 //' Main graph thresholding analysis function
-//' @param infile: Name of .ncol graph file to read in for analysis
-//' @param outfile_prefix: Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
-//' @param methods: Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
+//' @param infile Name of .ncol graph file to read in for analysis
+//' @param outfile_prefix Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
+//' @param methods Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
+//' @param lower lower bound to begin thresholding increment (lower >= 0)
+//' @param upper hard upper bound that ends thresholding loop
+//' @param increment size of step in the thresholding loop
+//' @param window_size DOCUMENT THIS
+//' @param min_partition_size DOCUMENT THIS
+//' @param min_clique_size DOCUMENT THIS
+//' @param min_alpha DOCUMENT THIS
+//' @param max_alpha DOCUMENT THIS
+//' @param alpha_increment DOCUMENT THIS
+//' @param num_samples DOCUMENT THIS
+//' @param significance_alpha DOCUMENT THIS
+//' @param bonferroni_corrected DOCUMENT THIS
+
 // [[Rcpp::export]]
 void analysis(std::string infile, 
               std::string outfile_prefix,
@@ -573,3 +586,14 @@ void analysis(std::string infile,
     igraph_destroy(&G);
 }
 
+
+/*
+
+Manual usage statement for analysis().
+//' @usage analysis(infile, outfile_prefix, [methods], [lower], [upper], \
+//'                 [increment], [window_size], [min_partition_size], \
+//'                 [min_clique_size], [min_alpha], [max_alpha], \
+//'                 [alpha_increment], [num_samples], [significance_alpha], \
+//'                 [bonferroni_corrected])
+
+*/

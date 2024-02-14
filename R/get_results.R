@@ -48,26 +48,26 @@ get_iter_t_vals <- function(outfile_prefix){
 }
 
 ##############################################################################
-#' Translated from Carissa Bleker's Thresholding helper functions
-#' for quicker analysis of thresholding analysis results
-#'
-#' The link to Carissa's Github repo: 
-#'   https://github.com/carissableker/thresholding
-#' The link to the combine_analysis_results functions: 
-#'   https://github.com/carissableker/thresholding/blob/master/example/combine_analysis_results.py
+# Translated from Carissa Bleker's Thresholding helper functions
+# for quicker analysis of thresholding analysis results
+#
+# The link to Carissa's Github repo: 
+#   https://github.com/carissableker/thresholding
+# The link to the combine_analysis_results functions: 
+#   https://github.com/carissableker/thresholding/blob/master/example/combine_analysis_results.py
 
-#' Helper function for thresholding::get_results()
-#' Gets thresholding values from the iterative results
-#' Reads in tab the separated .iterative.txt files from 
-#' thresholding::analysis
-#' 
-#' @param files Vector of file paths or just one file path
-#' @param D Optional argument that accepts a list. This can be used
-#' to capture the thresholding results by a certain method. If just
-#' using get_iter_t_vals, then D can be left unspecified. Otherwise,
-#' get_results fills out and returns this value automatically
-#' @param d_min_t INTERNAL CONTROL
-#' @export
+# Helper function for thresholding::get_results()
+# Gets thresholding values from the iterative results
+# Reads in tab the separated .iterative.txt files from 
+# thresholding::analysis
+# 
+# @param files Vector of file paths or just one file path
+# @param D Optional argument that accepts a list. This can be used
+# to capture the thresholding results by a certain method. If just
+# using get_iter_t_vals, then D can be left unspecified. Otherwise,
+# get_results fills out and returns this value automatically
+# @param d_min_t INTERNAL CONTROL
+# @export
 get_iterative_t_values <- function(files,
                                    D=NULL,
                                    d_min_t=list(general=0)){
@@ -478,8 +478,11 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' 
 #' @param outfile_prefix filename or file path for resulting output file from 
 #' running the analysis function (file would be <prefix>.iterative.txt)
+#' @param plot_iterative optionally plot the vertices and edges vs. threshold value as a graph.
+#' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
+#' the user needing to manually extract the required parameters.
 #' @export
-get_results <- function(outfile_prefix, plot_iterative=FALSE){
+get_results <- function(outfile_prefix, plot_iterative = FALSE){
  
     # Make so that all file with outfile_prefix are fetched
   it_fnames <- Sys.glob(file.path(getwd(), 
