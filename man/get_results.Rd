@@ -10,6 +10,10 @@ get_results(outfile_prefix, plot_iterative = FALSE)
 \arguments{
 \item{outfile_prefix}{filename or file path for resulting output file from 
 running the analysis function (file would be <prefix>.iterative.txt)}
+
+\item{plot_iterative}{optionally plot the vertices and edges vs. threshold value as a graph.
+uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
+the user needing to manually extract the required parameters.}
 }
 \description{
 Note: This function assumes that the .iterative anaylsis() output file

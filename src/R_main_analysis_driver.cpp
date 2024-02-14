@@ -192,7 +192,6 @@ void parse_string_methods(std::set<int> &analysis_methods, const std::string &st
 //' @param num_samples DOCUMENT THIS
 //' @param significance_alpha DOCUMENT THIS
 //' @param bonferroni_corrected DOCUMENT THIS
-
 // [[Rcpp::export]]
 void analysis(std::string infile, 
               std::string outfile_prefix,

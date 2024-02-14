@@ -23,11 +23,35 @@ analysis(
 )
 }
 \arguments{
-\item{infile:}{Name of .ncol graph file to read in for analysis}
+\item{infile}{Name of .ncol graph file to read in for analysis}
 
-\item{outfile_prefix:}{Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )}
+\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )}
 
-\item{methods:}{Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)}
+\item{methods}{Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)}
+
+\item{lower}{lower bound to begin thresholding increment (lower >= 0)}
+
+\item{upper}{hard upper bound that ends thresholding loop}
+
+\item{increment}{size of step in the thresholding loop}
+
+\item{window_size}{DOCUMENT THIS}
+
+\item{min_partition_size}{DOCUMENT THIS}
+
+\item{min_clique_size}{DOCUMENT THIS}
+
+\item{min_alpha}{DOCUMENT THIS}
+
+\item{max_alpha}{DOCUMENT THIS}
+
+\item{alpha_increment}{DOCUMENT THIS}
+
+\item{num_samples}{DOCUMENT THIS}
+
+\item{significance_alpha}{DOCUMENT THIS}
+
+\item{bonferroni_corrected}{DOCUMENT THIS}
 }
 \description{
 Main graph thresholding analysis function

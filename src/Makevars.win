@@ -46,7 +46,8 @@ extract_igraph:
 
 clean:
 	echo "${SRCDIR}"
-	if [ "${SRCDIR}" != '/' ]; then
-		rm -f "${SRCDIR}"/*.o
-		rm -f "${SRCDIR}"/*.dll
-	fi
+	if [ "${SRCDIR}" != '/' ]; \
+	then \
+		rm -f "${SRCDIR}"/*.o; \
+		rm -f "${SRCDIR}"/*.dll; \
+	fi 
