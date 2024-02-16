@@ -29,11 +29,11 @@ analysis(
 
 \item{methods}{Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)}
 
-\item{lower}{lower bound to begin thresholding increment (lower >= 0)}
+\item{lower}{Lower bound to begin thresholding increment (lower >= 0)}
 
-\item{upper}{hard upper bound that ends thresholding loop}
+\item{upper}{Hard upper bound that ends thresholding loop when "lower" value is greater than "upper" value.}
 
-\item{increment}{size of step in the thresholding loop}
+\item{increment}{Size of increment step in the thresholding loop}
 
 \item{window_size}{DOCUMENT THIS}
 

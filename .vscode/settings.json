@@ -51,6 +51,8 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "signal1.h": "c",
+        "f2c.h": "c"
     }
 }

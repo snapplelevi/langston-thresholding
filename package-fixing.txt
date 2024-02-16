@@ -1,0 +1,26 @@
+WARNINGS
+
+1. (SOLVED) Cast pointer to int warning in igraph file 
+    --------- SOLVED  ----------
+    used preprocessing if macros to determine whether to use C++ or C
+    style casting (#ifdef __cplusplus --> then use C++ style casting)
+
+2. CRLF endings from Makefiles produced from Cmake. (can we even
+    do anything about this? Could just specify in the email to CRAN
+    what the deal is)
+    
+3. GNU extensions in Makefiles produced by Cmake
+  set_target_properties (?)
+  https://cmake.org/cmake/help/latest/prop_tgt/OUTPUT_NAME.html
+  
+4. rand(), and abort() warnings
+
+
+5. * checking PDF version of manual ... WARNING
+   LaTeX errors when creating PDF version.
+   This typically indicates Rd problems.
+   
+   
+ERRORS
+1. * checking PDF version of manual without index ... ERROR
+     Re-running with no redirection of stdout/stderr.

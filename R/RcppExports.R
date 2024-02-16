@@ -11,9 +11,9 @@ help <- function() {
 #' @param infile Name of .ncol graph file to read in for analysis
 #' @param outfile_prefix Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )
 #' @param methods Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)
-#' @param lower lower bound to begin thresholding increment (lower >= 0)
-#' @param upper hard upper bound that ends thresholding loop
-#' @param increment size of step in the thresholding loop
+#' @param lower Lower bound to begin thresholding increment (lower >= 0)
+#' @param upper Hard upper bound that ends thresholding loop when "lower" value is greater than "upper" value.
+#' @param increment Size of increment step in the thresholding loop
 #' @param window_size DOCUMENT THIS
 #' @param min_partition_size DOCUMENT THIS
 #' @param min_clique_size DOCUMENT THIS
