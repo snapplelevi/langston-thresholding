@@ -1,6 +1,6 @@
 WARNINGS
 
-1. (SOLVED) Cast pointer to int warning in igraph file 
+1. **(SOLVED)** Cast pointer to int warning in igraph file 
     --------- SOLVED  ----------
     used preprocessing if macros to determine whether to use C++ or C
     style casting (#ifdef __cplusplus --> then use C++ style casting)
@@ -9,14 +9,38 @@ WARNINGS
     do anything about this? Could just specify in the email to CRAN
     what the deal is)
     
+    Try old $(MAKE) command with igraph-0.8.0? 
+        This leads to the old classic "byte" conflict on windows between
+        the <windows.h> and  "rpcndr.h" headers. 
+        
+        Could this be undeffed somehow? look more into this
+    
 3. GNU extensions in Makefiles produced by Cmake
+
   set_target_properties (?)
   https://cmake.org/cmake/help/latest/prop_tgt/OUTPUT_NAME.html
   
-4. rand(), and abort() warnings
+  Try old $(MAKE) command with igraph-0.8.0?
+  
+  This leads to the old classic "byte" conflict on windows between
+        the <windows.h> and  "rpcndr.h" headers. 
+        
+        Could this be undeffed somehow? look more into this
+  
+4. **(SOLVED)** rand(), and abort() warnings in src/ap.cpp (part of alglib) 
 
+  Rcpp::stop() to replace abort() and end program execution 
+    Can replace to another function later if signal passing is truly needed
+  
+  rand() will be replaced by R::runif(0, RAND_MAX)
+  to get a uniformly distributed pseudorandom number from [0, RAND_MAX]
+  where RAND_MAX is still defined in stdlib.h
+  
+  
+  
 
-5. * checking PDF version of manual ... WARNING
+5. checking PDF version of manual ... WARNING
+
    LaTeX errors when creating PDF version.
    This typically indicates Rd problems.
    

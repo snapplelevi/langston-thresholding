@@ -28,15 +28,29 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 # PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp - added -lm and -llapack for unix building
 PKG_LIBS =  -ligraph -L../lib -fopenmp
 
-.PHONY: all extract_igraph clean
-all: extract_igraph  $(SHLIB) 
+.PHONY: all extract_igraph e_igraph clean
+# old working version ----- all: extract_igraph  $(SHLIB) 
+all: extract_igraph $(SHLIB)
+
+#e_igraph:
+#	@mkdir -p $(BUILDDIR)
+
+#	cd $(EXTERNALDIR) && \
+	tar -xvzf $(IGRAPH_VER).tar.gz -C . && \
+	cd $(EXTERNALDIR) && cd $(IGRAPHDIR)
+	
+#	cd $(IGRAPHDIR) && ./configure --libdir=$(LIBDIR) --prefix=$(BUILDDIR) && echo "done with part 4"
+#	cd $(IGRAPHDIR) && $(MAKE) MAKEFLAGS= && echo " finished with part 5"
+#	cd $(IGRAPHDIR) && $(MAKE) install && echo "finsihed with teh make install
+
+#	@echo 'FINISHING BUILD'
 
 # Extract igraph tar file and use cmake to configure igraph 
 # and create static library file
 extract_igraph:
 # First attempt at compiling igraph (v > 0.9) with CMake
 	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
-	echo $(IGRAPHDIR)
+	@echo $(IGRAPHDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 # This option works in Unix (Makevars) - so far Windows builds work without it
 # cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON

@@ -17,6 +17,25 @@ A copy of the GNU General Public License is available at
 http://www.fsf.org/licensing/licenses
 >>> END OF LICENSE >>>
 *************************************************************************/
+
+/*
+ * Langston Lab - 2024
+ * The <Rcpp.h> library is linked in as part of the thresholding R package.
+ * This will only replace forbidden calls to rand(), abort(), exit(), and so
+ * on that the Comprehensive R Archive Network (CRAN) does not allow. 
+ * 
+ * The Rcpp library provides a useful interface to mix R and C++ functions in
+ * the same file.
+ * 
+ * Rcpp::stop() will deal with abort() calls for now (unless there is a better 
+ * R interface to replace the SIGABRT signal passing)
+ * 
+ * R::runif(0, RAND_MAX) will replace all rand() calls as per:
+ * //https://gallery.rcpp.org/articles/random-number-generation/
+ * 
+ */
+#include <Rcpp.h>
+
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -117,7 +136,7 @@ namespace alglib_impl
 
 #define AE_LOCK_CYCLES 512
 #define AE_LOCK_TESTS_BEFORE_YIELD 16
-#define AE_CRITICAL_ASSERT(x) if( !(x) ) abort()
+#define AE_CRITICAL_ASSERT(x) if( !(x) ) Rcpp::stop("CRITICAL ASSERT")
 
 /* IDs for set_dbg_value */
 #define _ALGLIB_USE_ALLOC_COUNTER             0
@@ -563,7 +582,8 @@ This function abnormally aborts program, using one of several ways:
 
 * for state!=NULL and state->break_jump being initialized with  call  to
   ae_state_set_break_jump() - it performs longjmp() to return site.
-* otherwise, abort() is called
+* otherwise, abort() is called (Note: Langston Lab modifications have
+  altered the abort() calls to Rcpp::stop() calls for CRAN compliancy)
   
 In   all  cases,  for  state!=NULL  function  sets  state->last_error  and
 state->error_msg fields. It also clears state with ae_state_clear().
@@ -583,10 +603,12 @@ void ae_break(ae_state *state, ae_error_type error_type, const char *msg)
         if( state->break_jump!=NULL )
             longjmp(*(state->break_jump), 1);
         else
-            abort();
+            //abort();
+            Rcpp::stop("Stopping from alglib::ae_break");
     }
     else
-        abort();
+        //abort();
+        Rcpp::stop("Stopping from alglib::ae_break");
 }
 
 #if AE_MALLOC==AE_BASIC_STATIC_MALLOC
@@ -1015,7 +1037,8 @@ void ae_state_init(ae_state *state)
         vp[0] = (ae_int32_t)0xFFF00000;
     }
     else
-        abort();
+        //abort();
+        Rcpp::stop("Stopping from alglib::ae_state_init");
     
     /*
      * set threading information
@@ -1255,6 +1278,10 @@ dst                 destination vector, MUST be zero-filled (we  check  it
                     and call abort() if *dst is non-zero; the rationale is
                     that we can not correctly handle errors in constructors
                     without zero-filling).
+
+                    Note: Langston Lab modifications to ap.cpp change abort()
+                    calls to Rcpp::stop() calls for CRAN compliancy.
+
 size                vector size, may be zero
 datatype            guess what...
 state               pointer to current state structure. Can not be NULL.
@@ -1295,6 +1322,10 @@ dst                 destination vector, MUST be zero-filled (we  check  it
                     and call abort() if *dst is non-zero; the rationale is
                     that we can not correctly handle errors in constructors
                     without zero-filling).
+
+                    Note: Langston Lab modifications to ap.cpp change abort()
+                    calls to Rcpp::stop() calls for CRAN compliancy.
+
 src                 well, it is source
 state               pointer to current state structure. Can not be NULL.
                     used for exception handling (say, allocation error results
@@ -1323,6 +1354,10 @@ dst                 destination vector, MUST be zero-filled (we  check  it
                     and call abort() if *dst is non-zero; the rationale is
                     that we can not correctly handle errors in constructors
                     without zero-filling).
+
+                    Note: Langston Lab modifications to ap.cpp change abort()
+                    calls to Rcpp::stop() calls for CRAN compliancy.
+
 src                 well, it is source
 state               pointer to current state structure. Can not be NULL.
                     used for exception handling (say, allocation error results
@@ -1811,6 +1846,9 @@ Error handling:
 * on failure calls ae_break() with NULL state pointer. Usually it  results
   in abort() call.
 
+  Note: Langston Lab modifications to ap.cpp change abort()
+        calls to Rcpp::stop() calls for CRAN compliancy.
+
 After initialization, smart pointer stores NULL pointer.
 ************************************************************************/
 void ae_smart_ptr_init(ae_smart_ptr *dst, void **subscriber, ae_state *state, ae_bool make_automatic)
@@ -2142,6 +2180,9 @@ For  non-NULL  state  it  allows  to  gracefully  leave  ALGLIB  session,
 removing all frames and deallocating registered dynamic data structure.
 
 For NULL state it just abort()'s program.
+
+Note: Langston Lab modifications to ap.cpp change abort()
+      calls to Rcpp::stop() calls for CRAN compliancy.
 
 IMPORTANT: this function ALWAYS evaluates its argument.  It  can  not  be
            replaced by macro which does nothing. So, you may place actual
@@ -2523,8 +2564,12 @@ double ae_minreal(double m1, double m2, ae_state *state)
 
 double ae_randomreal(ae_state *state)
 {
-    int i1 = rand();
-    int i2 = rand();
+    //int i1 = rand();
+    //int i2 = rand();
+    //https://gallery.rcpp.org/articles/random-number-generation/
+    int i1 = R::runif(0, RAND_MAX);
+    int i2 = R::runif(0, RAND_MAX);
+    
     double mx = (double)(RAND_MAX)+1.0;
     volatile double tmp0 = i2/mx;
     volatile double tmp1 = i1+tmp0;
@@ -2533,7 +2578,10 @@ double ae_randomreal(ae_state *state)
 
 ae_int_t ae_randominteger(ae_int_t maxv, ae_state *state)
 {
-    return rand()%maxv;
+    //return rand()%maxv;
+    //https://gallery.rcpp.org/articles/random-number-generation/
+    alglib::ae_int_t r_num = R::runif(0, RAND_MAX);
+    return r_num%maxv;
 }
 
 double   ae_sin(double x, ae_state *state)
@@ -3662,7 +3710,8 @@ void ae_yield()
 #elif AE_OS==AE_POSIX
     sched_yield();
 #else
-    abort();
+    //abort();
+    Rcpp::stop("Stopping from alglib::ae_yield");
 #endif
 }
 
@@ -3776,6 +3825,10 @@ INPUT PARAMETERS:
 NOTE: as a special exception, this function allows you  to  specify  NULL
       state pointer. In this case all exception arising during construction
       are handled as critical failures, with abort() being called.
+
+      Side-note: Langston Lab modifications to ap.cpp change abort()
+            calls to Rcpp::stop() calls for CRAN compliancy.
+
       make_automatic must be false on such calls.
 ************************************************************************/
 void ae_init_lock(ae_lock *lock, ae_state *state, ae_bool make_automatic)
@@ -3804,6 +3857,9 @@ to persist until the end of the execution of the program.  Eternal  locks
 can not be deallocated (cleared) and  do  not  increase debug  allocation
 counters.  Errors  during  allocation  of eternal  locks  are  considered
 critical exceptions and handled by calling abort().
+
+Note: Langston Lab modifications to ap.cpp change abort()
+      calls to Rcpp::stop() commands for CRAN compliancy.
 
 INPUT PARAMETERS:
     lock                -   pointer to lock structure, must be zero-filled
@@ -3875,6 +3931,9 @@ make_automatic      if true, vector will be registered in the current frame
 Error handling:
 * on failure calls ae_break() with NULL state pointer. Usually it  results
   in abort() call.
+
+  Note: Langston Lab modifications to ap.cpp change abort()
+        calls to Rcpp::stop() commands for CRAN compliancy.
 
 dst is assumed to be uninitialized, its fields are ignored.
 ************************************************************************/
@@ -8705,8 +8764,11 @@ int alglib::sign(double x)
 
 double alglib::randomreal()
 {
-    int i1 = rand();
-    int i2 = rand();
+    //int i1 = rand();
+    //int i2 = rand();
+    //https://gallery.rcpp.org/articles/random-number-generation/
+    int i1 = R::runif(0, RAND_MAX);
+    int i2 = R::runif(0, RAND_MAX);
     double mx = (double)(RAND_MAX)+1.0;
     volatile double tmp0 = i2/mx;
     volatile double tmp1 = i1+tmp0;
@@ -8715,7 +8777,9 @@ double alglib::randomreal()
 
 alglib::ae_int_t alglib::randominteger(alglib::ae_int_t maxv)
 {
-    return ((alglib::ae_int_t)rand())%maxv;
+    //return ((alglib::ae_int_t)rand())%maxv;
+    //https://gallery.rcpp.org/articles/random-number-generation/
+    return ((alglib::ae_int_t)R::runif(0, RAND_MAX))%maxv;
 }
 
 int alglib::round(double x)
