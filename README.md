@@ -6,7 +6,7 @@ For R installation (also still figuring out the right command to build):
 1. devtools::install_github("snapplelevi/thresholding")  // use install.packages(devtools) in the R terminal if devtools isn't installed already)
 2. First, clone the git repo onto your machine.
 
-   Afterwards, tar the clone git repo directory (**tar -cvfz thresholding.tar.gz ./thresholding**).
+   Afterwards, tar the clone git repo directory (**tar -cvzf thresholding.tar.gz ./thresholding**).
 
    then, run the install.packages function with the newly created tar file:
    

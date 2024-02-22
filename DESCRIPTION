@@ -2,7 +2,7 @@ Package: thresholding
 Type: Package
 Title: Langston Lab Graph Thresholding Tools
 Version: 1.0.1
-Date: 2023-11-17
+Date: 2024-02-21
 Encoding: UTF-8
 Authors@R: c(
               person("Levi", "Hochstetler", email="lhochste@vols.utk.edu", role="cre"),
@@ -10,19 +10,19 @@ Authors@R: c(
               person("Carissa", "Bleker", role="aut")
             )
 Maintainer: Levi Hochstetler <lhochste@vols.utk.edu>
-Description: This package encapsulates several graph thresholding utilities and analysis tools. 
-  Thresholding a graph helps remove lesser important edges from a graph, and potentially 
-  shrinking the graph by pruning off disconnected vertices. The analysis tools take in a graph input file, 
-  and the user specifies what operations to perform on the graph to help determine the optimal threshold 
-  for the graph. These thresholding tools rely on the igraph C library for graph creation and manipulation. 
-  Other functionalities are used from the alglib mathematical library as well. 
+Description: An R wrapper of C++ code that encapsulates several graph thresholding utilities and analysis tools. 
+    Thresholding a graph helps to iteratively remove lower significance edges from a graph, and potentially shrinking the graph by pruning off disconnected vertices. 
+    methods readily apply to biological data, Pearson/Spearman correlations, and other types of graph data. 
+    Our analysis tools take in a graph input file, and the user specifies what operations to perform on the graph to help determine the optimal threshold for the graph. 
+    These thresholding tools rely on the igraph C library for graph creation and manipulation. Other functionalities are used from the alglib mathematical library as well. 
+    After thresholding analysis is completed, a user can plot their results, extract the results from respective thresholding methods using get_results(), or the data frames produced from a specified method (iterative, local global, and significance values).
 URL: https://github.com/carissableker/thresholding
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.11), ggplot2, dplyr, magrittr, stringr, pracma
-Depends: Rcpp (>= 1.0.11)
 LinkingTo: Rcpp
 RoxygenNote: 7.2.3
 NeedsCompilation: yes
+SystemRequirements: GNU make
 Packaged: 2024-02-10 21:47:04 UTC; levij
 Author: Levi Hochstetler [cre],
   Gabriel Johnson [aut],

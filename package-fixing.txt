@@ -5,6 +5,7 @@ WARNINGS
     used preprocessing if macros to determine whether to use C++ or C
     style casting (#ifdef __cplusplus --> then use C++ style casting)
 
+
 2. CRLF endings from Makefiles produced from Cmake. (can we even
     do anything about this? Could just specify in the email to CRAN
     what the deal is)
@@ -14,18 +15,23 @@ WARNINGS
         the <windows.h> and  "rpcndr.h" headers. 
         
         Could this be undeffed somehow? look more into this
+
     
-3. GNU extensions in Makefiles produced by Cmake
+3. **(SOLVED)**GNU extensions in Makefiles produced by Cmake
 
   set_target_properties (?)
   https://cmake.org/cmake/help/latest/prop_tgt/OUTPUT_NAME.html
   
   Try old $(MAKE) command with igraph-0.8.0?
   
-  This leads to the old classic "byte" conflict on windows between
-        the <windows.h> and  "rpcndr.h" headers. 
-        
-        Could this be undeffed somehow? look more into this
+    This leads to the old classic "byte" conflict on windows between
+          the <windows.h> and  "rpcndr.h" headers. 
+          
+          Could this be undeffed somehow? look more into this
+  
+  Ended up adding "SystemRequirements: GNU make" into the DESCRIPTION
+  file. This decreases portability, but may be able to make our case with 
+  the CRAN team. Other ways to fix this 
   
 4. **(SOLVED)** rand(), and abort() warnings in src/ap.cpp (part of alglib) 
 
@@ -39,12 +45,31 @@ WARNINGS
   
   
 
-5. checking PDF version of manual ... WARNING
+5. **(SOLVED)** checking PDF version of manual ... WARNING
 
+  STILL NEED TO TEST WITH TINYTEX OPTION
    LaTeX errors when creating PDF version.
    This typically indicates Rd problems.
    
+   Installed MiKTeX locally through MiKTeX installer, did not notice the 
+   option to use "tinytex" when creating PDF
+   
+   Is there a way to install MiKTeX for R through install.packages()? or importing?
+   That way it could be included in the DESCRIPTION file
+   
+   options in Tools -> Global Options -> Sweave -> use Tinytex
+   
+   Add MiKTeX to SystemRequirements? Import tinytex? need to see
+   
+   
+   
    
 ERRORS
-1. * checking PDF version of manual without index ... ERROR
+1. ** (SOLVED) ** checking PDF version of manual without index ... ERROR
+     
      Re-running with no redirection of stdout/stderr.
+     
+     Is this coupled with the PDF warning? - YES IT WAS!!
+     
+     Fixed after installing MiKTeX, but have not tried it with TinyTex.
+     hoping that Tinytex would work since that is a much simpler option
