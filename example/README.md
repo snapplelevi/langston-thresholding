@@ -1,10 +1,16 @@
 Tenative things to come back to:
+
+- Make sure the package builds with igraph as a .xz file (per CRAN docs)
+
 - Figure out solution for unique names when multiple methods are passed to the analysis function (currently using the PID string for now)
 
 - Figure out a more unique name than "thresholding"
   iterative file, which would make the results unreadable and not helpful to the user.
   
-- Add additional paramters for file naming inputs (like outfile_prefix)
+  grthresh, graphthresh, lgthresh (Langston graph thresholding),
+  
+  
+- Add additional parameters for file naming inputs (like outfile_prefix)
   - Want to give users the versatility to rename their files while still
     being able to use the package. Right now the code is set up to run only
     if the user is following the .iterative.txt name. Maybe choose an optional 
@@ -12,17 +18,21 @@ Tenative things to come back to:
     
 - Documentation / error message output for igraph_ext_alg and igraph_ext_io
 
-- Documentation and other helper functions with thresholdAnalysis
+- Documentation and other helper functions with analysis
+  - Do this once the thresholding paper comes in to have more concrete knowledge
+
+- Documentation/examples for utility functions
+
 
 - Updating or modifying thresholding::help() to get more specific instructions for thresholdAnalysis or expanding to multiple help() functions depending on the function
 
 - Test installation for Mac users? Does this work on *Nix systems? Other Windows environments?
 
-- Create installation and set-up instructions for user convience in README.md
+- Create installation and set-up instructions for user convenience in README.md
 
 - Update README.md to have proper outline of the package
 
-- **Structure package so that it can be submitted to CRAN potentially (get rid of tar files, executables, etc; shorten directory names)
+- **Structure package so that it can be submitted to CRAN potentially (get rid of tar files, exacutables, etc; shorten directory names)
 
 - Error check the string argument parsing for invalid input in the str_methods
   - Confirm lists of system requirements

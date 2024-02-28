@@ -6,7 +6,7 @@ WARNINGS
     style casting (#ifdef __cplusplus --> then use C++ style casting)
 
 
-2. CRLF endings from Makefiles produced from Cmake. (can we even
+2. **(SOLVED)** CRLF endings from Makefiles produced from Cmake. (can we even
     do anything about this? Could just specify in the email to CRAN
     what the deal is)
     
@@ -15,7 +15,12 @@ WARNINGS
         the <windows.h> and  "rpcndr.h" headers. 
         
         Could this be undeffed somehow? look more into this
-
+    
+    Current solution is maintaining a list of the igraph makefiles made by 
+    igraph's CMakelists.txts from igraph-0.9.9. In the build process, each of 
+    these files get sed'd with "sed -i 's/\r//g' <filename>" to effectively 
+    replace the CRLF endings to just LF. This is done in both Makevars and 
+    Makevars.win, and the R CMD check warning disappears when included. 
     
 3. **(SOLVED)**GNU extensions in Makefiles produced by Cmake
 

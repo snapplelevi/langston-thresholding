@@ -1,3 +1,34 @@
+# Function index (in order of appearance)
+# 1. find_last()                  -> helper function , not exported
+# 2. get_iter_t_vals()            -> exported
+# 3. get_iterative_t_vals()       -> NOT exported
+# 4. get_sig_t_vals()             -> exported
+# 5. get_significance_t_vals()    -> NOT exported
+
+##############################################################################
+#                         find_last()
+# Helper function to find the index of the last occurrence of a charcter
+# returns index of last character if found, returns -1 if not. 
+#
+# Used internally for finding multiple occurrences of file names the utility wrapper
+# functions ( get_iter_t_vals(), get_sig_t_vals(), get_local_global_alpha() )
+find_last <- function(str, str_to_find){
+  l = nchar(str)
+  ind = -1
+  
+  while(l > 0){
+
+    if(substr(str, l, l) == str_to_find){
+      ind = l
+      break
+    }
+    
+    l <- l - 1
+  }
+  
+  return(ind)
+}
+
 ##############################################################################
 #'                          get_iter_t_vals()
 #' User wrapper function for get_iterative_t_values
@@ -9,35 +40,68 @@
 #' 
 #' 
 #' @param outfile_prefix Prefix of output file, which can have several
-#' output file paths if the same prefix is run several. This assumes
-#' that the desired file(s) are in the current working directory
-#' (pwd)
+#' output file paths if the same prefix is run with analysis() several times. 
 #' 
 #' Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
 #' on all files names iter-prefix-###.iterative.txt where ### is the process
 #' ID of the internal process (like 4318, 3341, 414143, etc.).
+#' 
+#' @param recursive Option to allow for subdirectory searching of the file prefix.
+#' Set to FALSE for default in case of large subdirectories. This option is meant to help 
+#' save time with R Studio and other editors' auto completion feature, which allows for tabbing
+#' to complete the file name from the present working directory (PWD) and maintaining the current
+#' PWD. 
+#' 
+#' If \code{FALSE}, \code{get_iter_t_vals()} will use the path passed to the function from outfile_prefix.
+#' This may be either relative or absolute. Only the directory containing the desired file(s)
+#' will be searched. (Note: if no file paths are explicitly provided, the PWD (".") will be used.)
+#' 
+#' If \code{TRUE}, \code{get_iter_t_vals()} will recursively searching through all files matching the Regex pattern
+#' of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
+#' with the specified outfile_prefix and ends with ".iterative.txt".
 #' @export
-get_iter_t_vals <- function(outfile_prefix){
+get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   
-  # Use glob matches to find all files with outfile_prefix
-  it_fnames <- Sys.glob(file.path(getwd(), 
-                                  paste0(outfile_prefix, "*.iterative.txt")))
   
-  # Create regex pattern to match files with exact format
+  # Strip out the file path (if it exists) so the subsequent Regex
+  # works properly
+  path_end <- find_last(outfile_prefix, "/")
+  path <- "."
+  
+  # Strip out directory path if there was a final '/' found in the outfile_prefix
+  if(path_end > 0){
+    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
+    if(recursive==FALSE){
+      path <- base::substr(outfile_prefix, 1, path_end)
+    }
+  }
+  
+  
+  # Create regex pattern to match files with exact .iterative.txt format
+  # Allows for file names with prefix to be changed, but must keep the .iterative.txt
+  # format to work in this case.
   patt <- paste0("^", outfile_prefix, ".*\\.iterative\\.txt$")
   
-  # Use below if intereted in only using PID format in file name:
+  # Use below if strictly using PID format in file name:
   # patt <- paste0("^", outfile_prefix, "-[[:digit:]]+\\.iterative\\.txt$")
   
   # Find all possible files with the given file prefix
-  it_fnames <- list.files(path=".", pattern=patt)
+  it_fnames <- list.files(path=path, recursive=recursive, pattern=patt)
   
+  # No files found for the given prefix
   if(length(it_fnames) == 0){
-    message(paste0("No files found for ", outfile_prefix, "."))
-    message("Please check the iterative file prefix and try again.")
+    pwd_mess <- ifelse(recursive, "PWD and subdirectories", "PWD")
+    message(paste0("No files found in ", pwd_mess, " for file prefix: \"", outfile_prefix, "\" ."))
+    message("Please check the file prefix and try again.")
     message("Iterative files will have the format of: outfile_prefix-####.iterative.txt")
-    message("   Note: #### represents the integer value of the process ID for the")
-    message("         running process when the file was created>")
+    message("   - Note: #### represents the integer value of the process ID of the")
+    message("           running process when the iterative file was created from analysis().")
+    message("")
+    message("You may also try using the recursive=TRUE parameter in order to search recursively")
+    message("through the current working directory's subdirectories for your file.")
+    message("")
+    message("If this doesn't work, please check the spelling of the file prefix.")
+    message("")
     stop("\rExiting get_iter_t_vals...")
   }
   
@@ -63,11 +127,9 @@ get_iter_t_vals <- function(outfile_prefix){
 # 
 # @param files Vector of file paths or just one file path
 # @param D Optional argument that accepts a list. This can be used
-# to capture the thresholding results by a certain method. If just
-# using get_iter_t_vals, then D can be left unspecified. Otherwise,
-# get_results fills out and returns this value automatically
+# to capture the thresholding results by a certain method. Not included in get_iter_t_vals()
+# as of 2-27-24 for simplicity. Otherwise,get_results() fills out and returns this value automatically
 # @param d_min_t INTERNAL CONTROL
-# @export
 get_iterative_t_values <- function(files,
                                    D=NULL,
                                    d_min_t=list(general=0)){
@@ -77,10 +139,10 @@ get_iterative_t_values <- function(files,
   # Create array of data frames read in from files array
   all_dfs <- c()
   for(file in files){
-    df <- read.csv(file, sep="\t")
+    df <- utils::read.csv(file, sep="\t")
     
     # if no rows, continue in loop
-    writeLines("------------------- Files and the number of rows ------------------- ")
+    writeLines("-------------------- Files and the number of rows -------------------- ")
     writeLines(paste0("File: ", file, "        nrows: ", nrow(df)))
     writeLines("")
     
@@ -343,8 +405,85 @@ get_iterative_t_values <- function(files,
   
   return(df)
 }
-
-
+##############################################################################
+#'                          get_sig_t_vals()
+#' User wrapper function for \code{get_significance_t_values()}
+#' Returns the thresholding data frame created by the internal
+#' \code{get_significance_t_values()}, which does not return anything to the user.
+#' 
+#' The returned data frame includes graph and graph method values for each 
+#' increment of the threshold. 
+#' 
+#' 
+#' @param outfile_prefix Prefix of output file, which can have several
+#' output file paths if the same prefix is run with analysis() several times. 
+#' 
+#' Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
+#' on all files names iter-prefix-###.iterative.txt where ### is the process
+#' ID of the internal process (like 4318, 3341, 414143, etc.).
+#' 
+#' @param recursive Option to allow for subdirectory searching of the file prefix.
+#' Set to FALSE for default in case of large subdirectories. This option is meant to help 
+#' save time with R Studio and other editors' auto completion feature, which allows for tabbing
+#' to complete the file name from the present working directory (PWD) and maintaining the current
+#' PWD. 
+#' 
+#' If \code{FALSE}, \code{get_sig_t_vals()} will use the path passed to the function from outfile_prefix.
+#' This may be either relative or absolute. Only the directory containing the desired file(s)
+#' will be searched. (Note: if no file paths are explicitly provided, the PWD (".") will be used.)
+#' 
+#' If \code{TRUE}, \code{get_sig_t_vals()} will recursively searching through all files matching the Regex pattern
+#' of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
+#' with the specified outfile_prefix and ends with ".iterative.txt".
+#' @export
+get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
+  
+  # Strip out the file path (if it exists) so the subsequent Regex
+  # works properly
+  path_end <- find_last(outfile_prefix, "/")
+  path <- "."
+  
+  # Strip out directory path if there was a final '/' found in the outfile_prefix
+  if(path_end > 0){
+    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
+    if(recursive==FALSE){
+      path <- base::substr(outfile_prefix, 1, path_end)
+    }
+  }
+  
+  # Create regex pattern to match files with exact .iterative.txt format
+  # Allows for file names with prefix to be changed, but must keep the .iterative.txt
+  # format to work in this case.
+  patt <- paste0("^", outfile_prefix, ".*\\.iterative\\.txt$")
+  
+  # Use below if strictly using PID format in file name:
+  # patt <- paste0("^", outfile_prefix, "-[[:digit:]]+\\.iterative\\.txt$")
+  
+  # Find all possible files with the given file prefix
+  it_fnames <- list.files(path=path, recursive=recursive, pattern=patt)
+  
+  # No files found for the given prefix
+  if(length(it_fnames) == 0){
+    pwd_mess <- ifelse(recursive, "PWD and subdirectories", "PWD")
+    message(paste0("No files found in ", pwd_mess, " for file prefix: \"", outfile_prefix, "\" ."))
+    message("Please check the file prefix and try again.")
+    message("Iterative files will have the format of: outfile_prefix-####.iterative.txt")
+    message("   - Note: #### represents the integer value of the process ID of the")
+    message("           running process when the iterative file was created from analysis().")
+    message("")
+    message("You may also try using the recursive=TRUE parameter in order to search recursively")
+    message("through the current working directory's subdirectories for your file.")
+    message("")
+    message("If this doesn't work, please check the spelling of the file prefix.")
+    message("")
+    stop("\rExiting get_iter_t_vals...")
+  }
+  
+  # Run the iterative analysis on the found files
+  sig_df <- suppressWarnings(get_significance_t_values(it_fnames))
+  
+  return(sig_df)
+}
 ##############################################################################
 # Helper function for thresholding::get_results()
 # Gets the significance thresholding values from significance results
@@ -365,7 +504,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
     
     ####### figure out if index_col=0 is the default ######
-    df <- read.csv(file, sep="\t", skip=2, row.names=1)
+    df <- utils::read.csv(file, sep="\t", skip=2, row.names=1)
     
     if(nrow(df) == 0){
       next
@@ -411,7 +550,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   # Append non-empty data frames to list
   for(file in files){
     # row.names = 1 SAME index_col = 0 in python?
-    df <- read.csv(file, sep="\t", row.names=1) 
+    df <- utils::read.csv(file, sep="\t", row.names=1) 
     
     if(nrow(df) == 0){
       next

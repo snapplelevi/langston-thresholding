@@ -5,10 +5,10 @@
 #' @param plot_df Dataframe with threshold values - returned from 
 #' output of get_iterative_results, which contains the detailed
 #' analysis of the graph at each increment of the thresholding
-#' process
+#' process.
 #' @param D List of methods and their optimal thresholds from 
 #' calling get_results. The user can either pass the resulting variable
-#' from get_results or the list itfself (i.e. D=variable$D instead of D=variable).
+#' from get_results or the list itself (i.e. D=variable$D instead of D=variable).
 #' @export 
 plot_t_vs_ev <- function(plot_df, D){
  
@@ -93,7 +93,6 @@ plot_t_vs_ev <- function(plot_df, D){
   t_begin <- plot_df$threshold[1]
   t_end <- utils::tail(plot_df$threshold, n=1)
   
-  xaxis_stop <- 1.0    # end point for x-axis (assumes 0-1.0 threshold values)
   step_inc <- 0.05     # x axis tick increment
   
   if(v_count == 0){
@@ -113,33 +112,81 @@ plot_t_vs_ev <- function(plot_df, D){
   # ADD DOCUMENTATION TO EACH STEP!
   PLOT <- ggplot2::ggplot(data=plot_df,
                            ggplot2::aes(x=threshold)) + 
-    # Dummy comment
-    ggplot2::geom_line(ggplot2::aes(y=edge.count / factor, 
-                                    color="Edge Count")
-    ) + 
-    ggplot2::geom_line(
-      ggplot2::aes(y=vertex.count, 
-                   color="Vertex Count")
-    ) +
-    ggplot2::xlab("Threshold Value") +
-    ggplot2::ylab("Edge Count") +
-    ggplot2::ggtitle("Edge and Vertex Count by Threshold Value") + 
-    ggplot2::scale_x_continuous(
-      breaks = seq(t_begin, xaxis_stop, step_inc)
-    ) +
-    ggplot2::scale_y_continuous(
-      "Vertex Count", 
-      sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
-    ) +
-    ggplot2::scale_color_manual(name="Legend",
-                                breaks=c("Edge Count", "Vertex Count"),
-                                values=c("Edge Count" = "red",
-                                         "Vertex Count" = "blue"
-                                         )
-                                ) +
-    ggplot2::annotate(geom="text", label="Method")
+          # Dummy comment
+          ggplot2::geom_line(ggplot2::aes(y=edge.count / factor, 
+                                          color="Edge Count")
+                             ) + 
+          ggplot2::geom_line(
+            ggplot2::aes(y=vertex.count, 
+                         color="Vertex Count")
+            ) +
+          ggplot2::xlab("Threshold Value") +
+          ggplot2::ylab("Edge Count") +
+          ggplot2::ggtitle("Edge and Vertex Count by Threshold Value") + 
+          ggplot2::scale_x_continuous(
+            breaks = seq(t_begin, t_end, step_inc)
+          ) +
+          ggplot2::scale_y_continuous(
+            "Vertex Count", 
+            sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
+          ) +
+          ggplot2::scale_color_manual(name="Legend",
+                                      breaks=c("Edge Count", "Vertex Count"),
+                                      values=c("Edge Count" = "red",
+                                               "Vertex Count" = "blue"
+                                               )
+                                      ) 
   
-    show(PLOT)
+  # Add in markers for each method
+  for(method_name in names(labels)){
+    
+    annot_string <- ""
+    for(label_method in labels[[method_name]]){
+      annot_string <- paste0(annot_string, label_method, '\n')
+    }
+    x_coord <- annotations[[method_name]]
+    #print(paste0("edges: ", plot_df$edge.count[plot_df$threshold==x_coord]))
+    
+    PLOT <- PLOT + 
+            ggplot2::geom_vline(xintercept=x_coord,
+                                linetype="solid",
+                                color="orange",
+                                linewidth=0.75
+                                ) + 
+      
+            # Point for the vertex curve
+            # Shape 23 = 45 degree square
+            ggplot2::geom_point(x=x_coord,
+                                y=plot_df$vertex.count[plot_df$threshold==x_coord],
+                                color="blue",
+                                shape=23,
+                                fill="blue",
+                                size=3
+                                ) + 
+            # Point for the edge curve
+            # Shape 23 = 45 degree square
+            ggplot2::geom_point(x=x_coord,
+                                y=(1/factor)*plot_df$edge.count[plot_df$threshold==x_coord],
+                                color="red",
+                                shape=23,
+                                fill="red",
+                                size=3
+                                ) +
+            # Add the method name annotations to the vertical line
+            # Do this last so that the string is on the highest layer
+            ggplot2::annotate("text", 
+                              label=annot_string,
+                              x=x_coord, 
+                              y=0.1*v_count, 
+                              angle=25,
+                              size=3.2
+            )  
+  } # end of method annotation loop
+  
+  # methods::show()
+  show(PLOT)
+  
+  # Translated roughly from the following matplotlib code
   # Plotting stuff down here
   # number vertices and number edges vs thresholds
   # with sns.plotting_context("paper"):
@@ -178,4 +225,4 @@ plot_t_vs_ev <- function(plot_df, D){
   # 
   # plt.tight_layout()
   
-}
+}  # end of plot_t_vs_ev()

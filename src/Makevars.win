@@ -1,4 +1,4 @@
-# Add make file info here (Test version for Windows local pkg build 8-16-23)
+# Add make file info here (Test version for Windows local pkg build 2-25-24)
 
 # This file is called first in Unix-like systems during the R package build process. 
 
@@ -15,48 +15,72 @@ EXTERNALDIR=$(SRCDIR)/../external
 BUILDDIR=$(SRCDIR)/../build
 LIBDIR=$(SRCDIR)/../lib
 
+
+# Comes after the "." for the file extension. Set to xz, but could be tar.gz
 IGRAPH_VER=igraph-0.9.9
 IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
+IGRAPH_TAR_EXT=tar.xz
+COMPRESSION="J"
+# Set the compression scheme
+#if [ "$IGRAPH_TAR_EXT" = "tar.xz" ]; then \
+	COMPRESSION="J" \
+elif [ "$IGRAPH_TAR_EXT" = "tar.gz" ]; then \
+	COMPRESSION="z" \
+fi
+
+
 
 CXXSTD = -std=c++11
 PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
-								 -I$(IGRAPHDIR)/build/include \
+								-I$(IGRAPHDIR)/build/include \
 								-I$(EXTERNALDIR)/alglib \
 								-I$(INCLUDEDIR)
 
+
 # Linking flags for build process
-# PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp - added -lm and -llapack for unix building
 PKG_LIBS =  -ligraph -L../lib -fopenmp
 
+# File names to manually edit using sed for converting CRLF to LF
+# in the produced makefiles
+makefiles=$(IGRAPHDIR)/build/Makefile \
+				  $(IGRAPHDIR)/build/doc/Makefile \
+				  $(IGRAPHDIR)/build/interfaces/Makefile \
+				  $(IGRAPHDIR)/build/src/Makefile \
+				  $(IGRAPHDIR)/build/src/centrality/prpack/Makefile \
+				  $(IGRAPHDIR)/build/src/cliques/cliquer/Makefile \
+				  $(IGRAPHDIR)/build/src/isomorphism/bliss/Makefile \
+				  $(IGRAPHDIR)/build/tests/Makefile \
+				  $(IGRAPHDIR)/build/vendor/Makefile \
+				  $(IGRAPHDIR)/build/vendor/cs/Makefile \
+				  $(IGRAPHDIR)/build/vendor/f2c/Makefile \
+				  $(IGRAPHDIR)/build/vendor/glpk/Makefile \
+				  $(IGRAPHDIR)/build/vendor/lapack/Makefile \
+				  $(IGRAPHDIR)/build/vendor/mini-gmp/Makefile \
+				  $(IGRAPHDIR)/build/vendor/plfit/Makefile
+				  
+# Command to run inside the foreach macro
+# Removes all instances of carriage returns (simple CRLF to LF)
+cmd=sed -i 's/\r//g' $(file);
+
 .PHONY: all extract_igraph e_igraph clean
+
 # old working version ----- all: extract_igraph  $(SHLIB) 
 all: extract_igraph $(SHLIB)
 
-#e_igraph:
-#	@mkdir -p $(BUILDDIR)
-
-#	cd $(EXTERNALDIR) && \
-	tar -xvzf $(IGRAPH_VER).tar.gz -C . && \
-	cd $(EXTERNALDIR) && cd $(IGRAPHDIR)
-	
-#	cd $(IGRAPHDIR) && ./configure --libdir=$(LIBDIR) --prefix=$(BUILDDIR) && echo "done with part 4"
-#	cd $(IGRAPHDIR) && $(MAKE) MAKEFLAGS= && echo " finished with part 5"
-#	cd $(IGRAPHDIR) && $(MAKE) install && echo "finsihed with teh make install
-
-#	@echo 'FINISHING BUILD'
-
-# Extract igraph tar file and use cmake to configure igraph 
-# and create static library file
 extract_igraph:
 # First attempt at compiling igraph (v > 0.9) with CMake
-	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
+#cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
+	cd $(EXTERNALDIR) && tar -xv$(COMPRESSION)f $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
 	@echo $(IGRAPHDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 # This option works in Unix (Makevars) - so far Windows builds work without it
 # cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
 	cd $(IGRAPHDIR)/build && cmake ..
-	cd $(IGRAPHDIR)/build && cmake --build .
+	cd $(IGRAPHDIR)/build && cmake --build . -j 
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
+# Use the GNU makefile macro foreach to go through all files and change
+# CRLF to LF by removing the carriage return
+	$(foreach file, $(makefiles), $(cmd))
 
 clean:
 	echo "${SRCDIR}"

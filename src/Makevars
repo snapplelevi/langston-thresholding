@@ -1,4 +1,4 @@
-# Makevars for Unix like targets - similar to Makevars.win, but may need to replace some variables upon 
+# Makevars for Unix-like targets - similar to Makevars.win, but may need to replace some variables upon 
 # testing on different system
 
 # This file is called first in Unix-like systems during the R package build process before other steps proceed.
@@ -14,8 +14,6 @@ EXTERNALDIR=$(SRCDIR)/../external
 BUILDDIR=$(SRCDIR)/../build
 LIBDIR=$(SRCDIR)/../lib
 
-IGRAPH_VER=igraph-0.9.9
-IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
 
 CXXSTD = -std=c++11
 PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
@@ -23,20 +21,55 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(EXTERNALDIR)/alglib \
 								-I$(INCLUDEDIR)
 
+# added -lm and -llapack for Unix-like building
 PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp
 
+IGRAPH_VER=igraph-0.9.9
+IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
+IGRAPH_TAR_EXT="tar.xz"
+COMPRESSION="J"
+# Set the compression scheme
+#if [ "$IGRAPH_TAR_EXT" = "tar.xz" ]; then \
+	COMPRESSION="J" \
+elif [ "$IGRAPH_TAR_EXT" = "tar.gz" ]; then \
+	COMPRESSION="z" \
+fi
 
 .PHONY: all extract_igraph clean
 all: extract_igraph  $(SHLIB) 
 
+# File names to manually edit using sed for converting CRLF to LF
+# in the produced makefiles
+makefiles=$(IGRAPHDIR)/build/Makefile \
+				  $(IGRAPHDIR)/build/doc/Makefile \
+				  $(IGRAPHDIR)/build/interfaces/Makefile \
+				  $(IGRAPHDIR)/build/src/Makefile \
+				  $(IGRAPHDIR)/build/src/centrality/prpack/Makefile \
+				  $(IGRAPHDIR)/build/src/cliques/cliquer/Makefile \
+				  $(IGRAPHDIR)/build/src/isomorphism/bliss/Makefile \
+				  $(IGRAPHDIR)/build/tests/Makefile \
+				  $(IGRAPHDIR)/build/vendor/Makefile \
+				  $(IGRAPHDIR)/build/vendor/cs/Makefile \
+				  $(IGRAPHDIR)/build/vendor/f2c/Makefile \
+				  $(IGRAPHDIR)/build/vendor/glpk/Makefile \
+				  $(IGRAPHDIR)/build/vendor/lapack/Makefile \
+				  $(IGRAPHDIR)/build/vendor/mini-gmp/Makefile \
+				  $(IGRAPHDIR)/build/vendor/plfit/Makefile
+				  
+# Command to run inside the foreach macro
+# Removes all instances of carriage returns (simple CRLF to LF)
+cmd=sed -i 's/\r//g' $(file);
+
 extract_igraph:
 # First attempt at compiling igraph with CMake
 	@mkdir -p $(IGRAPHDIR)
-	cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).tar.gz -C $(EXTERNALDIR)
+	cd $(EXTERNALDIR) && tar -xv$(COMPRESSION)f $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-	cd $(IGRAPHDIR)/build && cmake --build .
+	cd $(IGRAPHDIR)/build && cmake --build . -j
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
+# Change CRLF to LF in specified Makfiles (made by cmake) 
+	$(foreach file, $(makefiles), $(cmd))
 
 clean:
 	if [ "$SRCDIR" != '/' ]; then \
