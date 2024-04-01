@@ -27,13 +27,17 @@ PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp
 IGRAPH_VER=igraph-0.9.9
 IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
 IGRAPH_TAR_EXT="tar.xz"
-COMPRESSION="J"
-# Set the compression scheme
-#if [ "$IGRAPH_TAR_EXT" = "tar.xz" ]; then \
-	COMPRESSION="J" \
-elif [ "$IGRAPH_TAR_EXT" = "tar.gz" ]; then \
-	COMPRESSION="z" \
-fi
+COMPRESSION=
+
+# GNU directives to set tar extract flag based on the type of compressed
+# tar archivethe package uses. 
+# CRAN asks for external libraries to be in tar.xz format.
+ifeq ($(IGRAPH_TAR_EXT), tar.xz)
+	COMPRESSION=J
+else ifeq ($(IGRAPH_TAR_EXT), tar.gz)
+	COMPRESSION=z
+endif
+
 
 .PHONY: all extract_igraph clean
 all: extract_igraph  $(SHLIB) 

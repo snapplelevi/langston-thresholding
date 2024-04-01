@@ -1,5 +1,12 @@
 Tenative things to come back to:
 
+- SEE COMMENTS IN src/R_main_analysis_driver.cpp
+
+- UPDATE THE USER FUNCTIONALITY OF THE INDIVIDUAL get_iter_t_vals(), etc. FUNCTIONS
+TO RETURN BOTH THE DF AND THE CORRESPONDING D LIST AS ONE RETURN LIST
+
+- UPDATE THE PLOTTING FUNCTIONALITY TO WORK FROM A FILE NAME INSTEAD OF MULTIPLE PIECES
+
 - Make sure the package builds with igraph as a .xz file (per CRAN docs)
 
 - Figure out solution for unique names when multiple methods are passed to the analysis function (currently using the PID string for now)
