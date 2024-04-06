@@ -210,38 +210,59 @@ void analysis(std::string infile,
               double significance_alpha=0.01,
               bool bonferroni_corrected=0)
 {
-  test_func <- function(array){
-    for(i in array){
-      print(i)
-    }
-  }
-  
-  
     /*
      * 1. make the outfile_prefix an optional parameter? 
      *      that way, there wouldn't be a random needed argument that wasn't immediately 
      *      useful. the default naming scheme could be: <stripped_infile_prefix>-<PID>.<iterative/sig/locglob>.txt
      *      
+     *      append the methods as part of a stirng to the output file for default (and explain this behavior in the docs)
+     * 
      * 2. How to deal with the methods parameter
      *    a. The package currently has hard coded values for the method parameters, which are defined by Carissa in 
-     *    her original documentation. She has added the required method integer needed to get the desired performance, 
+     *    her original documentation. She has added the required method integer needed to get the analysis method performed,
+     *    but should things be made modular in case things change? (ties in with part 2c)
+     * 
+     *     do this - would help automoate mass thresholding files 
+     *      Rcpp::NumericVector will do the trick!
+     *      
+     *     could possibly take in just in an integer and convert a string
      *    
      *    b. This method of needing to look up method integers to their corresponding analysis method seems tedious. 
      *        Implement small helper function to remember? Just refer user to docs every time? 
+     * 
+     *       documentation 
      *    
      *    c. Currently implemented as a string of comma separated integers. The current parsing function has limited error
      *        checking, but could likely be easily implemented here. Instead of a string, could the user pass in an R type 
      *        vector (i.e. something like c(5,8) to get methods 5 and 8)? Not sure how easily error checking could be done
      *        if user doesn't enter proper type like an array
      *    
-     *    
+     *      see above
+     * 
      * 3. Should this package be its own entity away from Carissa's code?
      *      If the method numbers change, Carissa's supplemental documentation will become less useful as the values
      *      are inconsistent. From this thought, does this package use her code as a base or does it work alongside hers?
      *      In case more functionality is added, which I'm not sure if that'll even happen, the package could be updated
      *      to match the newly added things. If not, then this package has more flexibility for user friendliness
+     *      
+     *      Follow the leader!
+     * 
+     * 4. Get results passing desired file names.... 
+     *      Old way was just based on output file name prefix and then matching file prefixes would be matched and also used 
+     *      in the analysis
      * 
      * 
+     * Additional input from Stephen:
+     *      For the analysis function: 
+     *          Print to stdout the output for the requested methods
+     *              Like if a user wants spectral thresholding, just also print out: spectral_thresholding yieled _ performance
+     *              or something like that
+     * 
+     *      Get results could be more like getting holistic view of the methods requested
+     *      
+     *      See if the outputs of analysis can be caught before writing to a file
+     *          I think similar idea as above...
+     *      
      */
     // Stores the outfile name passed to analysis functions at multiple points throughout 
     // the analysis exeuction
