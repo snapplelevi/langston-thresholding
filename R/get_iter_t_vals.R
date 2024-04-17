@@ -75,7 +75,9 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   }
   
   # Run the iterative analysis on the found files
-  iter_df <- suppressWarnings(get_iterative_t_values(it_fnames))
+  D_iter <- new.env()
+  iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
+  return_list <- list(iter_df = iter_df, D_iter = D_iter)
   
-  return(iter_df)
+  return(return_list)
 }

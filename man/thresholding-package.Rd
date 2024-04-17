@@ -1,9 +1,9 @@
-\name{thresholding-package}
+\name{thresholding - name subject to change}
 \alias{thresholding-package}
 \alias{thresholding}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  This will be a short title line describing what the package does
 }
 \description{
   A more detailed description of what the package does. A length

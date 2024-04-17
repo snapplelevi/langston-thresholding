@@ -168,6 +168,25 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
             retmethods.insert({1, 2, 3, 4, 5, 6, 7, 8});
             break;
         }
+        // Currently only integers 0-8 are accepted as input for additional analysis methods
+        // File output naming scheme attaches a concatenated string of all analysis methods
+        // to the prefix (either default or specified by user).
+        // Previously, adding a method int that wasn't valid would just add to the string
+        // and nothing would happen in the main thresholding loop. 
+        //
+        // This means adding two invalid methods 12 and 34 would lead to the same file name
+        // as specifying methods 1,2,3, and 4. However, it would be misleading as the analysis
+        // call with 12 and 34 wouldn't have the desired outputs for methods 1-4. 
+        // Therefore, this validates input before entering the main analysis loop.
+        // 
+        // If the user doesn't want any additinal analysis methods ran, then the methods list remains
+        // empty and normal iterative thresholding is performed.
+        else if(methods[i] < 0 || methods[i] > 8){
+            Rcpp::Rcerr << "\nMethod #" << methods[i] << " is not a valid analysis method.\n";
+            Rcpp::stop("invalid analysis method integer. Stopping analysis()");
+        }
+        
+        // Insert method integer otherwise
         retmethods.insert(methods[i]);
     }
 
@@ -215,42 +234,6 @@ void analysis(std::string infile,
               bool bonferroni_corrected=0)
 {
     /*
-     * 1. make the outfile_prefix an optional parameter? 
-     *      that way, there wouldn't be a random needed argument that wasn't immediately 
-     *      useful. the default naming scheme could be: <stripped_infile_prefix>-<PID>.<iterative/sig/locglob>.txt
-     *      
-     *      append the methods as part of a stirng to the output file for default (and explain this behavior in the docs)
-     * 
-     * 2. How to deal with the methods parameter
-     *    a. The package currently has hard coded values for the method parameters, which are defined by Carissa in 
-     *    her original documentation. She has added the required method integer needed to get the analysis method performed,
-     *    but should things be made modular in case things change? (ties in with part 2c)
-     * 
-     *     do this - would help automoate mass thresholding files 
-     *      Rcpp::NumericVector will do the trick!
-     *      
-     *     could possibly take in just in an integer and convert a string
-     *    
-     *    b. This method of needing to look up method integers to their corresponding analysis method seems tedious. 
-     *        Implement small helper function to remember? Just refer user to docs every time? 
-     * 
-     *       documentation 
-     *    
-     *    c. Currently implemented as a string of comma separated integers. The current parsing function has limited error
-     *        checking, but could likely be easily implemented here. Instead of a string, could the user pass in an R type 
-     *        vector (i.e. something like c(5,8) to get methods 5 and 8)? Not sure how easily error checking could be done
-     *        if user doesn't enter proper type like an array
-     *    
-     *      see above
-     * 
-     * 3. Should this package be its own entity away from Carissa's code?
-     *      If the method numbers change, Carissa's supplemental documentation will become less useful as the values
-     *      are inconsistent. From this thought, does this package use her code as a base or does it work alongside hers?
-     *      In case more functionality is added, which I'm not sure if that'll even happen, the package could be updated
-     *      to match the newly added things. If not, then this package has more flexibility for user friendliness
-     *      
-     *      Follow the leader!
-     * 
      * 4. Get results passing desired file names.... 
      *      Old way was just based on output file name prefix and then matching file prefixes would be matched and also used 
      *      in the analysis
@@ -391,8 +374,8 @@ void analysis(std::string infile,
     
     Rcpp::Rcout << "Number vertices:  " << V << "\n";
     Rcpp::Rcout << "Number edges:     " << E;
-    Rcpp::Rcout << "  (maximum possible number edges " << int(orig_max_E) << ")\n";
-    Rcpp::Rcout << "------------------------------------------------\n\n";
+    Rcpp::Rcout << "  (maximum possible number of edges " << int(orig_max_E) << ")\n";
+    Rcpp::Rcout << "-----------------------------------------------------\n\n";
 
     ///////////////////////////////////////////////////////////////////////
     // Non-loop methods
@@ -455,8 +438,49 @@ void analysis(std::string infile,
 
     Rcpp::Rcout << "Iterative thresholding\n";
     Rcpp::Rcout << "Number steps: " << num_increments << '\n';
+    Rcpp::Rcout << "Iterative analysis methods requested:" << '\n';
 
-    // Initialise necessary stuff
+    // Remind user of iterative methods for analysis they have selected
+    // and are performed on the graph at each thresholding step
+    std::string mname;
+    for(const int &m : analysis_methods){
+
+        if(m == -1){
+            Rcpp::Rcout << "\tNo additional iterative analysis methods requested\n";
+            Rcpp::Rcout << "\tContinuing with default iterative analysis...\n";
+            break;
+        }
+        
+        switch(m){
+            case 3:
+                mname = "Scale Free";
+                break;
+            case 4:
+                mname = "Maximal Clique";
+                break;
+            case 5:
+                mname = "Spectral Thresholding";
+                break;
+            case 6:
+                mname = "Random Matrix Theory";
+                break;
+            case 7:
+                mname = "Clustering Coefficient";
+                break;
+            case 8:
+                mname = "Percolation";
+                break;
+            default:
+                Rcpp::Rcout << "\t" << m << ": Method not recognized.\n";
+                continue;
+        }
+
+        Rcpp::Rcout << "\t" << m << ": " << mname << " Methods\n";
+    }
+
+    Rcpp::Rcout << "-----------------------------------------------------\n\n"; // formatting
+
+    // Initialise necessary stuff for iterative analysis methods to use
     int nearly_disconnected_components      = -1;
     igraph_real_t  second_eigenvalue        = std::nan("");
 
@@ -506,6 +530,7 @@ void analysis(std::string infile,
     }
   
     // Main threshold loop
+    // Thresholds graph and runs requested additional analysis methods
     for(int i_t = 0; i_t < num_increments; i_t++){
         t = t_vector[i_t];
 
@@ -567,6 +592,7 @@ void analysis(std::string infile,
         for (auto& m : analysis_methods) {
                 ///////////////////////////////////////////////////////////////
                 // None
+                // (No additional analysis methods requested)
                 if(m==-1){
                     break;
                 }
@@ -582,7 +608,7 @@ void analysis(std::string infile,
                     // Spectral Methods
                     if(m == 5){
                         if(largest_cc_size >= min_partition_size){
-                            spectral_methods(G_cc,
+                            spectral_methods(G_cc,  
                                window_size,
                                min_partition_size,
                                second_eigenvalue,
@@ -667,6 +693,8 @@ void analysis(std::string infile,
   
     out.close();
     Rcpp::Rcout << "Thresholding completed - all analysis methods completed.\n";
+    Rcpp::Rcout << "\nUse the thresholding::get_results() function on the output file\n";
+    Rcpp::Rcout << "for the recommended threshold found by each method.";
 
     igraph_destroy(&G);
 }
@@ -682,3 +710,44 @@ Manual usage statement for analysis().
 //'                 [bonferroni_corrected])
 
 */
+
+
+
+    // * 1. make the outfile_prefix an optional parameter? 
+    //  *      that way, there wouldn't be a random needed argument that wasn't immediately 
+    //  *      useful. the default naming scheme could be: <stripped_infile_prefix>-<PID>.<iterative/sig/locglob>.txt
+    //  *      
+    //  *      append the methods as part of a stirng to the output file for default (and explain this behavior in the docs)
+    //  * 
+    //  *    DONE!!!
+
+
+    //      * 
+    //  * 2. How to deal with the methods parameter
+    //  *    a. The package currently has hard coded values for the method parameters, which are defined by Carissa in 
+    //  *    her original documentation. She has added the required method integer needed to get the analysis method performed,
+    //  *    but should things be made modular in case things change? (ties in with part 2c)
+    //  * 
+    //  *     do this - would help automoate mass thresholding files 
+    //  *      Rcpp::NumericVector will do the trick!
+    //  *      
+    //  *     could possibly take in just in an integer and convert a string
+    //  *     
+    //  *      DONE!!!!
+    //  *    
+    
+    //  *    
+    //  *    b. This method of needing to look up method integers to their corresponding analysis method seems tedious. 
+    //  *        Implement small helper function to remember? Just refer user to docs every time? 
+    //  * 
+    //  *       documentation 
+    //  * 
+    //  *     Maybe small helper method that prints out a table of methods and corresponding outputs
+    //  *    
+    //  *    c. Currently implemented as a string of comma separated integers. The current parsing function has limited error
+    //  *        checking, but could likely be easily implemented here. Instead of a string, could the user pass in an R type 
+    //  *        vector (i.e. something like c(5,8) to get methods 5 and 8)? Not sure how easily error checking could be done
+    //  *        if user doesn't enter proper type like an array
+    //  *    
+    //  *      DONE!!! SEE ABOVE
+    //  * 

@@ -78,14 +78,14 @@ get_iterative_t_values <- function(files,
     return(data.frame())
   }
   
-  # Grouping by threshold and removing any duplicates
-  # to preserve the max values
+  # Grouping by threshold and removing any duplicates from files with 
+  # identical methods performed to preserve the max values
   df <- all_dfs %>% 
           dplyr::group_by(threshold) %>% 
           dplyr::filter(threshold == max(threshold)) %>% 
           dplyr::distinct()  %>% 
           dplyr::arrange(threshold)
-  
+  print(df)
   # print(colnames(df))
   
   writeLines("")
@@ -257,12 +257,36 @@ get_iterative_t_values <- function(files,
                             select = threshold))
   } # end if
   
+  
   # aplestin
-  Nsv <- df$edge.count / df$vertex.count
-  dNsv_dt <- pracma::gradient(Nsv, df$threshold)
+  # ------------OLD -------------
+  # print("Nsv:")
+  # print(Nsv)
+  # print(sort(Nsv))
+  # print("df$threshold")
+  # print(df$threshold)
+  # 
+  # Nsv <- df$edge.count / df$vertex.count
+  
+  # Error in pracma::gradient(Nsv, df$threshold) : 
+  # Arguments 'h1' and 'h2' must be strictly increasing.
+  #
+  # dNsv_dt <- pracma::gradient(Nsv, df$threshold)
+  # df <- base::cbind(df, dNsv_dt)
+  
+  
+  # ----------- NEW ------------
+  edge_unique <- base::unique(df$edge.count)
+  vertex_unique <- base::unique(df$vertex.count)
+  threshold_unique <- base::unique(df$threshold)
+  
+  Nsv <- edge_unique / vertex_unique
+  Nsv_gradient <- pracma::gradient(Nsv, threshold_unique)
+  dNsv_dt <- rep(Nsv_gradient, 
+                  each = length(df$threshold) / length(threshold_unique)
+                  )
+
   df <- base::cbind(df, dNsv_dt)
-  #print("error checking")
-  #print(df$threshold[dNsv_dt > 0])
   
   D$D['aplestin'] <- min(df$threshold[dNsv_dt > 0])
   
@@ -339,23 +363,23 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   
   for(file in files){
     
-    lines <- readLines(file)
-    line1 <- lines[[1]]
-    vals <- stringr::str_extract_all(line1, "\\d*(\\.)?\\d+")
+    line1 <- readLines(file, n=1)
+    vals <- stringr::str_extract_all(line1, "\\d*(\\.)?\\d+")[[1]]
     
-    alpha <- vals[[1]]
-    sample_size <- vals[[2]]
-    r <- vals[[3]]
+    alpha <- as.double(vals[1])
+    sample_size <- as.integer(vals[[2]])
+    r <- as.double(vals[[3]])
+    
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
     
     ####### figure out if index_col=0 is the default ######
-    df <- utils::read.csv(file, sep="\t", skip=2, row.names=1)
+    df <- utils::read.csv(file, sep="\t", skip=2)
     
     if(nrow(df) == 0){
       next
     }
     else{
-      all_power_df <- append(all_power_df, df)
+      all_power_df <- rbind(all_power_df, df)
     }
     
   } # end file for-loop
@@ -365,7 +389,8 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     D$D[paste0("Power-", min_power)] <- NaN
     return(data.frame())
   }
-
+  
+  
   # Equivalent of following line
   #power_df = pd.concat(all_power_df).groupby("r").max()#skipna=True)    
   power_df <- all_power_df %>%
@@ -375,7 +400,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   
   row.names(power_df) <- NULL
   
-  D$D[paste0("Power-", min_power)] <- min(power_df[power_df["power"] >= min_power]["r"])
+  D$D[paste0("Power-", min_power)] <- min(power_df["r"][power_df["power"] >= min_power])
   
   writeLines("############# get_significance_t_values - DONE #############\n")
   return(power_df)
@@ -467,7 +492,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' @export
 get_results <- function(outfile_prefix, plot_iterative = FALSE){
  
-    # Make so that all file with outfile_prefix are fetched
+  # Make so that all file with outfile_prefix are fetched
   it_fnames <- Sys.glob(file.path(getwd(), 
                        paste0(outfile_prefix, "*.iterative.txt")))
   sig_fnames = Sys.glob(file.path(getwd(),
