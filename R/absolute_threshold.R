@@ -62,10 +62,3 @@ absolute_threshold <- function(infile,
               row.names=FALSE,
               col.names=FALSE)
 }
-
-absolute_threshold("example/HumanCellCycleSubset.ncol", 
-                   "example/TESTOKOKOK",
-                   threshold=0.9,
-                   overwrite=TRUE,
-                   sort_output=TRUE
-                   )
