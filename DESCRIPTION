@@ -1,8 +1,8 @@
 Package: thresholding
 Type: Package
 Title: Langston Lab Graph Thresholding Tools
-Version: 1.0.222
-Date: 2024-04-05
+Version: 1.0.123
+Date: 2024-04-19
 Encoding: UTF-8
 Authors@R: c(
               person("Levi", "Hochstetler", email="lhochste@vols.utk.edu", role="cre"),
@@ -12,7 +12,7 @@ Authors@R: c(
 Maintainer: Levi Hochstetler <lhochste@vols.utk.edu>
 Description: An R wrapper of C++ code that encapsulates several graph thresholding utilities and analysis tools. 
     Thresholding a graph helps to iteratively remove lower significance edges from a graph, and potentially shrinking the graph by pruning off disconnected vertices. 
-    methods readily apply to biological data, Pearson/Spearman correlations, and other types of graph data. 
+    These methods readily apply to biological data, Pearson/Spearman correlations, and other types of graph   . 
     Our analysis tools take in a graph input file, and the user specifies what operations to perform on the graph to help determine the optimal threshold for the graph. 
     These thresholding tools rely on the igraph C library for graph creation and manipulation. Other functionalities are used from the alglib mathematical library as well. 
     After thresholding analysis is completed, a user can plot their results, extract the results from respective thresholding methods using get_results(), or the data frames produced from a specified method (iterative, local global, and significance values).

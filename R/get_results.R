@@ -69,6 +69,7 @@ get_iterative_t_values <- function(files,
     
     if(nrow(df) == 0)
       next
+    
     # otherwise, append to array
     all_dfs <- rbind(all_dfs, df)
   }
@@ -85,7 +86,7 @@ get_iterative_t_values <- function(files,
           dplyr::filter(threshold == max(threshold)) %>% 
           dplyr::distinct()  %>% 
           dplyr::arrange(threshold)
-  print(df)
+  
   # print(colnames(df))
   
   writeLines("")

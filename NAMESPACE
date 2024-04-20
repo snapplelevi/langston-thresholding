@@ -1,14 +1,20 @@
 useDynLib(thresholding, .registration = TRUE)
 
-importFrom(Rcpp, evalCpp)
 importFrom(magrittr, "%>%")
 importFrom(stringr, str_extract_all)
 
+# Analysis and thresholding functions
 export("analysis")
+export("absolute_threshold")
 export("help")
-export("edge_hist")
+
+# analysis() results reporting functions
 export("get_results")
 export("get_iter_t_vals")
 export("get_sig_t_vals")
 export("get_local_global_alpha")
+
+# Plotting utilities
+export("edge_hist")
 export("plot_t_vs_ev")
+

@@ -1,4 +1,3 @@
-
 ##############################################################################
 #'                          get_sig_t_vals()
 #' User wrapper function for \code{get_significance_t_values()}
@@ -34,15 +33,19 @@ get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
   
   # Strip out the file path (if it exists) so the subsequent Regex
   # works properly
+  # find_last defined in "get_results.R"
   path_end <- find_last(outfile_prefix, "/")
   path <- "."
   
   # Strip out directory path if there was a final '/' found in the outfile_prefix
   if(path_end > 0){
-    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
+    
     if(recursive==FALSE){
       path <- base::substr(outfile_prefix, 1, path_end)
     }
+    
+    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
+    
   }
   
   # Create regex pattern to match files with exact .iterative.txt format
@@ -50,11 +53,12 @@ get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
   # format to work in this case.
   patt <- paste0("^", outfile_prefix, ".*\\.statistical_errors\\.txt$")
   
-  # Use below if strictly using PID format in file name:
-  # patt <- paste0("^", outfile_prefix, "-[[:digit:]]+\\.statistical_errors\\.txt$")
   
   # Find all possible files with the given file prefix
-  it_fnames <- list.files(path=path, recursive=recursive, pattern=patt)
+  it_fnames <- list.files(path=path, 
+                          recursive=recursive, 
+                          pattern=patt,
+                          full.names = TRUE)
   
   # No files found for the given prefix
   if(length(it_fnames) == 0){

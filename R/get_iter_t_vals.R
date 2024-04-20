@@ -1,4 +1,28 @@
 ##############################################################################
+#                         find_last()
+# Helper function to find the index of the last occurrence of a charcter
+# returns index of last character if found, returns -1 if not. 
+#
+# Used internally for finding multiple occurrences of file names the utility wrapper
+# functions ( get_iter_t_vals(), get_sig_t_vals(), get_local_global_alpha() )
+find_last <- function(str, str_to_find){
+  l = nchar(str)
+  ind = -1
+  
+  while(l > 0){
+    
+    if(substr(str, l, l) == str_to_find){
+      ind = l
+      break
+    }
+    
+    l <- l - 1
+  }
+  
+  return(ind)
+}
+
+##############################################################################
 #'                          get_iter_t_vals()
 #' User wrapper function for get_iterative_t_values
 #' Returns the thresholding data frame created by the internal
@@ -39,23 +63,24 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   
   # Strip out directory path if there was a final '/' found in the outfile_prefix
   if(path_end > 0){
-    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
+    
     if(recursive==FALSE){
       path <- base::substr(outfile_prefix, 1, path_end)
     }
+    
+    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
   }
-  
   
   # Create regex pattern to match files with exact .iterative.txt format
   # Allows for file names with prefix to be changed, but must keep the .iterative.txt
   # format to work in this case.
   patt <- paste0("^", outfile_prefix, ".*\\.iterative\\.txt$")
   
-  # Use below if strictly using PID format in file name:
-  # patt <- paste0("^", outfile_prefix, "-[[:digit:]]+\\.iterative\\.txt$")
-  
   # Find all possible files with the given file prefix
-  it_fnames <- list.files(path=path, recursive=recursive, pattern=patt)
+  it_fnames <- list.files(path=path, 
+                          recursive=recursive, 
+                          pattern=patt,
+                          full.names = TRUE)
   
   # No files found for the given prefix
   if(length(it_fnames) == 0){
@@ -70,10 +95,9 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
     message("through the current working directory's subdirectories for your file.")
     message("")
     message("If this doesn't work, please check the spelling of the file prefix.")
-    message("")
     stop("\rExiting get_iter_t_vals...")
   }
-  
+  print(it_fnames)
   # Run the iterative analysis on the found files
   D_iter <- new.env()
   iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
@@ -81,3 +105,7 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   
   return(return_list)
 }
+
+
+out <- get_iter_t_vals("example/HumanCellCycleSubset")
+print(out)
