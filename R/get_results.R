@@ -421,13 +421,13 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   # Append non-empty data frames to list
   for(file in files){
     # row.names = 1 SAME index_col = 0 in python?
-    df <- utils::read.csv(file, sep="\t", row.names=1) 
+    df <- utils::read.csv(file, sep="\t", row.names=NULL) 
     
     if(nrow(df) == 0){
       next
     }
     else{
-      all_dfs <- append(all_dfs, df)
+      all_dfs <- rbind(all_dfs, df)
     }
   }
   
@@ -435,32 +435,34 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
     return(data.frame())
   }
   
+  print(colnames(all_dfs))
   # Combine dfs and group by the alpha value
   # Equivalent of following line
   # power_df = pd.concat(all_power_df).groupby("r").max()#skipna=True)    
   df <- all_dfs %>%
         dplyr::group_by(alpha) %>%
-        dplyr::filter(alpha = max(alpha)) %>%
+        dplyr::filter(alpha == max(alpha)) %>%
         dplyr::distinct()
   
   # Reset index
   row.names(df) <- NULL
   
-  max_ac <- df[df["X2nd-eigenvalue"] < 1 & 
-                df["almost-disconnected-component-count"] > 1]
-  max_ac <- subset(df, 
-                   (X2nd-eigenvalue < 1) & (almost-disconnected-component-count > 1)
-                   )
-  
+  # max_ac <- df[df["X2nd.eigenvalue"] < 1 & 
+  #               df["almost.disconnected.component.count"] > 1]
+  # max_ac <- subset(df, 
+  #                  (X2nd.eigenvalue < 1) & (almost.disconnected.component.count > 1)
+  #                  )
+  max_ac <- df %>% filter(X2nd.eigenvalue < 1 & almost.disconnected.component.count > 1)
+  print(max_ac)
   if(nrow(max_ac) > 0){
     min_alpha <- min(max_ac$alpha)
-    row_alpha_exist <- max_ac[max_ac$alpha == min_alpha]
-    
-    
+    row_alpha_exist <- subset(max_ac, alpha == min_alpha)
+
     alm_dis_max <- max(max_ac$almost.disconnected.component.count)
-    r_a_m_tmp <- max_ac[max_ac$almost.disconnectd.component.count == alm_dis_max]
-    row_alpha_max <- r_a_m_tmp[r_a_m_tmp$alpha == min(r_a_m_tmp$alpha)]
     
+    r_a_m_tmp <- subset(max_ac, almost.disconnected.component.count == alm_dis_max)
+    row_alpha_max <- subset(r_a_m_tmp, alpha == min(alpha))
+
 
     # Optional parameter D_local_global - add later but not necessary in core
     # functionality of get_results()
@@ -556,10 +558,10 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   
   writeLines("############# get_result - DONE #############\n")
   
-  #print(plot_iterative)
+  
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()
-  if(plot_iterative){
+  if(plot_iterative == TRUE){
     writeLines("############# plot_t_vs_ev() called #############\n")
     plot_t_vs_ev(df, D)
   }

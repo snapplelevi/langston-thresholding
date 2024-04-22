@@ -105,7 +105,3 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   
   return(return_list)
 }
-
-
-out <- get_iter_t_vals("example/HumanCellCycleSubset")
-print(out)

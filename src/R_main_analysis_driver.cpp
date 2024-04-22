@@ -17,7 +17,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <getopt.h>
+#include <getopt.h> 
 
 #include <cmath>
 #include <algorithm>
@@ -693,8 +693,9 @@ void analysis(std::string infile,
   
     out.close();
     Rcpp::Rcout << "Thresholding completed - all analysis methods completed.\n";
-    Rcpp::Rcout << "\nUse the thresholding::get_results() function on the output file\n";
-    Rcpp::Rcout << "for the recommended threshold found by each method.";
+    Rcpp::Rcout << "\nUse the thresholding::get_results() function on the output file PREFIX, which\n";
+    Rcpp::Rcout << "excludes the method numbers in the output file, for the recommended threshold found\n" 
+    Rcpp::Rcout << "by each method.\n";
 
     igraph_destroy(&G);
 }
