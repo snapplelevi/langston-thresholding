@@ -25,15 +25,36 @@ plot_t_vs_ev <- function(plot_df, D){
   # and labels loop
   D['ARTFUL.CHECK'] <- NULL
   
+  names_vec <- names(D)
+  
+  ################################
+  # NEED TO REMOVE POWER AND SIGNFICANCE AND ANY OTHER 
+  # ARTIFACT THINGS ---- THIS IS ONLY FOR ITERATIVE RESLUTS!!1
+  # THE OTHER THINGS SCREW UP THE PLOTTING BIGGGG TIME
+  
+  # Used for keeping track of which element of the list you're on
+  #     Used to get the string representation of the analysis method name
+  #     for each corresponding value in D
   index <- 1
-  # Loop through items of D
+  
+  # Loop through threshold values stored in D
   for(cur_val in D){
+    
+    # Extract the string 'key' for the current threshold val in D
     method_name <- names(D)[index]
-    print(paste0(method_name, ": ", cur_val))
+    
+    # Skip these two fields of D since they are non-iterative
+    # They will screw up the plotting later if left in the labels
+    print(method_name)
+    if (grepl("^Power-", method_name)==TRUE|| grepl("TypeI-", method_name)==TRUE){
+      next;
+    }
+    
+
     # If the method produced a non-zero value, add the method name (annotation)
     # and its corresponding value to the plotting sets.
     if(is.nan(cur_val) == FALSE && is.infinite(cur_val) == FALSE){
-
+      
       is_in <- FALSE
 
       # Used to access annotation  name in annotations list
@@ -42,21 +63,25 @@ plot_t_vs_ev <- function(plot_df, D){
       for(annot_val in annotations){
         # String value of annotation name
         annot <- names(annotations)[annot_index]
+        
+        # START DEBUGGING IF THIS WORKS OR NOT
         if(method_name == 'spectral_methods'){
           
-          print(paste0(cur_val, " and ", annot_val))
-          print(paste0("method_name: ", method_name, " and ", annot))
-          print(dplyr::near(cur_val, annot_val, tol=1e-09))
+          # print(paste0(cur_val, " and ", annot_val))
+          # print(paste0("method_name: ", method_name, " and ", annot))
+          # print(dplyr::near(cur_val, annot_val, tol=1e-09))
         }        
+        # END DEBUGGING BLOCK
+        
         
         if(dplyr::near(cur_val, annot_val, tol=1e-09)){
-          print(paste0("adding ", method_name, " to the ", annot, " vector"))
+          # print(paste0("adding ", method_name, " to the ", annot, " vector"))
           labels[[annot]] <- c(labels[[annot]], method_name)
           annotations[[annot]] <- mean(cur_val, annot_val)
           # Make sure the element does not get added to the labels
           # since it is close to the current value and already in the set
           is_in <- TRUE
-        }
+        } 
         
         # Increment name index as well
         annot_index <- annot_index + 1
@@ -64,14 +89,14 @@ plot_t_vs_ev <- function(plot_df, D){
 
       # Only add if the method hasn't been seen before
       if(is_in == FALSE){
-        print(paste0("adding: ", method_name))
+        # print(paste0("adding: ", method_name))
         labels[[method_name]] <- c(method_name)   # start vector of labels, hashed on name
         annotations[[method_name]] <- cur_val    # value that corresponds to label name(s)
       }
-      print(paste0("labels after", method_name))
-      print(labels)
-      print(paste0("annotations after ", method_name))
-      print(annotations)
+      # print(paste0("labels after", method_name))
+      # print(labels)
+      # print(paste0("annotations after ", method_name))
+      # print(annotations)
     }  # end outer is.nan if
 
     # Increment the index to get the string name of the method
@@ -79,12 +104,12 @@ plot_t_vs_ev <- function(plot_df, D){
 
   } # end for loop
   
-  
-  print("Annotations: ")
-  print(annotations)
-  
-  print("labels: ")
-  print(labels)
+  # 
+  # print("Annotations: ")
+  # print(annotations)
+  # 
+  # print("labels: ")
+  # print(labels)
   
   #print(head(plot_df))
   
@@ -109,27 +134,52 @@ plot_t_vs_ev <- function(plot_df, D){
   # Ensure that title is centered later
   ggplot2::theme_update(plot.title=ggplot2::element_text(hjust = 0.5))
   
+ 
+  
+  # ------------- OLD METHODS ------
+  # unique_threshold <- plot_df$threshold[ !dup_vals ]
+  # unique_edge_count <- plot_df$edge.count[ !dup_vals ]
+  # unique_vertex_count <- plot_df$vertex.count [ !dup_vals ]
+  # 
+  # unique_df <- data.frame(threshold = unique_threshold,
+  #                         edge.count = unique_edge_count,
+  #                         vertex.count = unique_vertex_count)
+  
+  
+  
+  # Select all columns from df with unique threshold values (edge and vertex)
+  # counts will also be the same because of the same iterative thresholding method
+  dup_vals <- duplicated(plot_df[,c('threshold', 'edge.count', 'vertex.count')])
+  unique_df <- plot_df [ !dup_vals , ]
+  
   # ADD DOCUMENTATION TO EACH STEP!
-  PLOT <- ggplot2::ggplot(data=plot_df,
+  PLOT <- ggplot2::ggplot(data=unique_df,
                            ggplot2::aes(x=threshold)) + 
-          # Dummy comment
+    
           ggplot2::geom_line(ggplot2::aes(y=edge.count / factor, 
                                           color="Edge Count")
                              ) + 
+    
           ggplot2::geom_line(
-            ggplot2::aes(y=vertex.count, 
-                         color="Vertex Count")
-            ) +
+                          ggplot2::aes(y=vertex.count, 
+                                       color="Vertex Count")
+                          ) +
+    
           ggplot2::xlab("Threshold Value") +
+    
           ggplot2::ylab("Edge Count") +
+    
           ggplot2::ggtitle("Edge and Vertex Count by Threshold Value") + 
+    
           ggplot2::scale_x_continuous(
-            breaks = seq(t_begin, t_end, step_inc)
-          ) +
+                          breaks = seq(t_begin, t_end, step_inc)
+                        ) +
+    
           ggplot2::scale_y_continuous(
-            "Vertex Count", 
-            sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
-          ) +
+                      "Vertex Count", 
+                      sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
+                    ) +
+    
           ggplot2::scale_color_manual(name="Legend",
                                       breaks=c("Edge Count", "Vertex Count"),
                                       values=c("Edge Count" = "red",
@@ -138,6 +188,7 @@ plot_t_vs_ev <- function(plot_df, D){
                                       ) 
   
   # Add in markers for each method
+  # print(names(labels))
   for(method_name in names(labels)){
     
     annot_string <- ""
@@ -146,27 +197,27 @@ plot_t_vs_ev <- function(plot_df, D){
     }
     x_coord <- annotations[[method_name]]
     #print(paste0("edges: ", plot_df$edge.count[plot_df$threshold==x_coord]))
-    
-    PLOT <- PLOT + 
+    # print(paste0("WE ARE NOW HERE: ", x_coord, method_name ))
+    PLOT <- PLOT +
             ggplot2::geom_vline(xintercept=x_coord,
                                 linetype="solid",
                                 color="orange",
                                 linewidth=0.75
-                                ) + 
-      
+                                ) +
+
             # Point for the vertex curve
             # Shape 23 = 45 degree square
             ggplot2::geom_point(x=x_coord,
-                                y=plot_df$vertex.count[plot_df$threshold==x_coord],
+                                y=unique_df$vertex.count[unique_df$threshold==x_coord],
                                 color="blue",
                                 shape=23,
                                 fill="blue",
                                 size=3
-                                ) + 
-            # Point for the edge curve
+                                ) +
+            # # Point for the edge curve
             # Shape 23 = 45 degree square
             ggplot2::geom_point(x=x_coord,
-                                y=(1/factor)*plot_df$edge.count[plot_df$threshold==x_coord],
+                                y=(1/factor)*unique_df$edge.count[unique_df$threshold==x_coord],
                                 color="red",
                                 shape=23,
                                 fill="red",
@@ -174,13 +225,13 @@ plot_t_vs_ev <- function(plot_df, D){
                                 ) +
             # Add the method name annotations to the vertical line
             # Do this last so that the string is on the highest layer
-            ggplot2::annotate("text", 
+            ggplot2::annotate("text",
                               label=annot_string,
-                              x=x_coord, 
-                              y=0.1*v_count, 
+                              x=x_coord,
+                              y=0.1*v_count,
                               angle=25,
                               size=3.2
-            )  
+            )
   } # end of method annotation loop
   
   # methods::show()
@@ -226,3 +277,4 @@ plot_t_vs_ev <- function(plot_df, D){
   # plt.tight_layout()
   
 }  # end of plot_t_vs_ev()
+

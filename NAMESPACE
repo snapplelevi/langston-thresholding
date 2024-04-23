@@ -1,5 +1,7 @@
 useDynLib(thresholding, .registration = TRUE)
 
+# Set up Rcpp when loading package using library(thresholding)
+importFrom(Rcpp, evalCpp)
 importFrom(magrittr, "%>%")
 importFrom(stringr, str_extract_all)
 

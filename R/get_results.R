@@ -106,9 +106,7 @@ get_iterative_t_values <- function(files,
   D$D['scale_free'] <- NaN
   D$D['single_component'] <- NaN
   D$D['spectral_methods'] <- NaN
-  D$D['whole_graph'] <- NaN        
-  D$D['Power-0.8'] <- NaN        
-  D$D['TypeI-0.01'] <- NaN
+  D$D['whole_graph'] <- NaN  
   
   if(nrow(df) < 3){
     return(df)
@@ -452,6 +450,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   # max_ac <- subset(df, 
   #                  (X2nd.eigenvalue < 1) & (almost.disconnected.component.count > 1)
   #                  )
+  print(df$X2nd.eigenvalue)
   max_ac <- df %>% filter(X2nd.eigenvalue < 1 & almost.disconnected.component.count > 1)
   print(max_ac)
   if(nrow(max_ac) > 0){

@@ -692,10 +692,14 @@ void analysis(std::string infile,
     }
   
     out.close();
-    Rcpp::Rcout << "Thresholding completed - all analysis methods completed.\n";
-    Rcpp::Rcout << "\nUse the thresholding::get_results() function on the output file PREFIX, which\n";
-    Rcpp::Rcout << "excludes the method numbers in the output file, for the recommended threshold found\n" 
-    Rcpp::Rcout << "by each method.\n";
+    Rcpp::Rcout << "Thresholding and analysis completed!!!\n";
+    Rcpp::Rcout << "\nUse the thresholding::get_results() function along with the\n";
+    Rcpp::Rcout << "output file PREFIX (which excludes the analysis method integers\n";
+    Rcpp::Rcout << "and extension from the file path) to retrieve the recommended\n";
+    Rcpp::Rcout << "threshold for each requested method.\n";
+    Rcpp::Rcout << "\nExample: \n";
+    Rcpp::Rcout << "\tFile name/path: ./folder/NAME-156.iterative.txt\n";
+    Rcpp::Rcout << "\tPrefix:         ./folder/NAME\n";
 
     igraph_destroy(&G);
 }
