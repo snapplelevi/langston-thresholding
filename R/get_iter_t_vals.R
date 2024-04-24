@@ -81,7 +81,7 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
                           recursive=recursive, 
                           pattern=patt,
                           full.names = TRUE)
-  
+
   # No files found for the given prefix
   if(length(it_fnames) == 0){
     pwd_mess <- ifelse(recursive, "PWD and subdirectories", "PWD")

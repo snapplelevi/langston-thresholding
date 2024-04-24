@@ -45,7 +45,6 @@ plot_t_vs_ev <- function(plot_df, D){
     
     # Skip these two fields of D since they are non-iterative
     # They will screw up the plotting later if left in the labels
-    print(method_name)
     if (grepl("^Power-", method_name)==TRUE|| grepl("TypeI-", method_name)==TRUE){
       next;
     }
@@ -118,7 +117,8 @@ plot_t_vs_ev <- function(plot_df, D){
   t_begin <- plot_df$threshold[1]
   t_end <- utils::tail(plot_df$threshold, n=1)
   
-  step_inc <- 0.05     # x axis tick increment
+  step_inc <- 0.05   # x axis tick increment (change dynamically based on 
+                     # range of threshold values eventually)
   
   if(v_count == 0){
     stop("Empty vertices in vertex.count. Ending plot utility")

@@ -284,9 +284,46 @@ get_iterative_t_values <- function(files,
   dNsv_dt <- rep(Nsv_gradient, 
                   each = length(df$threshold) / length(threshold_unique)
                   )
-
-  df <- base::cbind(df, dNsv_dt)
+    
   
+  # Account for if the df has a different amount of ranges and repeated
+  # thresholds (could happen through running different)
+  rep_list <- (function(input_list){
+      
+      # Keep track of which indices in df$threshold are repeated so the same
+      # index can be added N = number of repeats time to the returned vector
+      dup_list <- duplicated(input_list)
+      
+      # First element of list will always be unique, so start at the second
+      # for the while loop logic to be clean.
+      rep_list <- c(1)
+      ind <- 2
+      inner_ind <- 2
+      
+      while(inner_ind <= length(dup_list)){
+          
+          streak <- 1
+          
+          while(inner_ind < length(dup_list) && dup_list[[inner_ind+1]] == TRUE){
+              streak <- streak + 1
+              inner_ind <- inner_ind + 1
+          }
+          
+          rep_list <- append(rep_list, rep(ind, streak))
+          ind <- ind + 1
+          inner_ind <- inner_ind + 1
+      }
+      
+      # Return list of repeated indices in passed vector (df$threshold)
+      rep_list
+  })(df$threshold)
+  
+  # Repeat the indices of the smaller nsv_gradient so that the same value 
+  # gets assigned to each distinct threshold value
+  matched_dNsv_dt <- Nsv_gradient[rep_list]
+  
+  
+  df <- base::cbind(df, matched_dNsv_dt)
   D$D['aplestin'] <- min(df$threshold[dNsv_dt > 0])
   
   
@@ -433,7 +470,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
     return(data.frame())
   }
   
-  print(colnames(all_dfs))
+  #print(colnames(all_dfs))
   # Combine dfs and group by the alpha value
   # Equivalent of following line
   # power_df = pd.concat(all_power_df).groupby("r").max()#skipna=True)    
@@ -450,9 +487,12 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   # max_ac <- subset(df, 
   #                  (X2nd.eigenvalue < 1) & (almost.disconnected.component.count > 1)
   #                  )
-  print(df$X2nd.eigenvalue)
+  #print(df$X2nd.eigenvalue)
+  
+  
   max_ac <- df %>% filter(X2nd.eigenvalue < 1 & almost.disconnected.component.count > 1)
-  print(max_ac)
+  #print(max_ac)
+  
   if(nrow(max_ac) > 0){
     min_alpha <- min(max_ac$alpha)
     row_alpha_exist <- subset(max_ac, alpha == min_alpha)
@@ -575,3 +615,5 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   D <- D$D
   return(list(D = D, alpha = alpha))
 }
+
+
