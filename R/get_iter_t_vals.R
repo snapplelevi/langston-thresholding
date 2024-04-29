@@ -100,8 +100,10 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   print(it_fnames)
   # Run the iterative analysis on the found files
   D_iter <- new.env()
+  D_iter$D <- list()
+  D_iter$D['ARTFUL.CHECK'] <- TRUE
   iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
   return_list <- list(iter_df = iter_df, D_iter = D_iter)
   
-  return(return_list)
+  return(list(iter_df = iter_df, D_iter = D_iter))
 }
