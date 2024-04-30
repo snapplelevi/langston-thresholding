@@ -146,6 +146,7 @@ void help(){
     Rcpp::Rcout <<  "\t";        
 }
 
+
 // Internal function to convert list of methods in Rcpp::NumericVector into a
 // std::set for use in the original analysis function
 std::set<int> parse_methods_list(Rcpp::NumericVector methods){
@@ -193,6 +194,24 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
     return retmethods;
 }
 
+
+// THIS IS FOR THE GRAPPA PACKAGE FOR GETTING COMMA SEPARATED LIST OF STRINGS
+void parse_string_methods(std::string methods){
+    std::set<int> retmethods;
+    
+    if(methods == ""){
+        retmethods.insert(-1);
+    }
+
+    std::istringstream iss(methods);
+    int inserted_method;
+    while(iss >> inserted_method){
+        retmethods.insert(inserted_method);
+    }
+
+    return retmethods;
+}
+
 // Manually exported in NAMESPACE
 //
 //' Main graph thresholding analysis function
@@ -218,8 +237,12 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' @param bonferroni_corrected DOCUMENT THIS
 // [[Rcpp::export]]
 void analysis(std::string infile, 
-              Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
-              std::string outfile_prefix="",
+              //Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
+              std::string methods="",
+              std::string statistical_outfile="",  // statistical errors
+              std::string local_global_outfile="",  // local_global
+              std::string iterative_outfile="",  // iterative
+              std::string outfile_prefix="", // not used in the GrAPPA version
               double lower=0.5,
               double upper=0.99,
               double increment=0.01,
@@ -334,8 +357,10 @@ void analysis(std::string infile,
     // Type I error (false positive rate) and
     // Type II error (false negative rate) control
     // Have to have n - number of samples (not number of variables)
-    if(analysis_methods.find(1) != analysis_methods.end()){
-        outfile_name = outfile_prefix + ".statistical_errors.txt";
+    if(analysis_methods.find(1) != analysis_methods.end()
+       && statistical_outfile != ""){
+        //outfile_name = outfile_prefix + ".statistical_errors.txt";
+        outfile_name = outfile1_name;
         control_statistical_errors(significance_alpha,
                                   num_samples,
                                   0, //E
@@ -383,8 +408,10 @@ void analysis(std::string infile,
 
     ///////////////////////////////////////////////////////////////////////
     // local-global (guzzi2014, rank)
-    if(analysis_methods.find(2) != analysis_methods.end()){
-        outfile_name = outfile_prefix + ".local_global.txt";
+    if(analysis_methods.find(2) != analysis_methods.end()
+       && local_global_outfile != ""){
+        //outfile_name = outfile_prefix + ".local_global.txt";
+        outfile_name = local_global_outfile;
         local_global_method(G,
                      min_alpha,
                      max_alpha,
@@ -406,7 +433,8 @@ void analysis(std::string infile,
     ///////////////////////////////////////////////////////////////////////
 
     // Ready the output file
-    outfile_name = outfile_prefix + ".iterative.txt";
+    //outfile_name = outfile_prefix + ".iterative.txt";
+    outfile_name = iterative_outfile;
     std::ofstream out;
     out.open(outfile_name.c_str(), std::ofstream::out);
     // Is the iterative file open for writing?
