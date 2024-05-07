@@ -317,7 +317,7 @@ void analysis(std::string infile,
     // Ensure that the analysis_methods are valid before continuing the analysis process
     // and put the methods into the set for later analysis operations
     std::set<int> analysis_methods;
-    analysis_methods = parse_methods_list(methods);
+    analysis_methods = parse_string_methods(methods);
 
 
     // CARISSA'S METHOD:Get the pid to create unique file names if the same input file is run multiple times
