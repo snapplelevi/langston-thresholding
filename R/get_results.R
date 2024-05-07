@@ -60,7 +60,7 @@ get_iterative_t_values <- function(files,
   # Create array of data frames read in from files array
   all_dfs <- c()
   for(file in files){
-    df <- utils::read.csv(file, sep="\t")
+    df <- utils::read.csv(file, sep="")
     
     # if no rows, continue in loop
     writeLines("-------------------- Files and the number of rows -------------------- ")
@@ -322,8 +322,9 @@ get_iterative_t_values <- function(files,
   # gets assigned to each distinct threshold value
   matched_dNsv_dt <- Nsv_gradient[rep_list]
   
-  
-  df <- base::cbind(df, matched_dNsv_dt)
+  # Insert new column into the data frame with the 'dNsv_dt' name
+  # so an error doesn't pop up for the user
+  df <- base::cbind(df, dNsv_dt = matched_dNsv_dt)
   D$D['aplestin'] <- min(df$threshold[dNsv_dt > 0])
   
   
@@ -409,7 +410,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
     
     ####### figure out if index_col=0 is the default ######
-    df <- utils::read.csv(file, sep="\t", skip=2)
+    df <- utils::read.csv(file, sep="", skip=2)
     
     if(nrow(df) == 0){
       next
@@ -456,7 +457,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   # Append non-empty data frames to list
   for(file in files){
     # row.names = 1 SAME index_col = 0 in python?
-    df <- utils::read.csv(file, sep="\t", row.names=NULL) 
+    df <- utils::read.csv(file, sep="", row.names=NULL) 
     
     if(nrow(df) == 0){
       next

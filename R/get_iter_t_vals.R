@@ -103,7 +103,6 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   D_iter$D <- list()
   D_iter$D['ARTFUL.CHECK'] <- TRUE
   iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
-  return_list <- list(iter_df = iter_df, D_iter = D_iter)
-  
-  return(list(iter_df = iter_df, D_iter = D_iter))
+
+  return(list(Iter_df = iter_df, D_iter = D_iter))
 }
