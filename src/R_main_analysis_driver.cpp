@@ -196,7 +196,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 
 
 // THIS IS FOR THE GRAPPA PACKAGE FOR GETTING COMMA SEPARATED LIST OF STRINGS
-void parse_string_methods(std::string methods){
+std::set<int> parse_string_methods(std::string methods){
     std::set<int> retmethods;
     
     if(methods == ""){
@@ -360,7 +360,7 @@ void analysis(std::string infile,
     if(analysis_methods.find(1) != analysis_methods.end()
        && statistical_outfile != ""){
         //outfile_name = outfile_prefix + ".statistical_errors.txt";
-        outfile_name = outfile1_name;
+        outfile_name = statistical_outfile;
         control_statistical_errors(significance_alpha,
                                   num_samples,
                                   0, //E
