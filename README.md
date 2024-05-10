@@ -1,7 +1,7 @@
 # thresholding
 R package for Langston Lab's C++ thresholding techniques
-\
-\
+
+
 Navigate to installation section if system prerequisites are in place [**Installing the thresholding package**](#installing-the-thresholding-package) 
 
 
@@ -34,8 +34,12 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
    Use the following command in an R window if you have the `devtools` package installed already:
       `devtools::install_github("snapplelevi/thresholding")`
 
-   You can use `install.packages(devtools)` in the R window if `devtools` isn't installed already)
-2. **Clone from GitHub and Install as a Source Package**
+   You can use `install.packages(devtools)` in the R window if `devtools` isn't installed already).
+   
+   There are a few R packages that this R package uses. Using this method will likely ask if you would like to update or install some of these packages. You can choose to take any action, but you can skip the updating step by just entering a blank input line by pressing the 'Enter' key once.
+   
+   `devtools::install_github()`  takes in the same arguments that you would pass to `install.packages()` which allows you to further specify how and where the package should be installed. 
+3. **Clone from GitHub and Install as a Source Package**
 
     1. First, clone the git repo onto your machine using:
        - `git clone https://github.com/snapplelevi/thresholding.git`    (clone with URL over HTTPS)\
@@ -44,21 +48,23 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
            or
        - `gh repo clone snapplelevi/thresholding`                       (clone using GitHub CLI)
 
-    2. Afterwards, tar the cloned git repo directory using `tar -cvzf thresholding.tar.gz ./thresholding`.\
-       \
-      This creates the source tar.gz file for R's `install.packages()` to install from.
+    2. Afterwards, tar the cloned git repo directory using this command:
 
-    4. After the tar.gz file of the package is createrun the install.packages function with the newly created tar file:
+       `tar -cvzf thresholding.tar.gz ./thresholding`
+       
+      This creates the tar.gz file of this package for R's `install.packages()` to install from source.
+
+    3. Because the R package (**thresholding**) has the same name as the cloned repo, the **thresholding** *directory* (i.e., ./**thresholding**) can now be deleted to avoid conflicts with installing the package. This is done in the case you wish to install your package in the same library folder you cloned the **thresholding** repo into. Removing the **thresholding** *directory* also avoids cluttering your machine's directory structure since a tar file of **thresholding** was created in the previous step.
+
+       `rm -rf ./thresholding`
+       
+    4. After the tar.gz file of the package is created and the, run the `install.packages()` function with the newly created tar file:
    
-       `install.packages("./thresholding.tar.gz", type="source", repos=NULL)`\
-       \
-       Note: this command will install to a default library (first entry in R's `.libPaths()`).\
-      \
-       To move this to a desired location, run the command with:
-      \
+       `install.packages("./thresholding.tar.gz", type="source", repos=NULL)`
+  
+       Note: this command will install to a default library (first entry in R's `.libPaths()`). To move the package installation to a desired location, run the command with:
+       
        `install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here")`
-
-\
-\
-**Please contact *lhochste@vols.utk.edu* if you have any trouble with installing the package or if there are any bugs in using the package. Thank you for trying out the Langston Lab's thresholding code!**
+       
+**Please contact *lhochste@vols.utk.edu* if you have any trouble with installing the package or if there are any problems experienced while using the package. Thank you for trying out the Langston Lab's thresholding code!**
  
