@@ -38,13 +38,17 @@ edge_hist <- function(infile,
   stopifnot(is.double(raw_data$WEIGHT) |
             is.integer(raw_data$WEIGHT))
   
-  # Grab quantiles for histogram coloring
+  # Grab quantiles for histogram coloring - feature for later
   quantiles <- quantile(raw_data$WEIGHT, 
                         prob=c(0.25,0.5,0.75), 
                         names=FALSE)
   
+  
+  ############   MAKING THE PLOT   #############
   ggplot2::ggplot(raw_data, ggplot2::aes(WEIGHT)) + 
-    ggplot2::geom_histogram(binwidth=bin_width) +
+    ggplot2::geom_histogram(binwidth=bin_width,
+                            fill="orange",
+                            color="black") +
     ggplot2::ggtitle(paste("Edge Weight Histogram for ", infile)) +
     ggplot2::xlab("Edge Weight") +
     ggplot2::ylab("Edge Count") +
