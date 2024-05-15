@@ -8,7 +8,9 @@ importFrom(stringr, str_extract_all)
 # Analysis and thresholding functions
 export("analysis")
 export("absolute_threshold")
-export("help")
+
+# help() not exported in 1.0.0 - unfinished and needs renaming to analysis_help
+# export("help")
 
 # analysis() results reporting functions
 export("get_results")

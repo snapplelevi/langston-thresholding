@@ -10,15 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// help
-void help();
-RcppExport SEXP _thresholding_help() {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    help();
-    return R_NilValue;
-END_RCPP
-}
 // analysis
 void analysis(std::string infile, Rcpp::NumericVector methods, std::string outfile_prefix, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, double min_alpha, double max_alpha, double alpha_increment, int num_samples, double significance_alpha, bool bonferroni_corrected);
 RcppExport SEXP _thresholding_analysis(SEXP infileSEXP, SEXP methodsSEXP, SEXP outfile_prefixSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP min_alphaSEXP, SEXP max_alphaSEXP, SEXP alpha_incrementSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP bonferroni_correctedSEXP) {
@@ -45,7 +36,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_thresholding_help", (DL_FUNC) &_thresholding_help, 0},
     {"_thresholding_analysis", (DL_FUNC) &_thresholding_analysis, 15},
     {NULL, NULL, 0}
 };

@@ -1,8 +1,8 @@
 Package: thresholding
 Type: Package
 Title: Langston Lab Graph Thresholding Tools
-Version: 1.0.123
-Date: 2024-04-21
+Version: 1.0.0
+Date: 2024-05-15
 Encoding: UTF-8
 Authors@R: c(
               person("Levi", "Hochstetler", email="lhochste@vols.utk.edu", role="cre"),

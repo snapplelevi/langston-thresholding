@@ -2,12 +2,14 @@
 % Please edit documentation in R/RcppExports.R
 \name{analysis}
 \alias{analysis}
-\title{Main graph thresholding analysis function}
+\title{Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
+methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
+too small.}
 \usage{
 analysis(
   infile,
-  outfile_prefix,
-  methods = "",
+  methods = as.numeric(c()),
+  outfile_prefix = "",
   lower = 0.5,
   upper = 0.99,
   increment = 0.01,
@@ -25,21 +27,36 @@ analysis(
 \arguments{
 \item{infile}{Name of .ncol graph file to read in for analysis}
 
-\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to (Ex: <PREFIX>.iterative.txt )}
+\item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
+0 - all
+1 - significance and power calculations (only valid for Pearson CC)
+2 - local-global
+3 - scale free
+4 - maximal cliques
+5 - spectral methods
+6 - random matrix theory
+7 - clustering coefficient
+8 - percolation}
 
-\item{methods}{Comma separated list of analysis methods, listed if thresholding::help() is called (defaults to none)}
+\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
+thresholding::analysis() will auto generate the output file prefix to include the input file's 
+prefix and the ascending method numbers. 
+The input file prefix will be determined by the characters preceding the first period ('.') character.
+  An example if the user requests methods 4 and 7 with an input file named "myfile.tsv" would be:
+     myfile-47.<method_name>.txt
+ Method name can vary based on the methods used. This will either be iterative, local_global, or statistical_errors.}
 
-\item{lower}{Lower bound to begin thresholding increment (lower >= 0)}
+\item{lower}{Lower bound to begin thresholding loop at (default 0.5 ; lower >= 0)}
 
-\item{upper}{Hard upper bound that ends thresholding loop when "lower" value is greater than "upper" value.}
+\item{upper}{Hard upper bound that ends thresholding  loop when `lower` value is greater than `upper` value (default 0.99)}
 
 \item{increment}{Size of increment step in the thresholding loop}
 
-\item{window_size}{DOCUMENT THIS}
+\item{window_size}{sliding window size for spectral method (default 5)}
 
-\item{min_partition_size}{DOCUMENT THIS}
+\item{min_partition_size}{minimum size of graph or subgraph after threshold (default 10)}
 
-\item{min_clique_size}{DOCUMENT THIS}
+\item{min_clique_size}{minimum size of maximal cliques in maximal clique count (default 5)}
 
 \item{min_alpha}{DOCUMENT THIS}
 
@@ -47,12 +64,23 @@ analysis(
 
 \item{alpha_increment}{DOCUMENT THIS}
 
-\item{num_samples}{DOCUMENT THIS}
+\item{num_samples}{number of samples in Pearson Correlation Coefficient data (only used for analysis method 1 - Power and significance calculations)}
 
 \item{significance_alpha}{DOCUMENT THIS}
 
-\item{bonferroni_corrected}{DOCUMENT THIS}
+\item{bonferroni_corrected}{switch to perform bonferroni corrections in significance and power calculations (default FALSE)}
+}
+\value{
+Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 }
 \description{
-Main graph thresholding analysis function
+Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
+methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
+too small.
+}
+\examples{
+print('NEED TO WRITE AN EXAMPLE FOR analysis !')
+
+print('WRITE SEVERAL EXAMPLES DEPENDING ON THE ANALYSIS METHODS REQUESTED / MULTIPLE OUTPUT FILES WITH SAME PREFIX CREATED')
+
 }

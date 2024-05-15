@@ -1,4 +1,14 @@
 threshold	vertex-count	edge-count	connected-component-count	density	density-orig-V	largest-cc-size	2nd-largest-cc-size	clustering-coefficient	random-clustering-coefficient	2nd-eigenvalue	almost-disconnected-component-count	maximal-clique-count	clique-number	poisson-chi2	poisson-pvalue	goe-chi2	goe-pvalue	scale-free-KS	scale-free-KS-p-value	scale-free-alpha
+0.5	7052	34594	1	0.00139145	0.00138164	7052	0	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.415956	0	1.37937
+0.51	7040	32302	1	0.00130369	0.0012901	7040	0	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.401412	0	1.39102
+0.52	7025	30014	1	0.00121653	0.00119872	7025	0	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.384201	0	1.4048
+0.53	7007	27955	1	0.0011389	0.00111648	7007	0	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.593832	0	1.79133
+0.54	6989	25931	2	0.00106189	0.00103565	6987	2	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.362845	0	1.43393
+0.55	6963	24067	3	0.000992937	0.000961203	6959	2	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.628644	0	2
+0.56	6919	22247	6	0.00092956	0.000888514	6908	3	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.339307	0	1.46828
+0.57	6873	20543	8	0.00086989	0.000820459	6857	3	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.322201	0	1.48768
+0.58	6810	18921	19	0.0008161	0.000755678	6770	3	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.542728	0	2
+0.59	6722	17427	33	0.000771472	0.00069601	6651	4	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.509537	0	2
 0.6	6639	15905	48	0.000721811	0.000635224	6533	5	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.475226	0	2
 0.61	6514	14532	53	0.000685057	0.000580388	6394	5	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.457328	0	2
 0.62	6365	13228	73	0.000653124	0.000528308	6197	5	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	0.433536	0	2

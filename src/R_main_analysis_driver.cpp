@@ -30,7 +30,8 @@
 
 //' Display argument information on terminal for thresholding::analysis()
 //' 
-// [[Rcpp::export]]
+//' NOT EXPORTED YET AS OF VERSION 1.0.0
+//// [[Rcpp::export]]
 void help(){
     /*
     Rcpp::Rcerr <<  "\n";
@@ -193,8 +194,11 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 }
 
 // Manually exported in NAMESPACE
-//
-//' Main graph thresholding analysis function
+//' Analysis methods for absolute thresholding of weighted graphs
+//' 
+//' @description Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
+//' methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
+//' too small. 
 //' @param infile Name of .ncol graph file to read in for analysis
 //' @param methods Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
 //'     0 - all
@@ -213,18 +217,26 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          An example if the user requests methods 4 and 7 with an input file named "myfile.tsv" would be:
 //'             myfile-47.<method_name>.txt
 //'         Method name can vary based on the methods used. This will either be iterative, local_global, or statistical_errors.
-//' @param lower Lower bound to begin thresholding increment (lower >= 0)
-//' @param upper Hard upper bound that ends thresholding loop when "lower" value is greater than "upper" value.
+//' @param lower Lower bound to begin thresholding loop at (default 0.5 ; lower >= 0)
+//' @param upper Hard upper bound that ends thresholding  loop when `lower` value is greater than `upper` value (default 0.99)
 //' @param increment Size of increment step in the thresholding loop
-//' @param window_size DOCUMENT THIS
-//' @param min_partition_size DOCUMENT THIS
-//' @param min_clique_size DOCUMENT THIS
+//' @param window_size sliding window size for spectral method (default 5)
+//' @param min_partition_size minimum size of graph or subgraph after threshold (default 10)
+//' @param min_clique_size minimum size of maximal cliques in maximal clique count (default 5)
 //' @param min_alpha DOCUMENT THIS
 //' @param max_alpha DOCUMENT THIS
 //' @param alpha_increment DOCUMENT THIS
-//' @param num_samples DOCUMENT THIS
+//' @param num_samples number of samples in Pearson Correlation Coefficient data (only used for analysis method 1 - Power and significance calculations)
 //' @param significance_alpha DOCUMENT THIS
-//' @param bonferroni_corrected DOCUMENT THIS
+//' @param bonferroni_corrected  switch to perform bonferroni corrections in significance and power calculations (default FALSE)
+//' 
+//' 
+//' @examples
+//' print('NEED TO WRITE AN EXAMPLE FOR analysis !')
+//' 
+//' print('WRITE SEVERAL EXAMPLES DEPENDING ON THE ANALYSIS METHODS REQUESTED / MULTIPLE OUTPUT FILES WITH SAME PREFIX CREATED')
+//' 
+//' @returns Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 // [[Rcpp::export]]
 void analysis(std::string infile, 
               Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
@@ -338,6 +350,7 @@ void analysis(std::string infile,
         outfile_prefix = stripped_prefix + ((str_methods!="") ? "-" + str_methods : "");
     } 
     else{
+      stripped_prefix = outfile_prefix;
       outfile_prefix += "-" + str_methods;
     }
     
@@ -715,7 +728,7 @@ void analysis(std::string infile,
     Rcpp::Rcout << "threshold for each requested method.\n";
     Rcpp::Rcout << "\nExample: \n";
     Rcpp::Rcout << "\tFile name/path:" << outfile_name << '\n';
-    Rcpp::Rcout << "\tPrefix:        " << outfile_prefix << '\n';
+    Rcpp::Rcout << "\tPrefix:        " << stripped_prefix << '\n';
 
     igraph_destroy(&G);
 }

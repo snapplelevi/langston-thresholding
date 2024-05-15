@@ -1,9 +1,8 @@
-# External Dependency Libraries
+# External Dependencies
 
 ## IGraph C library tar file
-igraph-0.8.0.tar.gz
+**igraph** version 0.9.9 will be contained in the file `igraph-0.9.9.tar.xz`. This file is untarred so the igraph library can be compiled during the package build process.
 
-This tar bundle should be unzipped and made during the R package build process controlled by the Makefile file in src.
-If compiling on Windows, R will read Makefile.win first. 
-This is a test starting on 8-10-23, an alternative solution would be to have all the external files
-already extracted in a folder so the build process would just need the compiled static library file. 
+If compiling on Windows, R will read `src/Makefile.win` first for preliminary building instructions. Otherwise, it will use the `src/Makevars` file.
+
+This package also uses the **alglib** library, which is provided in the `./alglib` subdirectory.
