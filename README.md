@@ -35,11 +35,12 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
 ## Installing the thresholding package
 1. **Install from devtools()**
    Use the following command in an R window if you have the `devtools` package installed already:
+   
       `devtools::install_github("snapplelevi/langston-thresholding")`
 
    You can use `install.packages(devtools)` in the R window if `devtools` isn't installed already).
    
-   There are a few R packages that this R package uses. Using this method will likely ask if you would like to update or install some of these packages. You can choose to take any action, but you can skip the updating step by just entering a blank input line by pressing the 'Enter' key once.
+   There are a few R packages that the **thresholding** package depends on and imports from. After running the `install_github` call, you will likely be prompted if you would like to *update* or *install* some of these packages. **Please install any packages if necessary.** For package updates, you can choose to take any action from the prompt including updating all packages, some packages, or no packages. You can skip the updating step by entering a blank input line (pressing the 'Enter' key once).
    
    `devtools::install_github()`  takes in the same arguments that you would pass to `install.packages()` which allows you to further specify how and where the package should be installed. 
 3. **Clone from GitHub and Install as a Source Package**
@@ -62,7 +63,7 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
 
        `tar -cvzf thresholding.tar.gz ./langston-thresholding`
        
-      This creates the tar.gz file of this package for R's `install.packages()` to install from source.
+      This creates the tar.gz file of this package for R's `install.packages()` to install from source. This command assumes you are in the same directory of the cloned repo.
 
 
     3. After the tar.gz file for the package is created, run the `install.packages()` function with the newly created tar file:
