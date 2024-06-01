@@ -2,9 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{analysis}
 \alias{analysis}
-\title{Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
-methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
-too small.}
+\title{Analysis methods for absolute thresholding of weighted graphs}
 \usage{
 analysis(
   infile,

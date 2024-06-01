@@ -34,9 +34,26 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// threshold
+int threshold(std::string& infile, std::string& outfile, std::string method, double absolute, double local_global_alpha, int rank);
+RcppExport SEXP _thresholding_threshold(SEXP infileSEXP, SEXP outfileSEXP, SEXP methodSEXP, SEXP absoluteSEXP, SEXP local_global_alphaSEXP, SEXP rankSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string& >::type infile(infileSEXP);
+    Rcpp::traits::input_parameter< std::string& >::type outfile(outfileSEXP);
+    Rcpp::traits::input_parameter< std::string >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< double >::type absolute(absoluteSEXP);
+    Rcpp::traits::input_parameter< double >::type local_global_alpha(local_global_alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type rank(rankSEXP);
+    rcpp_result_gen = Rcpp::wrap(threshold(infile, outfile, method, absolute, local_global_alpha, rank));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_thresholding_analysis", (DL_FUNC) &_thresholding_analysis, 15},
+    {"_thresholding_threshold", (DL_FUNC) &_thresholding_threshold, 6},
     {NULL, NULL, 0}
 };
 

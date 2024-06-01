@@ -5,20 +5,23 @@ importFrom(Rcpp, evalCpp)
 importFrom(magrittr, "%>%")
 importFrom(stringr, str_extract_all)
 
-# Analysis and thresholding functions
+# RCpp analysis and thresholding functions - C++ code
 export("analysis")
+export("threshold")
+
+# simple absolute_threshold functionality - R script
 export("absolute_threshold")
 
-# help() not exported in 1.0.0 - unfinished and needs renaming to analysis_help
+# help() in analysis not exported in 1.0.0 - unfinished and needs renaming to analysis_help
 # export("help")
 
-# analysis() results reporting functions
+# analysis() results reporting functions - R scripts
 export("get_results")
 export("get_iter_t_vals")
 export("get_sig_t_vals")
 export("get_local_global_alpha")
 
-# Plotting utilities
+# Plotting utilities - R scripts
 export("edge_hist")
 export("plot_t_vs_ev")
 

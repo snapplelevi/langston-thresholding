@@ -6,6 +6,9 @@
 #' NOT EXPORTED YET AS OF VERSION 1.0.0
 NULL
 
+#' Analysis methods for absolute thresholding of weighted graphs
+#' 
+#' @description 
 #' Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
 #' methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
 #' too small. 
@@ -49,5 +52,23 @@ NULL
 #' @returns Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected))
+}
+
+#' Strict thresholding for weighted graphs in .ncol format
+#'
+#' Description of threshold goes here
+#'
+#' @param infile DOCUMENT THIS
+#' @param outfile DOCUMENT THIS
+#' @param method DOCUMENT / CHANGE THIS
+#' @param absolute DOCUMENT / CHANGE THIS
+#' @param local_global_alpha DOCUMENT / CHANGE THIS
+#' @param rank DOCUMENT / CHANGE THIS
+#' @examples
+#' print('NEED TO WRITE EXAMPLES FOR THIS LATER')
+#' print('MULTIPLE IF POSSIBLE')
+#' @returns Nothing. The thresholded graph is written to the file specified by outfile.
+threshold <- function(infile, outfile, method, absolute, local_global_alpha, rank) {
+    .Call(`_thresholding_threshold`, infile, outfile, method, absolute, local_global_alpha, rank)
 }
 

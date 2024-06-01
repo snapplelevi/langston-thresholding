@@ -196,7 +196,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 // Manually exported in NAMESPACE
 //' Analysis methods for absolute thresholding of weighted graphs
 //' 
-//' @description Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
+//' @description 
+//' Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
 //' methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
 //' too small. 
 //' @param infile Name of .ncol graph file to read in for analysis
