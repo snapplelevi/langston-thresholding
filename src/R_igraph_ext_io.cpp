@@ -44,7 +44,7 @@ int write_graph(std::string& graph_file_path,
 
     if(graph_file == NULL){
         Rcpp::Rcerr << "Error - Unable to open graph output file: " << graph_file_path << '\n';
-        Rcpp::stop("Output file does not exist. Ending analysis early.");
+        Rcpp::stop("Output file does not exist. Ending operaion early.");
         //exit(-1); --> R will crash when this is called. Rcpp::stop will handle program execution
     }
     // write in file as weighted edge list

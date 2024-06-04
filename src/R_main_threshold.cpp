@@ -47,10 +47,30 @@ int threshold(std::string& infile,
               double local_global_alpha,
               int rank){
 
+    std::ifstream fin;
+    fin.open(infile);
+    if(fin.good() != 1){
+        Rcpp::Rcerr << "The input file " << infile << " had a problem during opening.\n";
+        Rcpp::Rcerr << "Please make sure the input file is spelled correctly and\n";
+        Rcpp::Rcerr << "you have the proper permissions to read it.\n";
+        Rcpp::stop(infile + " was not able to be opened");
+    }
+
+    // turn on attribute handling
+    // for igraph to handle edge weights
+    igraph_i_set_attribute_table(&igraph_cattribute_table);
+
+    // Load graph (names = true)
     igraph_t G;
+    Rcpp::Rcout << "Loading graph ... " << std::flush;
+    read_graph(infile, G, IGRAPH_ADD_WEIGHTS_YES, true);
+    Rcpp::Rcout << "Graph loaded." << "\n";
+    Rcpp::Rcout << "--------------------------------------------------------------------\n";
+
+
     Rcpp::Rcout << "Original number vertices: " << igraph_vcount(&G) << "\n";
     Rcpp::Rcout << "Original number edges:    " << igraph_ecount(&G) << "\n";
-    Rcpp::Rcout << "------------------------------------------------\n";
+    Rcpp::Rcout << "--------------------------------------------------------------------\n";
 
 
     if (method == "absolute"){
@@ -74,11 +94,17 @@ int threshold(std::string& infile,
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&new_G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&new_G) << "\n";
    }
+   // TODO: refactor the the code to support a strict threshold instead of requiring that absolute
+   // thresholding by default? Carissa's code requires that one of the above options are entered
+   // to work properly. Is it meaningful to only threshold one side of a distribution?
     else {
-        Rcpp::Rcerr << "something went wrong...";
+        Rcpp::Rcerr << "The option: \"" << method << "\" is not supported.\n";
+        Rcpp::Rcerr << "Exiting threshold() now...\n"; 
     }
 
-    Rcpp::Rcout << "------------------------------------------------\n";
+    Rcpp::Rcout << "--------------------------------------------------------------------\n";
+    Rcpp::Rcout << "Done! Thresholded graph saved to: " << outfile << "\n";
+    Rcpp::Rcout << "--------------------------------------------------------------------\n";
     return 0;
 }
 
