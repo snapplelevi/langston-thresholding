@@ -106,7 +106,7 @@ get_iterative_t_values <- function(files,
   D$D['scale_free'] <- NaN
   D$D['single_component'] <- NaN
   D$D['spectral_methods'] <- NaN
-  D$D['whole_graph'] <- NaN  
+  D$D['whole_graph'] <- NaN
   
   if(nrow(df) < 3){
     return(df)
@@ -381,6 +381,20 @@ get_iterative_t_values <- function(files,
     }
     
   } # end outer if
+  
+  # Loop through D and only save the non NaN values (the methods the user requested
+  # will have valid thresholds attributed to them
+  # TODO: add this logic into Power/Sig and local_global (make function at top 
+  # of this file perhaps)
+  i = length(D$D)
+  while(i > 0){
+    print(D$D[[i]])
+    if(is.nan(D$D[[i]])){
+      D$D[[i]] <- NULL
+    }
+    print(D$D[[i]])
+    i = i - 1
+  }
   
   writeLines("############# get_iterative_t_values - DONE #############")
   #print(paste0("D after: ", D$D))

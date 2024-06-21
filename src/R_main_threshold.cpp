@@ -42,10 +42,10 @@
 // [[Rcpp::export]]
 int threshold(std::string& infile,
               std::string& outfile,
-              std::string method,
-              double absolute,
-              double local_global_alpha,
-              int rank){
+              std::string method="absolute",
+              double absolute=0.0,
+              double local_global_alpha=0.0,
+              int rank=0){
 
     std::ifstream fin;
     fin.open(infile);
@@ -72,8 +72,15 @@ int threshold(std::string& infile,
     Rcpp::Rcout << "Original number edges:    " << igraph_ecount(&G) << "\n";
     Rcpp::Rcout << "--------------------------------------------------------------------\n";
 
-
-    if (method == "absolute"){
+    // ADD DOCS HERE!!!
+    if (method == "strict"){
+        double strict_threshold = absolute;
+        threshold_graph(strict_threshold, G, true);
+        write_graph(outfile, G);
+        Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
+        Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
+    }
+    else if (method == "absolute"){
         threshold_graph(absolute, G);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";

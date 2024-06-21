@@ -33,7 +33,8 @@ int write_graph(std::string&,
 // Threshold graph
 // by removing edges with abs weight less than "t"
 // and subsequently vertices with no neighbours
-int threshold_graph(double, igraph_t &);
+// strict parameter controls absolute (FALSE) or strict (TRUE) thresholding
+int threshold_graph(double, igraph_t &, bool strict = false);
 
 // Identify largest connected component of the graph and induce
 // Also return number of CC

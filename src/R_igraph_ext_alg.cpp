@@ -3,7 +3,10 @@
 // Threshold graph
 // by removing edges with abs weight less than "t"
 // and subsequently vertices with no neighbours
-int threshold_graph(double t, igraph_t &G){
+// 
+// @param strict set to false by default to take advantage of absolute thresholding
+// If strict is true, then only edges that aren't 
+int threshold_graph(double t, igraph_t &G, bool strict){
     // 1 = all edges removed
     // 2 = some edges are removed
     // 3 = no edges removed
@@ -14,12 +17,24 @@ int threshold_graph(double t, igraph_t &G){
 
     igraph_real_t w;
     igraph_integer_t E = igraph_ecount(&G);
-  
+    
     for (int i=0; i<E; i++){
         w = igraph_cattribute_EAN(&G, "weight", i);
-        if(w < t && w > -t){
-            // add this edge index to list of edges to be deleted
-            igraph_vector_push_back(&edge_indices, i);
+
+        if(strict){
+            // Strict thresholding
+            const bool remove_edge = (t >= 0) ? (w < t) : (w > -t);
+            if(remove_edge){
+                // remove positive strict thresholded edges less than threshold
+                // remove negative strict thresholded edges greater than threshold
+                igraph_vector_push_back(&edge_indices, i);
+            }
+        } else {
+            // Absolute thresholding
+            if(w < t && w > -t){
+                // add this edge index to list of edges to be deleted
+                igraph_vector_push_back(&edge_indices, i);
+            }
         }
     }
 

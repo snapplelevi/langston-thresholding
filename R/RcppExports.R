@@ -45,7 +45,7 @@
 #' print('WRITE SEVERAL EXAMPLES DEPENDING ON THE ANALYSIS METHODS REQUESTED / MULTIPLE OUTPUT FILES WITH SAME PREFIX CREATED')
 #' 
 #' @returns Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
-analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
+analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0.0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected))
 }
 
@@ -63,7 +63,7 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #' print('NEED TO WRITE EXAMPLES FOR THIS LATER')
 #' print('MULTIPLE IF POSSIBLE')
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
-threshold <- function(infile, outfile, method, absolute, local_global_alpha, rank) {
+threshold <- function(infile, outfile, method = "absolute", absolute = 0.0, local_global_alpha = 0.0, rank = 0L) {
     .Call(`_thresholding_threshold`, infile, outfile, method, absolute, local_global_alpha, rank)
 }
 
