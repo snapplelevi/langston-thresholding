@@ -7,24 +7,26 @@
 edge_hist(infile, bin_width = 0.01, sep = "")
 }
 \arguments{
-\item{infile}{tab separated .ncol formatted graph file (list of weighted edges - \strong{wel})}
+\item{infile}{File path to the .ncol formatted graph file (list of weighted edges - \strong{wel})}
 
-\item{bin_width}{width of each histogram bin (default is 0.01)}
+\item{bin_width}{(Optional) The width of each histogram bin. The default is bins of \strong{width} = 0.01}
 
-\item{sep}{determines how the columns in the \strong{wel} file are separated (default is any white space)}
+\item{sep}{(Optional) Specifically decide how the columns in the \strong{wel} file are separated.
+The default separator is any white space.}
 }
 \value{
 A ggplot object that can be displayed with show(), or by calling the function directly in the R terminal.
 }
 \description{
-Histogram function for displaying edge weight frequencies. `edge_hist()` requires that an 
-[.ncol](https://lgl.sourceforge.net/) file be passed. In other words, the .ncol file can be thought
+Histogram function for displaying edge weight frequencies. \code{edge_hist()} requires that an 
+\link{https://lgl.sourceforge.net/} file be passed. In other words, the .ncol file can be thought
 of as a \strong{w}eighted \strong{e}dge \strong{l}ist (\strong{wel}). The first column contains rows of vertices, the
 second column contains rows of adjacent vertices, and the third column represents the weight for an edge
 between the vertex in the first column one and the vertex in the second column.
 }
 \examples{
 your_file_name_here <- './example/HumanCellCycleSubset.ncol'
-thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
+save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
+show(save_plot)
 
 }

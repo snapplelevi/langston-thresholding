@@ -388,11 +388,9 @@ get_iterative_t_values <- function(files,
   # of this file perhaps)
   i = length(D$D)
   while(i > 0){
-    print(D$D[[i]])
     if(is.nan(D$D[[i]])){
       D$D[[i]] <- NULL
     }
-    print(D$D[[i]])
     i = i - 1
   }
   
@@ -569,13 +567,6 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   D$D <- list()   # Hash-map/Dictionary of method/threshold value pairs
   alpha <- NaN  # Alpha significance level
   
-  
-  # Create validation state for plot_t_vs_ev (simple boolean to determine)
-  # if the D passed to that function is the list itself or the output from 
-  # this function - get_results().
-  D$D['ARTFUL.CHECK'] <- TRUE
-  
-  
   # Used later to suppress warnings in analysis helper functions. These functions
   # use max() and min() from base, which return Inf/-Inf when the vector 
   # passed to them is empty (which may arise if a certain condition is not met)
@@ -592,20 +583,20 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
     
     if(method == "iterative_result"){
       i <- 1
-      for(file in files){
-        print(paste0("File #", i, ": ", file))
-        i <- i + 1
-      }
-      print("Starting get_iterative_t_values")
+      # for(file in files){
+      #   print(paste0("File #", i, ": ", file))
+      #   i <- i + 1
+      # }
+      print("-------- Starting get_iterative_t_values --------")
       # Supress min() and max() warnings returning Inf
       df <- supWarn(get_iterative_t_values(files, D))
     } 
     else if(method == "significance_result"){
-      print("Starting get_significance_t_values")
+      print("-------- Starting get_significance_t_values --------")
       power_df <- supWarn(get_significance_t_values(files, D, min_power=0.8))
     } 
     else if(method == "local_global_result"){
-      print("Starting get_local_global_alpha value")
+      print("-------- Starting get_local_global_alpha value --------")
       df_and_alpha <- supWarn(get_local_global_alpha_value(files))
     }
   }

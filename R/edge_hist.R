@@ -1,18 +1,20 @@
 #' edge_hist
 #' 
-#' Histogram function for displaying edge weight frequencies. `edge_hist()` requires that an 
-#' [.ncol](https://lgl.sourceforge.net/) file be passed. In other words, the .ncol file can be thought
+#' Histogram function for displaying edge weight frequencies. \code{edge_hist()} requires that an 
+  #' \link{https://lgl.sourceforge.net/} file be passed. In other words, the .ncol file can be thought
 #' of as a \strong{w}eighted \strong{e}dge \strong{l}ist (\strong{wel}). The first column contains rows of vertices, the
 #' second column contains rows of adjacent vertices, and the third column represents the weight for an edge
 #' between the vertex in the first column one and the vertex in the second column. 
 #' 
-#' @param infile tab separated .ncol formatted graph file (list of weighted edges - \strong{wel})
-#' @param bin_width width of each histogram bin (default is 0.01)
-#' @param sep determines how the columns in the \strong{wel} file are separated (default is any white space)
+#' @param infile File path to the .ncol formatted graph file (list of weighted edges - \strong{wel})
+#' @param bin_width (Optional) The width of each histogram bin. The default is bins of \strong{width} = 0.01
+#' @param sep (Optional) Specifically decide how the columns in the \strong{wel} file are separated.
+#' The default separator is any white space.
 #' 
 #' @examples
 #' your_file_name_here <- './example/HumanCellCycleSubset.ncol'
-#' thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
+#' save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
+#' show(save_plot)
 #' 
 #' @returns A ggplot object that can be displayed with show(), or by calling the function directly in the R terminal.
 #' @export
@@ -24,7 +26,7 @@ edge_hist <- function(infile,
   
   # Make sure the file exists 
   if(!file.exists(infile)){
-    stop(paste("the file \"", infile, "\" does not exist"))
+    stop(paste("\redge_hist(): the file \"", infile, "\" does not exist.\nLeaving edge_hist()..."))
   }
   
   # Start message for user
@@ -38,8 +40,11 @@ edge_hist <- function(infile,
   # Error check if file is in proper format
   # This function assumes you pass in a three column .ncol file.
   if(ncol(raw_data) != 3){
+    message("Error in edge_hist():")
     message(paste(infile, " is not in .ncol format. Expected threee columns (V1 V2 WEIGHT)"))
-    stop(paste("the file \"", infile, "\" is not in .ncol format."))
+    message(paste0("Make sure the graph file is in .ncol format and that the sep parameter"))
+    message(paste0("matches the separator used in the input file."))
+    return(invisible(NULL))
   }
   
   
@@ -58,7 +63,10 @@ edge_hist <- function(infile,
                         names=FALSE)
   
   
-  ############   MAKING THE PLOT   #############
+  ##############   MAKING THE PLOT   ###############
+  # This returns the plot to the user to either
+  # store in a variable or pass directly to a 
+  # call to show()... ex.  show(edge_hist(infile))
   ggplot2::ggplot(raw_data, ggplot2::aes(WEIGHT)) + 
     ggplot2::geom_histogram(binwidth=bin_width,
                             fill="orange",

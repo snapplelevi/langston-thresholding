@@ -3,9 +3,7 @@
 \name{get_sig_t_vals}
 \alias{get_sig_t_vals}
 \title{get_sig_t_vals()
-User wrapper function for \code{get_significance_t_values()}
-Returns the thresholding data frame created by the internal
-\code{get_significance_t_values()}, which does not return anything to the user.}
+User wrapper function for \code{get_significance_t_values()}}
 \usage{
 get_sig_t_vals(outfile_prefix, recursive = FALSE)
 }
@@ -32,6 +30,10 @@ of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any 
 with the specified outfile_prefix and ends with ".iterative.txt".}
 }
 \description{
+Returns the thresholding data frame created by the internal
+\code{get_significance_t_values()}, which does not return anything to the user.
+}
+\details{
 The returned data frame includes graph and graph method values for each 
 increment of the threshold.
 }

@@ -4,7 +4,14 @@
 \alias{threshold}
 \title{Strict thresholding for weighted graphs in .ncol format}
 \usage{
-threshold(infile, outfile, method, absolute, local_global_alpha, rank)
+threshold(
+  infile,
+  outfile,
+  method = "absolute",
+  absolute = 0,
+  local_global_alpha = 0,
+  rank = 0L
+)
 }
 \arguments{
 \item{infile}{DOCUMENT THIS}

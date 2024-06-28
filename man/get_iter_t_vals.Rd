@@ -3,9 +3,8 @@
 \name{get_iter_t_vals}
 \alias{get_iter_t_vals}
 \title{get_iter_t_vals()
-User wrapper function for get_iterative_t_values
-Returns the thresholding data frame created by the internal
-get_iterative_t_values, which does not return anything to the user.}
+                         
+User wrapper function for get_iterative_t_values}
 \usage{
 get_iter_t_vals(outfile_prefix, recursive = FALSE)
 }
@@ -31,7 +30,13 @@ If \code{TRUE}, \code{get_iter_t_vals()} will recursively searching through all 
 of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
 with the specified outfile_prefix and ends with ".iterative.txt".}
 }
+\value{
+A list containing both a dataframe and a list. The dataframe contains the raw interative
+thresholding data at each threshold value for the requested methods. The nested list contains
+each requested method (for the particular analysis output file(s) found from the output prefix)
+and its corresponding threshold value.
+}
 \description{
-The returned data frame includes graph and graph method values for each 
-increment of the threshold.
+Returns the thresholding data frame created by the internal
+get_iterative_t_values, which does not return anything to the user.
 }

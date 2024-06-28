@@ -1,33 +1,65 @@
 #' Plots the edge (E) and vertex (V)count of a graph at varying thresholds
 #' Marks non-null methods and their optimal thresholds against the 
 #' V/E line plots
-#'
-#' @param plot_df Dataframe with threshold values - returned from 
-#' output of get_iterative_results, which contains the detailed
-#' analysis of the graph at each increment of the thresholding
-#' process.
-#' @param D List of methods and their optimal thresholds from 
-#' calling get_results. The user can either pass the resulting variable
-#' from get_results or the list itself (i.e. D=variable$D instead of D=variable).
+#' 
+#' @param iter_infile The name of the .iterative.txt file from the \code{analysis()} function.
+#' This is required to be the exact name of the file because \code{plot_t_vs_ev()} will only show
+#' the methods used for that specific combination of methods. In comparison, \code{get_results()} 
+#' takes in a prefix so that it can potentially combine analysis methods for several analysis
+#' method combinations that share the same user given prefix.
 #' @export 
-plot_t_vs_ev <- function(plot_df, D){
- 
-  annotations <- list()
-  labels <- list()
+plot_t_vs_ev <- function(iter_infile){
   
-  # Check if user passed the direct list from get_results() (D$D) or if they
-  # passed just the outer variable D.
-  if( ! ("ARTFUL.CHECK" %in% names(D)) ){
-    D <- D$D
+  
+  # Validate that iter_infile is valid
+  if(file.exists(iter_infile) == FALSE){
+    writeLines(paste0("-- plot_t_vs_ev(): The input file \'", iter_infile, "\'"))
+    writeLines(paste0("--                 was not able to be opened... please check spelling or the"))
+    writeLines(paste0("--                 working directory if the file path is relative."))
+    writeLines(paste0("--"))
+    writeLines(paste0("-- Leaving plot_t_vs_ev()"))
+    return(invisible(NULL))
   }
   
-  # Then remove ARTFUL.CHECK from the list before running the annotations
-  # and labels loop
-  D['ARTFUL.CHECK'] <- NULL
   
+  # Strip the .iterative.txt suffix from the precise file name to use in get_iter_t_vals
+  iter_ext <- ".iterative.txt"
+  stripped_list <- unlist(strsplit(iter_infile, iter_ext, fixed=TRUE))
+  
+  # Make sure that there is only one .iterative.txt and that the extension
+  # is truly the extension (end of the file name)
+  if(length(stripped_list) != 2 &&
+     stripped_list[[2]] != iter_ext){
+    print("Print out error messages for .iterative.txt file ext. being wrong")
+    return(invisible(NULL))
+  }
+  
+  
+  # Get the results from analysis to get the D$D list
+  stripped_prefix <- stripped_list[[2]]
+  iter_results <- get_iter_t_vals(stripped_infile)
+  plot_df <- iter_results$iter_df
+  
+  # Make sure get_results had something to plot
+  # Otherwise just tell the user there is nothing to plot
+  if(is.null(iter_results$D)){
+    writeLines(paste0("-- plot_t_vs_ev(): internal use of get_results(\'", iter_infile, "\') returned"))
+    writeLines(paste0("--                 no valid analysis method thresholds. This means there"))
+    writeLines(paste0("--                 is nothing to plot."))
+    writeLines(paste0("--"))
+    writeLines(paste0("-- Leaving plot_t_vs_ev()"))
+    return(invisible(NULL))
+  }
+  
+  # Store D_iter$D list into D for easier reading / less typing
+  D <- iter_results$D_iter$D
+  
+  # Set up structures for storing plotting data
+  annotations <- list()
+  labels <- list()
   names_vec <- names(D)
   
-  ################################
+  ###########################################################
   # NEED TO REMOVE POWER AND SIGNFICANCE AND ANY OTHER 
   # ARTIFACT THINGS ---- THIS IS ONLY FOR ITERATIVE RESLUTS!!1
   # THE OTHER THINGS SCREW UP THE PLOTTING BIGGGG TIME

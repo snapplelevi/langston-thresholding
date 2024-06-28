@@ -24,12 +24,12 @@ find_last <- function(str, str_to_find){
 
 ##############################################################################
 #'                          get_iter_t_vals()
+#'                          
 #' User wrapper function for get_iterative_t_values
+#' 
 #' Returns the thresholding data frame created by the internal
 #' get_iterative_t_values, which does not return anything to the user.
 #' 
-#' The returned data frame includes graph and graph method values for each 
-#' increment of the threshold. 
 #' 
 #' 
 #' @param outfile_prefix Prefix of output file, which can have several
@@ -52,6 +52,11 @@ find_last <- function(str, str_to_find){
 #' If \code{TRUE}, \code{get_iter_t_vals()} will recursively searching through all files matching the Regex pattern
 #' of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
 #' with the specified outfile_prefix and ends with ".iterative.txt".
+#' 
+#' @returns A list containing both a dataframe and a list. The dataframe contains the raw interative
+#' thresholding data at each threshold value for the requested methods. The nested list contains
+#' each requested method (for the particular analysis output file(s) found from the output prefix)
+#' and its corresponding threshold value.
 #' @export
 get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   
@@ -97,12 +102,11 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
     message("If this doesn't work, please check the spelling of the file prefix.")
     stop("\rExiting get_iter_t_vals...")
   }
-  print(it_fnames)
+  
   # Run the iterative analysis on the found files
   D_iter <- new.env()
   D_iter$D <- list()
-  D_iter$D['ARTFUL.CHECK'] <- TRUE
   iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
 
-  return(list(Iter_df = iter_df, D_iter = D_iter))
+  return(list(iter_df = iter_df, D_iter = D_iter))
 }

@@ -6,17 +6,14 @@
 Marks non-null methods and their optimal thresholds against the 
 V/E line plots}
 \usage{
-plot_t_vs_ev(plot_df, D)
+plot_t_vs_ev(iter_infile)
 }
 \arguments{
-\item{plot_df}{Dataframe with threshold values - returned from 
-output of get_iterative_results, which contains the detailed
-analysis of the graph at each increment of the thresholding
-process.}
-
-\item{D}{List of methods and their optimal thresholds from 
-calling get_results. The user can either pass the resulting variable
-from get_results or the list itself (i.e. D=variable$D instead of D=variable).}
+\item{iter_infile}{The name of the .iterative.txt file from the \code{analysis()} function.
+This is required to be the exact name of the file because \code{plot_t_vs_ev()} will only show
+the methods used for that specific combination of methods. In comparison, \code{get_results()} 
+takes in a prefix so that it can potentially combine analysis methods for several analysis
+method combinations that share the same user given prefix.}
 }
 \description{
 Plots the edge (E) and vertex (V)count of a graph at varying thresholds

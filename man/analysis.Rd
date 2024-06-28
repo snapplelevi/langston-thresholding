@@ -23,18 +23,20 @@ analysis(
 )
 }
 \arguments{
-\item{infile}{Name of .ncol graph file to read in for analysis}
+\item{infile}{File path for .ncol (\link{https://lgl.sourceforge.net/}) graph file to read in for analysis. 
+This file must be space delimited for this function to properly read in the graph's information.}
 
 \item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
-0 - all
-1 - significance and power calculations (only valid for Pearson CC)
-2 - local-global
-3 - scale free
-4 - maximal cliques
-5 - spectral methods
-6 - random matrix theory
-7 - clustering coefficient
-8 - percolation}
+   0 - all
+   1 - significance and power calculations (only valid for Pearson CC)
+   2 - local-global
+   3 - scale free
+   4 - maximal cliques
+   5 - spectral methods
+   6 - random matrix theory
+   7 - clustering coefficient
+   8 - percolation
+Refer to the following dissertation for more detailed usage of these methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}}
 
 \item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
 thresholding::analysis() will auto generate the output file prefix to include the input file's 
@@ -50,11 +52,11 @@ The input file prefix will be determined by the characters preceding the first p
 
 \item{increment}{Size of increment step in the thresholding loop}
 
-\item{window_size}{sliding window size for spectral method (default 5)}
+\item{window_size}{Sliding window size for spectral method (default is 5)}
 
-\item{min_partition_size}{minimum size of graph or subgraph after threshold (default 10)}
+\item{min_partition_size}{minimum size of graph or subgraph after threshold (default is 10)}
 
-\item{min_clique_size}{minimum size of maximal cliques in maximal clique count (default 5)}
+\item{min_clique_size}{minimum size of maximal cliques in maximal clique count (defaultiis 5)}
 
 \item{min_alpha}{DOCUMENT THIS}
 
@@ -72,13 +74,45 @@ The input file prefix will be determined by the characters preceding the first p
 Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 }
 \description{
-Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
-methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
-too small.
+Weighted graphs thresholding analysis. This function iteratively performs absolute thresholding the input graph at specified threshold values [lower, upper].
+The function's methods parameter controls which graph analysis methods are performed at each threshold value.
+Execution of analysis() ends after the 'upper' threshold is reached, or if the graph becomes
+too small to threshold further.
+ 
+The results at each step are written output files. There is always at least one output file, but there can be 
+up to three depending on the methods passed:
+* <outfile_prefix>.iterative.txt          (\strong{guaranteed})
+* <outfile_prefix>.statistical_errors.txt (method \strong{1})
+* <outfile_prefix>.local_global.txt       (method \strong{2})
 }
 \examples{
-print('NEED TO WRITE AN EXAMPLE FOR analysis !')
+#######    Variable Set-Up     #######
+data_file <- './example/HumanCellCycleSubset.ncol'      # .ncol weighted edge list
+data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+lower <- 0.6   
 
-print('WRITE SEVERAL EXAMPLES DEPENDING ON THE ANALYSIS METHODS REQUESTED / MULTIPLE OUTPUT FILES WITH SAME PREFIX CREATED')
+#######    Example 1 - No methods #######
+analysis(data_file, 
+         data_prefix,
+         lower = lower,
+         )
 
+#######    Example 2 - Iterative methods #######
+print("COMING SOON 2")
+
+#######    Example 3 - iterative and power/significance methods #######
+methods <- c(8, 1, 3)    # select the three desired analysis methods
+lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
+num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
+
+# Note: analysis() will autogenerate an output file name based 
+#       on the input file path if a prefix is not passed.
+analysis(data_file, 
+         methods = methods,
+         lower = lower,
+         num_samples = num_samples,
+         )
+
+######    Example 4 - iterative and local-global  methods #######
+print("COMING SOON 4")
 }

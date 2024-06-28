@@ -3,11 +3,19 @@
 
 #' Analysis methods for absolute thresholding of weighted graphs
 #' 
-#' Weighted graphs thresholding analysis. Thresholds graph at certain points [lower, upper] and performs requested analysis 
-#' methods depends on parameters passed. Execution ends before 'upper' threshold is reached if the graph becomes
-#' too small. 
+#' Weighted graphs thresholding analysis. This function iteratively performs absolute thresholding the input graph at specified threshold values [lower, upper].
+#' The function's methods parameter controls which graph analysis methods are performed at each threshold value.
+#' Execution of analysis() ends after the 'upper' threshold is reached, or if the graph becomes
+#' too small to threshold further.
+#'  
+#' The results at each step are written output files. There is always at least one output file, but there can be 
+#' up to three depending on the methods passed:
+#' * <outfile_prefix>.iterative.txt          (\strong{guaranteed})
+#' * <outfile_prefix>.statistical_errors.txt (method \strong{1})
+#' * <outfile_prefix>.local_global.txt       (method \strong{2})
 #' 
-#' @param infile Name of .ncol graph file to read in for analysis
+#' @param infile File path for .ncol (\link{https://lgl.sourceforge.net/}) graph file to read in for analysis. 
+#' This file must be space delimited for this function to properly read in the graph's information.
 #' @param methods Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
 #'     0 - all
 #'     1 - significance and power calculations (only valid for Pearson CC)
@@ -18,6 +26,7 @@
 #'     6 - random matrix theory
 #'     7 - clustering coefficient
 #'     8 - percolation
+#'  Refer to the following dissertation for more detailed usage of these methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 #' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
 #'        thresholding::analysis() will auto generate the output file prefix to include the input file's 
 #'        prefix and the ascending method numbers. 
@@ -28,22 +37,45 @@
 #' @param lower Lower bound to begin thresholding loop at (default 0.5 ; lower >= 0)
 #' @param upper Hard upper bound that ends thresholding  loop when `lower` value is greater than `upper` value (default 0.99)
 #' @param increment Size of increment step in the thresholding loop
-#' @param window_size sliding window size for spectral method (default 5)
-#' @param min_partition_size minimum size of graph or subgraph after threshold (default 10)
-#' @param min_clique_size minimum size of maximal cliques in maximal clique count (default 5)
+#' @param window_size Sliding window size for spectral method (default is 5)
+#' @param min_partition_size minimum size of graph or subgraph after threshold (default is 10)
+#' @param min_clique_size minimum size of maximal cliques in maximal clique count (defaultiis 5)
 #' @param min_alpha DOCUMENT THIS
 #' @param max_alpha DOCUMENT THIS
 #' @param alpha_increment DOCUMENT THIS
 #' @param num_samples number of samples in Pearson Correlation Coefficient data (only used for analysis method 1 - Power and significance calculations)
 #' @param significance_alpha DOCUMENT THIS
 #' @param bonferroni_corrected  switch to perform bonferroni corrections in significance and power calculations (default FALSE)
-#' 
-#' 
 #' @examples
-#' print('NEED TO WRITE AN EXAMPLE FOR analysis !')
+#' #######    Variable Set-Up     #######
+#' data_file <- './example/HumanCellCycleSubset.ncol'      # .ncol weighted edge list
+#' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+#' lower <- 0.6   
+#'
+#' #######    Example 1 - No methods #######
+#' analysis(data_file, 
+#'          data_prefix,
+#'          lower = lower,
+#'          )
+#'
+#' #######    Example 2 - Iterative methods #######
+#' print("COMING SOON 2")
+#'
+#' #######    Example 3 - iterative and power/significance methods #######
+#' methods <- c(8, 1, 3)    # select the three desired analysis methods
+#' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
+#' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
 #' 
-#' print('WRITE SEVERAL EXAMPLES DEPENDING ON THE ANALYSIS METHODS REQUESTED / MULTIPLE OUTPUT FILES WITH SAME PREFIX CREATED')
+#' # Note: analysis() will autogenerate an output file name based 
+#' #       on the input file path if a prefix is not passed.
+#' analysis(data_file, 
+#'          methods = methods,
+#'          lower = lower,
+#'          num_samples = num_samples,
+#'          )
 #' 
+#' ######    Example 4 - iterative and local-global  methods #######
+#' print("COMING SOON 4")
 #' @returns Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0.0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L) {
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected))
