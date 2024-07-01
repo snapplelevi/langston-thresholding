@@ -15,7 +15,7 @@ edge_hist(infile, bin_width = 0.01, sep = "")
 The default separator is any white space.}
 }
 \value{
-A ggplot object that can be displayed with show(), or by calling the function directly in the R terminal.
+A ggplot object that can be displayed with show(), or by calling the edge_hist() directly in the R terminal.
 }
 \description{
 Histogram function for displaying edge weight frequencies. \code{edge_hist()} requires that an 

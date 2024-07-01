@@ -7,6 +7,8 @@
 # stat_suffix <- ".statistical_errors.txt"
 # local_global <- ".local_global.txt"
 
+# Installing the package (for development)
+install.packages("../thresholding_1.0.0.tar.gz", type='source', repos=NULL)
 
 # Load and attach the thresholding namespace 
 library(thresholding)
@@ -51,11 +53,11 @@ methods <- c(8, 1, 3)    # select the three desired analysis methods
 starting_thresh <- 0.6   # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13 
 
-analysis(data_file, 
-         methods = methods,
-         lower = starting_thresh,
-         num_samples = num_samples,
-         )
+thresholding::analysis(data_file, 
+                       methods = methods,
+                       lower = starting_thresh,
+                       num_samples = num_samples,
+                      )
 
 
 # Just doing spectral thresholding 
@@ -87,14 +89,17 @@ get_res_alpha <- get_res_D$alpha
 # and only save those to D for output (no NaN'ers for things not used)
 print(get_results_out$D)
 print(get_res_D$whole_graph)
+print(get_res_D$alpha)
 
 #         Step 4a/b - Observe graph method thresholds and threshold graph
 # Testing the plot functionalites
 # can also do this to just display the plot instead of return it
 # get_results(data_prefix, plot_iterative = TRUE)
-iter_only <- get_iter_t_vals(data_prefix)
-plot_t_vs_ev(iter_only$Iter_df, get_res_D)
-
+# THIS API  SHOULD NO LONGER WORK!!!
+# iter_only <- get_iter_t_vals(data_prefix)
+# plot_t_vs_ev(iter_only$Iter_df, get_res_D)
+iter_infile <- "./example/HumanCellCycleSubset"
+plot_t_vs_ev(iter_infile)
 # Thresholding the graph and saving to a new output file
 threshold <- 0.79
 abs_outfile <- "./example/HumanCellCycleSubset-ABSTHOLD.ncol"

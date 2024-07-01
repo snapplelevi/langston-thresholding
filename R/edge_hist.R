@@ -16,7 +16,7 @@
 #' save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
 #' show(save_plot)
 #' 
-#' @returns A ggplot object that can be displayed with show(), or by calling the function directly in the R terminal.
+#' @returns A ggplot object that can be displayed with show(), or by calling the edge_hist() directly in the R terminal.
 #' @export
 edge_hist <- function(infile,
                       bin_width=0.01,

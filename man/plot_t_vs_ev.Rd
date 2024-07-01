@@ -2,9 +2,7 @@
 % Please edit documentation in R/plot_t_vs_ev.R
 \name{plot_t_vs_ev}
 \alias{plot_t_vs_ev}
-\title{Plots the edge (E) and vertex (V)count of a graph at varying thresholds
-Marks non-null methods and their optimal thresholds against the 
-V/E line plots}
+\title{Plots the edge (E) and vertex (V) counts of a graph at varying thresholds}
 \usage{
 plot_t_vs_ev(iter_infile)
 }
@@ -15,8 +13,11 @@ the methods used for that specific combination of methods. In comparison, \code{
 takes in a prefix so that it can potentially combine analysis methods for several analysis
 method combinations that share the same user given prefix.}
 }
+\value{
+A ggplot object that can be displayed with show(), or by calling the plot_t_vs_ev() directly in the R terminal.
+}
 \description{
-Plots the edge (E) and vertex (V)count of a graph at varying thresholds
-Marks non-null methods and their optimal thresholds against the 
-V/E line plots
+Plots a graph's edge and vertices by threshold value on two different scales.
+Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds \
+against the V/E line plots.
 }

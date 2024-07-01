@@ -1,12 +1,15 @@
-#' Plots the edge (E) and vertex (V)count of a graph at varying thresholds
-#' Marks non-null methods and their optimal thresholds against the 
-#' V/E line plots
+#' Plots the edge (E) and vertex (V) counts of a graph at varying thresholds
+#' 
+#' Plots a graph's edge and vertices by threshold value on two different scales.
+#' Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds \
+#' against the V/E line plots. 
 #' 
 #' @param iter_infile The name of the .iterative.txt file from the \code{analysis()} function.
 #' This is required to be the exact name of the file because \code{plot_t_vs_ev()} will only show
 #' the methods used for that specific combination of methods. In comparison, \code{get_results()} 
 #' takes in a prefix so that it can potentially combine analysis methods for several analysis
 #' method combinations that share the same user given prefix.
+#' @returns A ggplot object that can be displayed with show(), or by calling the plot_t_vs_ev() directly in the R terminal.
 #' @export 
 plot_t_vs_ev <- function(iter_infile){
   
@@ -266,11 +269,11 @@ plot_t_vs_ev <- function(iter_infile){
             )
   } # end of method annotation loop
   
-  # methods::show()
-  show(PLOT)
+  # Return the ggplot2 object for variable storage or direct plotting with show()
+  return(PLOT)
   
-  # Translated roughly from the following matplotlib code
-  # Plotting stuff down here
+  # Translated roughly from the following matplotlib code in Carissa's package (see DESCRIPTION file)
+  #
   # number vertices and number edges vs thresholds
   # with sns.plotting_context("paper"):
   #   fig, ax = plt.subplots(figsize=(12, 6)) # long, high

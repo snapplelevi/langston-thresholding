@@ -19,7 +19,8 @@ analysis(
   alpha_increment = 0.1,
   num_samples = 0L,
   significance_alpha = 0.01,
-  bonferroni_corrected = 0L
+  bonferroni_corrected = 0L,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -27,23 +28,29 @@ analysis(
 This file must be space delimited for this function to properly read in the graph's information.}
 
 \item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
-   0 - all
-   1 - significance and power calculations (only valid for Pearson CC)
-   2 - local-global
-   3 - scale free
-   4 - maximal cliques
-   5 - spectral methods
-   6 - random matrix theory
-   7 - clustering coefficient
-   8 - percolation
-Refer to the following dissertation for more detailed usage of these methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}}
+\itemize{
+  \item 0 = all
+  \item 1 = significance and power calculations (only valid for Pearson CC)
+  \item 2 = local-global
+  \item 3 = scale free
+  \item 4 = maximal cliques
+  \item 5 = spectral methods
+  \item 6 = random matrix theory
+  \item 7 = clustering coefficient
+  \item 8 = percolation
+}
+ Refer to the following papers for more detailed description of these methods: 
+\itemize{
+\item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
+\item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
+}}
 
 \item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
 thresholding::analysis() will auto generate the output file prefix to include the input file's 
 prefix and the ascending method numbers. 
 The input file prefix will be determined by the characters preceding the first period ('.') character.
-  An example if the user requests methods 4 and 7 with an input file named "myfile.tsv" would be:
-     myfile-47.<method_name>.txt
+  An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
+     \code{myfile-47.<method_name>.txt}
  Method name can vary based on the methods used. This will either be iterative, local_global, or statistical_errors.}
 
 \item{lower}{Lower bound to begin thresholding loop at (default 0.5 ; lower >= 0)}
@@ -69,6 +76,10 @@ The input file prefix will be determined by the characters preceding the first p
 \item{significance_alpha}{DOCUMENT THIS}
 
 \item{bonferroni_corrected}{switch to perform bonferroni corrections in significance and power calculations (default FALSE)}
+
+\item{overwrite}{Determines whether output file with given or generated prefix will be overwritten. 
+Set this to 'TRUE' to force overwrite the output file. The default, 'FALSE', will display a menu asking
+whether or not you wish to overwrite the output file.}
 }
 \value{
 Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
@@ -81,9 +92,14 @@ too small to threshold further.
  
 The results at each step are written output files. There is always at least one output file, but there can be 
 up to three depending on the methods passed:
-* <outfile_prefix>.iterative.txt          (\strong{guaranteed})
-* <outfile_prefix>.statistical_errors.txt (method \strong{1})
-* <outfile_prefix>.local_global.txt       (method \strong{2})
+\itemize{
+  \item <outfile_prefix>.iterative.txt:          (\strong{guaranteed})
+  \item <outfile_prefix>.statistical_errors.txt: (method \strong{1})
+  \item <outfile_prefix>.local_global.txt        (method \strong{2})
+}
+}
+\details{
+Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
 #######    Variable Set-Up     #######
