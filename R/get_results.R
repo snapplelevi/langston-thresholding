@@ -521,8 +521,8 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
     # D_local_global["alpha_max"] = row_alpha_max.squeeze().to_dict()
     # D_local_global["alpha_exist"] = row_alpha_exist.squeeze().to_dict()
     
-    print(paste0("Row alpha exist: ", row_alpha_exist))
-    print(paste0("Row alpha max: ", row_alpha_max))
+    # print(paste0("Row alpha exist: ", row_alpha_exist))
+    # print(paste0("Row alpha max: ", row_alpha_max))
   }
   else{
     return(data.frame())
@@ -544,6 +544,20 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' @param plot_iterative optionally plot the vertices and edges vs. threshold value as a graph.
 #' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
 #' the user needing to manually extract the required parameters.
+#' 
+#' @returns The returned list that can contain:
+#' \itemize{
+#'    \item A nested list of keyed on analysis method names. The values of these
+#'    keys will be the recommended threshold from the corresponding method. This will 
+#'    be called \code{"D"}.
+#'    \item An alpha value representing the recommended significance value. This will 
+#'    be called \code{"alpha"}
+#' }
+#' The output of \code{get_results()} and its separate wrappers will depend on the methods 
+#' passed to \code{analysis()}. Values will either be valid or +/-Inf. If a method and/or value
+#' for alpha does not show up in the returned list, then \code{get_results()} could not 
+#' find this method or alpha value in the files with the matching prefix.
+#' not show up 
 #' @export
 get_results <- function(outfile_prefix, plot_iterative = FALSE){
  
@@ -608,7 +622,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
     writeLines("############# plot_t_vs_ev() called #############\n")
-    plot_t_vs_ev(df, D)
+    thresholding::plot_t_vs_ev(outfile_prefix)
   }
   
   # Results accessible by <out_variable>$D ; <out_variable>$alpha

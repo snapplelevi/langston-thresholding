@@ -24,7 +24,7 @@ analysis(
 )
 }
 \arguments{
-\item{infile}{File path for .ncol (\link{https://lgl.sourceforge.net/}) graph file to read in for analysis. 
+\item{infile}{File path for .ncol graph file (\link{https://lgl.sourceforge.net/}) to read in for analysis. 
 This file must be space delimited for this function to properly read in the graph's information.}
 
 \item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
@@ -46,56 +46,58 @@ This file must be space delimited for this function to properly read in the grap
 }}
 
 \item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
-thresholding::analysis() will auto generate the output file prefix to include the input file's 
+\code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
 prefix and the ascending method numbers. 
 The input file prefix will be determined by the characters preceding the first period ('.') character.
   An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
      \code{myfile-47.<method_name>.txt}
- Method name can vary based on the methods used. This will either be iterative, local_global, or statistical_errors.}
+ Method name can vary based on the methods used. This will either be \code{iterative}, \code{local_global}, or \code{statistical_errors}.}
 
-\item{lower}{Lower bound to begin thresholding loop at (default 0.5 ; lower >= 0)}
+\item{lower}{Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)}
 
-\item{upper}{Hard upper bound that ends thresholding  loop when `lower` value is greater than `upper` value (default 0.99)}
+\item{upper}{Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)}
 
 \item{increment}{Size of increment step in the thresholding loop}
 
-\item{window_size}{Sliding window size for spectral method (default is 5)}
+\item{window_size}{Sliding window size for spectral method (Default = 5)}
 
-\item{min_partition_size}{minimum size of graph or subgraph after threshold (default is 10)}
+\item{min_partition_size}{minimum size of graph or subgraph after threshold (Default = 10)}
 
-\item{min_clique_size}{minimum size of maximal cliques in maximal clique count (defaultiis 5)}
+\item{min_clique_size}{Minimum size of maximal cliques in maximal clique count (Default = 5)}
 
-\item{min_alpha}{DOCUMENT THIS}
+\item{min_alpha}{Starting alpha value used in \strong{method 2 - local global pruning}.  \emph{Not used in any other methods.}  (Default = 0.0)}
 
-\item{max_alpha}{DOCUMENT THIS}
+\item{max_alpha}{Ending alpha value used in \strong{method 2 - local global pruning}.  \emph{Not used in any other methods.}   (Default = 4.0)}
 
-\item{alpha_increment}{DOCUMENT THIS}
+\item{alpha_increment}{Size of increment of alpha value in \strong{method 2 - local global pruning}'s main loop. \emph{Not used in any other methods.}  (Default = 0.1)}
 
-\item{num_samples}{number of samples in Pearson Correlation Coefficient data (only used for analysis method 1 - Power and significance calculations)}
+\item{num_samples}{Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 1 - Power and Significance calculations}).
+\emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 1 to work.}} \emph{Not used in any other methods.}}
 
-\item{significance_alpha}{DOCUMENT THIS}
+\item{significance_alpha}{Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)}
 
-\item{bonferroni_corrected}{switch to perform bonferroni corrections in significance and power calculations (default FALSE)}
+\item{bonferroni_corrected}{Option to perform Bonferroni correction in \strong{method 1 - significance and power calculations}. 
+Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})}
 
 \item{overwrite}{Determines whether output file with given or generated prefix will be overwritten. 
-Set this to 'TRUE' to force overwrite the output file. The default, 'FALSE', will display a menu asking
+Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
 whether or not you wish to overwrite the output file.}
 }
 \value{
 Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 }
 \description{
-Weighted graphs thresholding analysis. This function iteratively performs absolute thresholding the input graph at specified threshold values [lower, upper].
+Weighted graphs thresholding analysis. This function iteratively performs absolute thresholding the input graph at specified threshold values [\code{lower}, \code{upper}].
 The function's methods parameter controls which graph analysis methods are performed at each threshold value.
-Execution of analysis() ends after the 'upper' threshold is reached, or if the graph becomes
+Execution of \code{analysis()} ends after the '\code{upper}' threshold is reached, or if the graph becomes
 too small to threshold further.
  
 The results at each step are written output files. There is always at least one output file, but there can be 
 up to three depending on the methods passed:
 \itemize{
-  \item <outfile_prefix>.iterative.txt:          (\strong{guaranteed})
-  \item <outfile_prefix>.statistical_errors.txt: (method \strong{1})
-  \item <outfile_prefix>.local_global.txt        (method \strong{2})
+  \item \code{<outfile_prefix>.iterative.txt}:          (\strong{guaranteed})
+  \item \code{<outfile_prefix>.statistical_errors.txt}: (method \strong{1})
+  \item \code{<outfile_prefix>.local_global.txt}:        (method \strong{2})
 }
 }
 \details{
@@ -114,7 +116,20 @@ analysis(data_file,
          )
 
 #######    Example 2 - Iterative methods #######
-print("COMING SOON 2")
+# WARNING FOR EXAMPLES: this code may take a few minutes to run.
+methods <- c(3,4,5,6)
+lower <- 0.7
+
+# Note: By supplying an output file prefix, the only modification to the output
+        file will be "-###" where ### represents the analysis methods passed
+        to analysis(). This is done to distinguish between output files generated by analysis()
+        that have the same prefix, but potentially different methods.
+analysis(data_file,
+         outfile_prefix = "./example_2_it",
+         methods = methods,
+         lower = lower,
+        )
+
 
 #######    Example 3 - iterative and power/significance methods #######
 methods <- c(8, 1, 3)    # select the three desired analysis methods
@@ -129,6 +144,6 @@ analysis(data_file,
          num_samples = num_samples,
          )
 
-######    Example 4 - iterative and local-global  methods #######
+######    Example 4 - local-global and iterative     methods #######
 print("COMING SOON 4")
 }

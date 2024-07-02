@@ -40,7 +40,7 @@ plot_t_vs_ev <- function(iter_infile){
   
   # Get the results from analysis to get the D$D list
   stripped_prefix <- stripped_list[[2]]
-  iter_results <- get_iter_t_vals(stripped_infile)
+  iter_results <- thresholding::get_iter_t_vals(stripped_infile)
   plot_df <- iter_results$iter_df
   
   # Make sure get_results had something to plot

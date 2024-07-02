@@ -455,24 +455,24 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   return(df)
 }
 
-##############################################################################
-#' Prints the resulting analysis method thresholding values
-#' after running thresholding::analysis()
-#' 
-#' Note: This function assumes that the .iterative anaylsis() output file
-#' is in the current directory unless the path to the file is provided. 
-#' 
-#' @param outfile filename or file path for resulting output file from 
-#' running the analysis function (file would be <prefix>.<type>.txt where the 
-#' prefix is the name of the output file before the extension and the 
-#' type could be "iterative", "statistical_errors", or "local_global".
-#' Example: dataset-567.iterative.txt
-#'      prefix: datset-567
-#'      extension: .iterative.txt
-#' @param plot_iterative optionally plot the vertices and edges vs. threshold value as a graph.
-#' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
-#' the user needing to manually extract the required parameters.
-#' @export
+###################################################################################
+###### Prints the resulting analysis method thresholding values
+###### after running thresholding::analysis()
+###### 
+###### Note: This function assumes that the .iterative anaylsis() output file
+###### is in the current directory unless the path to the file is provided.
+###### 
+###### @param outfile filename or file path for resulting output file from
+###### running the analysis function (file would be <prefix>.<type>.txt where the
+###### prefix is the name of the output file before the extension and the
+###### type could be "iterative", "statistical_errors", or "local_global".
+###### Example: dataset-567.iterative.txt
+######      prefix: datset-567
+######      extension: .iterative.txt
+###### @param plot_iterative optionally plot the vertices and edges vs. threshold value as a graph.
+###### uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
+###### the user needing to manually extract the required parameters.
+###### @export
 get_results <- function(outfile,
                         plot_iterative = FALSE,
                         find_others = FALSE){
