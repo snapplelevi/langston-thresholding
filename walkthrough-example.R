@@ -99,7 +99,7 @@ print(get_res_D$alpha)
 # iter_only <- get_iter_t_vals(data_prefix)
 # plot_t_vs_ev(iter_only$Iter_df, get_res_D)
 iter_infile <- "./example/HumanCellCycleSubset"
-plot_t_vs_ev(iter_infile)
+thresholding::plot_t_vs_ev(iter_infile)
 # Thresholding the graph and saving to a new output file
 threshold <- 0.79
 abs_outfile <- "./example/HumanCellCycleSubset-ABSTHOLD.ncol"

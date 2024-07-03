@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_results.R
 \name{get_results}
 \alias{get_results}
-\title{Prints the resulting analysis method thresholding values
+\title{Returns the resulting analysis method thresholding values
 after running thresholding::analysis()}
 \usage{
 get_results(outfile_prefix, plot_iterative = FALSE)
@@ -31,6 +31,19 @@ find this method or alpha value in the files with the matching prefix.
 not show up
 }
 \description{
-Note: This function assumes that the .iterative anaylsis() output file
-is in the current directory unless the path to the file is provided.
+\code{get_results()} will take an output file prefix and attempt to accumulate
+the results connected to that prefix. These results come in the form of analysis methods
+and their recommended thresholding value (as determined by \code{get_results()}).
+}
+\details{
+For example, take the output file prefix of "\code{EXAMPLE_NAME}". If this is passed
+to \code{analysis()} once with \code{methods=c(4,5)}, and another time with
+\code{methods=c(6,7)}, then there will be two output files:
+\enumerate{
+   \item EXAMPLE_NAME-45.iterative.txt
+   \item EXAMPLE_NAME-67.iterative.txt
+}
+
+When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
+files and combine the results from each method into one data structure.
 }

@@ -29,10 +29,22 @@
 //'
 //' Description of threshold goes here
 //'
-//' @param infile DOCUMENT THIS
-//' @param outfile DOCUMENT THIS
-//' @param method DOCUMENT / CHANGE THIS
-//' @param absolute DOCUMENT / CHANGE THIS
+//' @param infile The input .ncol graph file to be thresholded.
+//' @param outfile The path of the output file where the thresholded grpah will be written to.
+//' @param method The method of thresholding can be one of these options:
+//' \enumerate{
+//'     \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
+//'            absolute value of the threshold value. (\code{weight} >= | \code{threshold} |)
+//'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{threshold} if
+//'           \code{threshold} >= \code{0}.  If \code{threshold} < \code{0}, all negative edges less than
+//'           \code{threshold} are retained.
+//'     \item \strong{\code{"local-global"}}: 
+//'     \item \strong{\code{"rank"}}: 
+
+//'
+//'}
+//' @param threshold The value to threshold the grpah. The affect of this value depends on the thresolding
+//'        \code{method} used, which are described above.
 //' @param local_global_alpha DOCUMENT / CHANGE THIS
 //' @param rank DOCUMENT / CHANGE THIS
 //' @examples
@@ -43,9 +55,11 @@
 int threshold(std::string& infile,
               std::string& outfile,
               std::string method="absolute",
-              double absolute=0.0,
+              double threshold=0.0,
               double local_global_alpha=0.0,
-              int rank=0){
+              int rank=0
+              )
+{
 
     std::ifstream fin;
     fin.open(infile);
@@ -74,14 +88,13 @@ int threshold(std::string& infile,
 
     // ADD DOCS HERE!!!
     if (method == "strict"){
-        double strict_threshold = absolute;
-        threshold_graph(strict_threshold, G, true);
+        threshold_graph(threshold, G, true);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
     }
     else if (method == "absolute"){
-        threshold_graph(absolute, G);
+        threshold_graph(threshold, G);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";

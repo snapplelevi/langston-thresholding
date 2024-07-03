@@ -533,11 +533,23 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 }
 
 ##############################################################################
-#' Prints the resulting analysis method thresholding values
+#' Returns the resulting analysis method thresholding values
 #' after running thresholding::analysis()
 #' 
-#' Note: This function assumes that the .iterative anaylsis() output file
-#' is in the current directory unless the path to the file is provided. 
+#' \code{get_results()} will take an output file prefix and attempt to accumulate
+#' the results connected to that prefix. These results come in the form of analysis methods
+#' and their recommended thresholding value (as determined by \code{get_results()}).
+#' 
+#' For example, take the output file prefix of "\code{EXAMPLE_NAME}". If this is passed
+#' to \code{analysis()} once with \code{methods=c(4,5)}, and another time with
+#' \code{methods=c(6,7)}, then there will be two output files:
+#' \enumerate{
+#'    \item EXAMPLE_NAME-45.iterative.txt
+#'    \item EXAMPLE_NAME-67.iterative.txt
+#' }
+#' 
+#' When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
+#' files and combine the results from each method into one data structure.
 #' 
 #' @param outfile_prefix filename or file path for resulting output file from 
 #' running the analysis function (file would be <prefix>.iterative.txt)
@@ -554,7 +566,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #'    be called \code{"alpha"}
 #' }
 #' The output of \code{get_results()} and its separate wrappers will depend on the methods 
-#' passed to \code{analysis()}. Values will either be valid or +/-Inf. If a method and/or value
+#' passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
 #' for alpha does not show up in the returned list, then \code{get_results()} could not 
 #' find this method or alpha value in the files with the matching prefix.
 #' not show up 

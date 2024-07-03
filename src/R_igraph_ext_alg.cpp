@@ -93,9 +93,6 @@ int threshold_graph(double t, igraph_t &G, bool strict){
         return 3;
     }
 
-    else{
-        return -1;
-    }
 }
 
 // Identify largest connected component of the graph and induce

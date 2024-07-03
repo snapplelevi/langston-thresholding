@@ -4,55 +4,54 @@
 #' Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds \
 #' against the V/E line plots. 
 #' 
-#' @param iter_infile The name of the .iterative.txt file from the \code{analysis()} function.
-#' This is required to be the exact name of the file because \code{plot_t_vs_ev()} will only show
-#' the methods used for that specific combination of methods. In comparison, \code{get_results()} 
-#' takes in a prefix so that it can potentially combine analysis methods for several analysis
-#' method combinations that share the same user given prefix.
+#' @param iter_prefix The prefix of the .iterative.txt file(s) from the \code{analysis()} function.
 #' @returns A ggplot object that can be displayed with show(), or by calling the plot_t_vs_ev() directly in the R terminal.
 #' @export 
-plot_t_vs_ev <- function(iter_infile){
+plot_t_vs_ev <- function(iter_prefix){
   
   
-  # Validate that iter_infile is valid
-  if(file.exists(iter_infile) == FALSE){
-    writeLines(paste0("-- plot_t_vs_ev(): The input file \'", iter_infile, "\'"))
-    writeLines(paste0("--                 was not able to be opened... please check spelling or the"))
-    writeLines(paste0("--                 working directory if the file path is relative."))
-    writeLines(paste0("--"))
-    writeLines(paste0("-- Leaving plot_t_vs_ev()"))
-    return(invisible(NULL))
-  }
-  
-  
-  # Strip the .iterative.txt suffix from the precise file name to use in get_iter_t_vals
-  iter_ext <- ".iterative.txt"
-  stripped_list <- unlist(strsplit(iter_infile, iter_ext, fixed=TRUE))
-  
-  # Make sure that there is only one .iterative.txt and that the extension
-  # is truly the extension (end of the file name)
-  if(length(stripped_list) != 2 &&
-     stripped_list[[2]] != iter_ext){
-    print("Print out error messages for .iterative.txt file ext. being wrong")
-    return(invisible(NULL))
-  }
+  # # Validate that iter_prefix is valid
+  # if(file.exists(iter_prefix) == FALSE){
+  #   writeLines(paste0("-- plot_t_vs_ev(): The input file \'", iter_prefix, "\'"))
+  #   writeLines(paste0("--                 was not able to be opened... please check spelling or the"))
+  #   writeLines(paste0("--                 working directory if the file path is relative."))
+  #   writeLines(paste0("--"))
+  #   writeLines(paste0("-- Leaving plot_t_vs_ev()"))
+  #   return(invisible(NULL))
+  # }
+  # 
+  # 
+  # # Strip the .iterative.txt suffix from the precise file name to use in get_iter_t_vals
+  # iter_ext <- ".iterative.txt"
+  # stripped_list <- unlist(strsplit(iter_prefix, iter_ext, fixed=TRUE))
+  # 
+  # # Make sure that there is only one .iterative.txt and that the extension
+  # # is truly the extension (end of the file name)
+  # if(length(stripped_list) != 2 &&
+  #    stripped_list[[2]] != iter_ext){
+  #   print("Print out error messages for .iterative.txt file ext. being wrong")
+  #   return(invisible(NULL))
+  # }
+  # 
+  #
   
   
   # Get the results from analysis to get the D$D list
-  stripped_prefix <- stripped_list[[2]]
-  iter_results <- thresholding::get_iter_t_vals(stripped_infile)
+  #stripped_prefix <- stripped_list[[2]]
+  iter_results <- thresholding::get_iter_t_vals(iter_prefix)
   plot_df <- iter_results$iter_df
   
-  # Make sure get_results had something to plot
-  # Otherwise just tell the user there is nothing to plot
-  if(is.null(iter_results$D)){
-    writeLines(paste0("-- plot_t_vs_ev(): internal use of get_results(\'", iter_infile, "\') returned"))
-    writeLines(paste0("--                 no valid analysis method thresholds. This means there"))
-    writeLines(paste0("--                 is nothing to plot."))
-    writeLines(paste0("--"))
-    writeLines(paste0("-- Leaving plot_t_vs_ev()"))
-    return(invisible(NULL))
-  }
+  
+  # # Make sure get_results had something to plot
+  # # Otherwise just tell the user there is nothing to plot
+  # if(is.null(iter_results$D)){
+  #   writeLines(paste0("-- plot_t_vs_ev(): internal use of get_results(\'", iter_prefix, "\') returned"))
+  #   writeLines(paste0("--                 no valid analysis method thresholds. This means there"))
+  #   writeLines(paste0("--                 is nothing to plot."))
+  #   writeLines(paste0("--"))
+  #   writeLines(paste0("-- Leaving plot_t_vs_ev()"))
+  #   return(invisible(NULL))
+  # }
   
   # Store D_iter$D list into D for easier reading / less typing
   D <- iter_results$D_iter$D
@@ -151,6 +150,7 @@ plot_t_vs_ev <- function(iter_infile){
   e_count <- plot_df$edge.count[1]
   t_begin <- plot_df$threshold[1]
   t_end <- utils::tail(plot_df$threshold, n=1)
+  #print(t_end)
   
   step_inc <- 0.05   # x axis tick increment (change dynamically based on 
                      # range of threshold values eventually)
@@ -187,19 +187,21 @@ plot_t_vs_ev <- function(iter_infile){
   dup_vals <- duplicated(plot_df[,c('threshold', 'edge.count', 'vertex.count')])
   unique_df <- plot_df [ !dup_vals , ]
   
+  #print(unique_df)
   # ADD DOCUMENTATION TO EACH STEP!
   PLOT <- ggplot2::ggplot(data=unique_df,
                            ggplot2::aes(x=threshold)) + 
+    
+          ggplot2::geom_line(
+            ggplot2::aes(y=vertex.count, 
+                         color="Vertex Count")
+          ) +
     
           ggplot2::geom_line(ggplot2::aes(y=edge.count / factor, 
                                           color="Edge Count")
                              ) + 
     
-          ggplot2::geom_line(
-                          ggplot2::aes(y=vertex.count, 
-                                       color="Vertex Count")
-                          ) +
-    
+
           ggplot2::xlab("Threshold Value") +
     
           ggplot2::ylab("Edge Count") +
@@ -211,7 +213,7 @@ plot_t_vs_ev <- function(iter_infile){
                         ) +
     
           ggplot2::scale_y_continuous(
-                      "Vertex Count", 
+                      name = "Vertex Count", 
                       sec.axis = ggplot2::sec_axis(~.*factor, name="Edge Count")
                     ) +
     
@@ -231,8 +233,19 @@ plot_t_vs_ev <- function(iter_infile){
       annot_string <- paste0(annot_string, label_method, '\n')
     }
     x_coord <- annotations[[method_name]]
+    
+    # Don't break the ggplot2::geom_point by a method having a suggested threshold
+    # over the max possible threshold number. Not sure how this is happening for 
+    # method='rmt' in particular, but need to double check get_results() is behaving
+    # how it should.
+    if(x_coord > t_end){
+      next;
+    }
     #print(paste0("edges: ", plot_df$edge.count[plot_df$threshold==x_coord]))
     # print(paste0("WE ARE NOW HERE: ", x_coord, method_name ))
+    #print(paste0(method_name, "   ", unique_df$vertex.count[unique_df$threshold==x_coord]))
+    #print(paste0(method_name, "   ", unique_df$edge.count[unique_df$threshold==x_coord]))
+    
     PLOT <- PLOT +
             ggplot2::geom_vline(xintercept=x_coord,
                                 linetype="solid",
@@ -242,6 +255,7 @@ plot_t_vs_ev <- function(iter_infile){
 
             # Point for the vertex curve
             # Shape 23 = 45 degree square
+    
             ggplot2::geom_point(x=x_coord,
                                 y=unique_df$vertex.count[unique_df$threshold==x_coord],
                                 color="blue",
@@ -268,7 +282,7 @@ plot_t_vs_ev <- function(iter_infile){
                               size=3.2
             )
   } # end of method annotation loop
-  
+  # print("done with loop")
   # Return the ggplot2 object for variable storage or direct plotting with show()
   return(PLOT)
   
