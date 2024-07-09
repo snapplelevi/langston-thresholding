@@ -56,11 +56,29 @@ get_iterative_t_values <- function(files,
                                    d_min_t=list(general=0)){
   
   
+  print(files)
   # print(paste0("files inside: ", files))
   # Create array of data frames read in from files array
   all_dfs <- c()
   for(file in files){
-    df <- utils::read.csv(file, sep="")
+    
+    # Attempt to read in the file, but catch any errors and let user know
+    # that the file was 
+    tryCatch(
+      
+      expr = {
+        
+        df <- utils::read.csv(file, sep="")
+        
+      },
+      error = function(err){
+        writeLines("--get_results()  ---internal---> get_iterative_t_values():",  con = stderr())
+        stop(paste0("the file: ", file, "\n
+                     was not able to be read in by utils::read.csv.\n
+                     Make sure the file path is correct, and there is valid
+                     data in this file."))
+      }
+    )
     
     # if no rows, continue in loop
     writeLines("-------------------- Files and the number of rows -------------------- ")
@@ -72,6 +90,7 @@ get_iterative_t_values <- function(files,
     
     # otherwise, append to array
     all_dfs <- rbind(all_dfs, df)
+    print('afterfffffff')
   }
   
   # Return empty df if there wasn't one big data frame made
@@ -160,8 +179,7 @@ get_iterative_t_values <- function(files,
     ########################################################
     subdf <- df
   }
-                
-  #print(subdf$almost.disconnected.component.count)
+              
   
   # Change values in subdf that are negative to be NaN
   # Otherwise, stay the same
@@ -204,8 +222,8 @@ get_iterative_t_values <- function(files,
                                select=threshold))
   goe.pvalue <- max(subset(subdf, 
                            goe.pvalue < 0.05, 
-                           select=threshold)) / 2
-  D$D['rmt'] <- poisson.pvalue + goe.pvalue
+                           select=threshold)) 
+  D$D['rmt'] <- (poisson.pvalue + goe.pvalue) / 2 
   
   
   # Maximal clique ratio
@@ -421,8 +439,24 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
     
-    ####### figure out if index_col=0 is the default ######
-    df <- utils::read.csv(file, sep="", skip=2)
+    # Attempt to read in the file, but catch any errors and let user know
+    # that the file was 
+    tryCatch(
+      
+      expr = {
+        
+        ####### figure out if index_col=0 is the default ######
+        df <- utils::read.csv(file, sep="", skip=2)
+        
+      },
+      error = function(err){
+        writeLines("--get_results()  ---internal--->  get_significance_t_values():", con = stderr())
+        stop(paste0("the file: ", file, "\n
+                     was not able to be read in by utils::read.csv.\n
+                     Make sure the file path is correct, and there is valid
+                     data in this file."))
+      }
+    )
     
     if(nrow(df) == 0){
       next
@@ -468,8 +502,27 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
   
   # Append non-empty data frames to list
   for(file in files){
-    # row.names = 1 SAME index_col = 0 in python?
+    
     df <- utils::read.csv(file, sep="", row.names=NULL) 
+    
+    # Attempt to read in the file, but catch any errors and let user know
+    # that the file was 
+    tryCatch(
+      
+      expr = {
+        
+        # row.names = 1 SAME index_col = 0 in python?
+        df <- utils::read.csv(file, sep="", row.names=NULL)
+        
+      },
+      error = function(err){
+        writeLines("--get_results()  ---internal--->  get_local_global_alpha_value():", con = stderr())
+        stop(paste0("the file: ", file, "\n
+                     was not able to be read in by utils::read.csv.\n
+                     Make sure the file path is correct, and there is valid
+                     data in this file."))
+      }
+    )
     
     if(nrow(df) == 0){
       next
@@ -551,9 +604,9 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
 #' files and combine the results from each method into one data structure.
 #' 
-#' @param outfile_prefix filename or file path for resulting output file from 
-#' running the analysis function (file would be <prefix>.iterative.txt)
-#' @param plot_iterative optionally plot the vertices and edges vs. threshold value as a graph.
+#' @param outfile_prefix File prefix for resulting output file from 
+#' running the \code{analysis()} function (file would be <prefix>.iterative.txt)
+#' @param plot_iterative Optionally plot the vertices and edges vs. threshold value as a graph.
 #' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
 #' the user needing to manually extract the required parameters.
 #' 
@@ -634,7 +687,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
     writeLines("############# plot_t_vs_ev() called #############\n")
-    thresholding::plot_t_vs_ev(outfile_prefix)
+    show(thresholding::plot_t_vs_ev(outfile_prefix))
   }
   
   # Results accessible by <out_variable>$D ; <out_variable>$alpha
