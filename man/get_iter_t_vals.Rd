@@ -10,11 +10,12 @@ get_iter_t_vals(outfile_prefix, recursive = FALSE)
 }
 \arguments{
 \item{outfile_prefix}{Prefix of output file, which can have several
-output file paths if the same prefix is run with analysis() several times. 
+output file paths if the same prefix is run with \code{analysis()} several times. 
 
-Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
-on all files names iter-prefix-###.iterative.txt where ### is the process
-ID of the internal process (like 4318, 3341, 414143, etc.).}
+Ex.) \code{get_iter_t_vals("iter-prefix")} will execute \code{get_iterative_t_values}
+on all files names \code{iter-prefix-###.iterative.txt}, where \code{###} is the unique combination
+of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
+methods were passed to \code{analysis()}.}
 
 \item{recursive}{Option to allow for subdirectory searching of the file prefix.
 Set to FALSE for default in case of large subdirectories. This option is meant to help 
@@ -38,5 +39,8 @@ and its corresponding threshold value.
 }
 \description{
 Returns the thresholding data frame created by the internal
-get_iterative_t_values, which does not return anything to the user.
+get_iterative_t_values, which does not return anything to the user. This
+data frame contains step-by-step thresholding figures for analysis methods, 
+edge counts, vertex counts, and other metrics computed as a result of the 
+\code{analysis()} function.
 }

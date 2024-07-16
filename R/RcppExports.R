@@ -89,7 +89,7 @@
 #'         )
 #'
 #'
-#' #######    Example 3 - iterative and power/significance methods #######
+#' #######    Example 3 - iterative and power/significance methods ### ####
 #' methods <- c(8, 1, 3)    # select the three desired analysis methods
 #' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 #' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
@@ -109,21 +109,39 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected, overwrite))
 }
 
-#' Strict thresholding for weighted graphs in .ncol format
+#' Strict thresholding for weighted graphs in \code{.ncol} format
 #'
-#' Description of threshold goes here
+#' General graph thresholding function that reads in an \code{\code{.ncol}} graph file and writes
+#' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
+#' are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
+#' or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 #'
-#' @param infile DOCUMENT THIS
-#' @param outfile DOCUMENT THIS
-#' @param method DOCUMENT / CHANGE THIS
-#' @param absolute DOCUMENT / CHANGE THIS
-#' @param local_global_alpha DOCUMENT / CHANGE THIS
-#' @param rank DOCUMENT / CHANGE THIS
+#' @param infile The input \code{.ncol} graph file to be thresholded.
+#' @param outfile The path of the output file where the thresholded grpah will be written to.
+#' @param method The method of thresholding can be one of these options:
+#' \enumerate{
+#'     \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
+#'            absolute value of the threshold value. (\code{weight} >= | \code{thresh} |)
+#'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
+#'           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
+#'           \code{thresh} are retained.
+#'     \item \strong{\code{"local-global"}}: Local global pruning
+#'     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
+#'     }
+#' @param thresh The value to threshold the graph. The affect of this value depends on the thresolding
+#'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
+#'        \code{"absolute"} thresholding methods.}
+#' @param local_global_alpha  Use local-global method to threshold with alpha = \code{local_global_alpha}. 
+#'        \strong{Only used with \code{method} == "local-global".}
+#' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
+#'        \code{method} == "\code{rank}".}
 #' @examples
-#' print('NEED TO WRITE EXAMPLES FOR THIS LATER')
-#' print('MULTIPLE IF POSSIBLE')
+#' thresh <- 0.85
+#' infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+#' outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+#' thresholding::threshold(infile, outfile, thresh = thresh)
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
-threshold <- function(infile, outfile, method = "absolute", absolute = 0.0, local_global_alpha = 0.0, rank = 0L) {
-    .Call(`_thresholding_threshold`, infile, outfile, method, absolute, local_global_alpha, rank)
+threshold <- function(infile, outfile, method = "absolute", thresh = 0.0, local_global_alpha = 0.0, rank = 0L) {
+    .Call(`_thresholding_threshold`, infile, outfile, method, thresh, local_global_alpha, rank)
 }
 

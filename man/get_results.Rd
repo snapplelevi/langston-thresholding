@@ -8,10 +8,10 @@ after running thresholding::analysis()}
 get_results(outfile_prefix, plot_iterative = FALSE)
 }
 \arguments{
-\item{outfile_prefix}{filename or file path for resulting output file from 
-running the analysis function (file would be <prefix>.iterative.txt)}
+\item{outfile_prefix}{File prefix for resulting output file from 
+running the \code{analysis()} function (file would be <prefix>.iterative.txt)}
 
-\item{plot_iterative}{optionally plot the vertices and edges vs. threshold value as a graph.
+\item{plot_iterative}{Optionally plot the vertices and edges vs. threshold value as a graph.
 uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
 the user needing to manually extract the required parameters.}
 }
@@ -25,7 +25,7 @@ The returned list that can contain:
    be called \code{"alpha"}
 }
 The output of \code{get_results()} and its separate wrappers will depend on the methods 
-passed to \code{analysis()}. Values will either be valid or +/-Inf. If a method and/or value
+passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
 for alpha does not show up in the returned list, then \code{get_results()} could not 
 find this method or alpha value in the files with the matching prefix.
 not show up

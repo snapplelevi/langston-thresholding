@@ -2,37 +2,55 @@
 % Please edit documentation in R/RcppExports.R
 \name{threshold}
 \alias{threshold}
-\title{Strict thresholding for weighted graphs in .ncol format}
+\title{Strict thresholding for weighted graphs in \code{.ncol} format}
 \usage{
 threshold(
   infile,
   outfile,
   method = "absolute",
-  absolute = 0,
+  thresh = 0,
   local_global_alpha = 0,
   rank = 0L
 )
 }
 \arguments{
-\item{infile}{DOCUMENT THIS}
+\item{infile}{The input \code{.ncol} graph file to be thresholded.}
 
-\item{outfile}{DOCUMENT THIS}
+\item{outfile}{The path of the output file where the thresholded grpah will be written to.}
 
-\item{method}{DOCUMENT / CHANGE THIS}
+\item{method}{The method of thresholding can be one of these options:
+\enumerate{
+    \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
+           absolute value of the threshold value. (\code{weight} >= | \code{thresh} |)
+    \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
+          \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
+          \code{thresh} are retained.
+    \item \strong{\code{"local-global"}}: Local global pruning
+    \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
+    }}
 
-\item{absolute}{DOCUMENT / CHANGE THIS}
+\item{thresh}{The value to threshold the graph. The affect of this value depends on the thresolding
+\code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
+\code{"absolute"} thresholding methods.}}
 
-\item{local_global_alpha}{DOCUMENT / CHANGE THIS}
+\item{local_global_alpha}{Use local-global method to threshold with alpha = \code{local_global_alpha}. 
+\strong{Only used with \code{method} == "local-global".}}
 
-\item{rank}{DOCUMENT / CHANGE THIS}
+\item{rank}{Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
+\code{method} == "\code{rank}".}}
 }
 \value{
 Nothing. The thresholded graph is written to the file specified by outfile.
 }
 \description{
-Description of threshold goes here
+General graph thresholding function that reads in an \code{\code{.ncol}} graph file and writes
+the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
+are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
+or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
-print('NEED TO WRITE EXAMPLES FOR THIS LATER')
-print('MULTIPLE IF POSSIBLE')
+thresh <- 0.85
+infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+thresholding::threshold(infile, outfile, thresh = thresh)
 }

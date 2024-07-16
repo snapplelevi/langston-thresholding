@@ -131,7 +131,7 @@ analysis(data_file,
         )
 
 
-#######    Example 3 - iterative and power/significance methods #######
+#######    Example 3 - iterative and power/significance methods ### ####
 methods <- c(8, 1, 3)    # select the three desired analysis methods
 lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set

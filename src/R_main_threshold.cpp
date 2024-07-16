@@ -2,7 +2,7 @@
 // made on dev
 // Carissa BLeker
 // cbleker@vols.utk.edu
-
+#include <RcppCommon.h>
 #include <Rcpp.h>
 #include <igraph.h>
 
@@ -21,41 +21,48 @@
 #include "local_global.h"
 #include "local_rank.h"
 
+
 ///////////////////////////////////////////////////////////////////////////////
-
-
 // Manually exported in NAMESPACE
-//' Strict thresholding for weighted graphs in .ncol format
+//
+// 
+//' Strict thresholding for weighted graphs in \code{.ncol} format
 //'
-//' Description of threshold goes here
+//' General graph thresholding function that reads in an \code{\code{.ncol}} graph file and writes
+//' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
+//' are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
+//' or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 //'
-//' @param infile The input .ncol graph file to be thresholded.
+//' @param infile The input \code{.ncol} graph file to be thresholded.
 //' @param outfile The path of the output file where the thresholded grpah will be written to.
 //' @param method The method of thresholding can be one of these options:
 //' \enumerate{
 //'     \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
-//'            absolute value of the threshold value. (\code{weight} >= | \code{threshold} |)
-//'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{threshold} if
-//'           \code{threshold} >= \code{0}.  If \code{threshold} < \code{0}, all negative edges less than
-//'           \code{threshold} are retained.
-//'     \item \strong{\code{"local-global"}}: 
-//'     \item \strong{\code{"rank"}}: 
-
-//'
-//'}
-//' @param threshold The value to threshold the grpah. The affect of this value depends on the thresolding
-//'        \code{method} used, which are described above.
-//' @param local_global_alpha DOCUMENT / CHANGE THIS
-//' @param rank DOCUMENT / CHANGE THIS
+//'            absolute value of the threshold value. (\code{weight} >= | \code{thresh} |)
+//'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
+//'           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
+//'           \code{thresh} are retained.
+//'     \item \strong{\code{"local-global"}}: Local global pruning
+//'     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
+//'     }
+//' @param thresh The value to threshold the graph. The affect of this value depends on the thresolding
+//'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
+//'        \code{"absolute"} thresholding methods.}
+//' @param local_global_alpha  Use local-global method to threshold with alpha = \code{local_global_alpha}. 
+//'        \strong{Only used with \code{method} == "local-global".}
+//' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
+//'        \code{method} == "\code{rank}".}
 //' @examples
-//' print('NEED TO WRITE EXAMPLES FOR THIS LATER')
-//' print('MULTIPLE IF POSSIBLE')
+//' thresh <- 0.85
+//' infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+//' outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+//' thresholding::threshold(infile, outfile, thresh = thresh)
 //' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 // [[Rcpp::export]]
-int threshold(std::string& infile,
-              std::string& outfile,
+int threshold(std::string infile,
+              std::string outfile,
               std::string method="absolute",
-              double threshold=0.0,
+              double thresh=0.0,
               double local_global_alpha=0.0,
               int rank=0
               )
@@ -72,7 +79,7 @@ int threshold(std::string& infile,
 
     // turn on attribute handling
     // for igraph to handle edge weights
-    igraph_i_set_attribute_table(&igraph_cattribute_table);
+    igraph_set_attribute_table(&igraph_cattribute_table);
 
     // Load graph (names = true)
     igraph_t G;
@@ -88,13 +95,13 @@ int threshold(std::string& infile,
 
     // ADD DOCS HERE!!!
     if (method == "strict"){
-        threshold_graph(threshold, G, true);
+        threshold_graph(thresh, G, true);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
     }
     else if (method == "absolute"){
-        threshold_graph(threshold, G);
+        threshold_graph(thresh, G);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
@@ -140,7 +147,7 @@ void help(std::string prog_name){
     Rcpp::Rcerr <<  "\n";
     Rcpp::Rcerr <<  "    Usage: \n";
     Rcpp::Rcerr <<  "    " << prog_name     << " [-OPTIONS]... <GRAPH FILE PATH> <OUTPUT FILE PATH> \n\n";
-    Rcpp::Rcerr <<  "    Graph has to be in .ncol format. \n";
+    Rcpp::Rcerr <<  "    Graph has to be in \code{.ncol} format. \n";
     Rcpp::Rcerr <<  "    One of the following options have to be given: ";
     Rcpp::Rcerr <<  "   \n\n";
     Rcpp::Rcerr <<  "    Options: \n";

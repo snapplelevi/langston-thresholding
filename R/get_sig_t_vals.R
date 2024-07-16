@@ -12,9 +12,10 @@
 #' @param outfile_prefix Prefix of output file, which can have several
 #' output file paths if the same prefix is run with analysis() several times. 
 #' 
-#' Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
-#' on all files names iter-prefix-###.iterative.txt where ### is the process
-#' ID of the internal process (like 4318, 3341, 414143, etc.).
+#' Ex.) \code{get_sig_t_vals("sig-prefix")} will execute \code{get_significance_t_values()}
+#' on all files names \code{sig-prefix-###.iterative.txt} where \code{###} is the unique combination
+#' of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
+#' methods were passed to \code{analysis()}.
 #' 
 #' @param recursive Option to allow for subdirectory searching of the file prefix.
 #' Set to FALSE for default in case of large subdirectories. This option is meant to help 

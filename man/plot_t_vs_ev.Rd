@@ -4,14 +4,10 @@
 \alias{plot_t_vs_ev}
 \title{Plots the edge (E) and vertex (V) counts of a graph at varying thresholds}
 \usage{
-plot_t_vs_ev(iter_infile)
+plot_t_vs_ev(iter_prefix)
 }
 \arguments{
-\item{iter_infile}{The name of the .iterative.txt file from the \code{analysis()} function.
-This is required to be the exact name of the file because \code{plot_t_vs_ev()} will only show
-the methods used for that specific combination of methods. In comparison, \code{get_results()} 
-takes in a prefix so that it can potentially combine analysis methods for several analysis
-method combinations that share the same user given prefix.}
+\item{iter_prefix}{The prefix of the .iterative.txt file(s) from the \code{analysis()} function.}
 }
 \value{
 A ggplot object that can be displayed with show(), or by calling the plot_t_vs_ev() directly in the R terminal.
