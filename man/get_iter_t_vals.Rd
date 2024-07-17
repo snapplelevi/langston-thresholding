@@ -4,7 +4,7 @@
 \alias{get_iter_t_vals}
 \title{get_iter_t_vals()
                          
-User wrapper function for get_iterative_t_values}
+User wrapper function for the intenal \code{get_iterative_t_values()}}
 \usage{
 get_iter_t_vals(outfile_prefix, recursive = FALSE)
 }

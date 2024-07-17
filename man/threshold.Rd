@@ -34,7 +34,7 @@ threshold(
 \code{"absolute"} thresholding methods.}}
 
 \item{local_global_alpha}{Use local-global method to threshold with alpha = \code{local_global_alpha}. 
-\strong{Only used with \code{method} == "local-global".}}
+\strong{Only used with \code{method == "local-global".}}}
 
 \item{rank}{Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 \code{method} == "\code{rank}".}}
@@ -49,8 +49,8 @@ are presented in the comparative study paper linked here: \link{https://pubmed.n
 or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
-thresh <- 0.85
-infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+thresh <- 0.85
 thresholding::threshold(infile, outfile, thresh = thresh)
 }

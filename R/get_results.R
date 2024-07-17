@@ -590,7 +590,7 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' after running thresholding::analysis()
 #' 
 #' \code{get_results()} will take an output file prefix and attempt to accumulate
-#' the results connected to that prefix. These results come in the form of analysis methods
+#' the results connected to that prefix. This prefix come in the form of analysis methods
 #' and their recommended thresholding value (as determined by \code{get_results()}).
 #' 
 #' For example, take the output file prefix of "\code{EXAMPLE_NAME}". If this is passed
@@ -604,8 +604,10 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
 #' files and combine the results from each method into one data structure.
 #' 
-#' @param outfile_prefix File prefix for resulting output file from 
-#' running the \code{analysis()} function (file would be <prefix>.iterative.txt)
+#' @param outfile_prefix File path and prefix for resulting output file from 
+#' running the \code{analysis()} function (file would be <prefix>.iterative.txt). The 
+#' output files will be assumed to be in the current working directory from where
+#' \code{get_results()} was called if no path is specified.
 #' @param plot_iterative Optionally plot the vertices and edges vs. threshold value as a graph.
 #' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
 #' the user needing to manually extract the required parameters.
@@ -623,6 +625,11 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' for alpha does not show up in the returned list, then \code{get_results()} could not 
 #' find this method or alpha value in the files with the matching prefix.
 #' not show up 
+#' @examples
+#' prefix <- "./HumanCellCycleSubset"    # Prefix to the output file (specified by path)
+#' thresholding::get_results(prefix)
+#' 
+#' thresholding::get_results(prefix, plot_iterative = TRUE)
 #' @export
 get_results <- function(outfile_prefix, plot_iterative = FALSE){
  

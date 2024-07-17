@@ -25,8 +25,8 @@ second column contains rows of adjacent vertices, and the third column represent
 between the vertex in the first column one and the vertex in the second column.
 }
 \examples{
-your_file_name_here <- './example/HumanCellCycleSubset.ncol'
+your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
-show(save_plot)
+show(save_plot)    ### the above call to edge_hist could also be wrapped in show()
 
 }

@@ -8,13 +8,13 @@
 # local_global <- ".local_global.txt"
 
 # Installing the package (for development)
-install.packages("../thresholding_1.0.0.tar.gz", type='source', repos=NULL)
+# install.packages("../thresholding_1.0.0.tar.gz", type='source', repos=NULL)
 
 # Load and attach the thresholding namespace 
 library(thresholding)
 
 # Relative path to .ncol data file
-data_file <- './example/HumanCellCycleSubset.ncol'
+data_file <- system.file("extdata", "HumanCellCycleSubset.ncol", package="thresholding")
 data_prefix <- './example/HumanCellCycleSubset'   # prefix used in other functions in package
 
 
@@ -80,7 +80,7 @@ thresholding::analysis(data_file,
 #       for the proper prefix to use
 # output_prefix <- "./example/HumanCellCycleSubset"
 
-output_prefix <- "./example/HumanCellCycleSubset"
+output_prefix <- "USE THE OUTPUT PREFIX PRINTED AFTER analysis() RUNS"
 get_results_out <- get_results(data_prefix)
 get_res_D <- get_results_out$D
 get_res_alpha <- get_res_D$alpha
@@ -95,11 +95,9 @@ print(get_res_D$alpha)
 # Testing the plot functionalites
 # can also do this to just display the plot instead of return it
 # get_results(data_prefix, plot_iterative = TRUE)
-# THIS API  SHOULD NO LONGER WORK!!!
-# iter_only <- get_iter_t_vals(data_prefix)
-# plot_t_vs_ev(iter_only$Iter_df, get_res_D)
 iter_infile <- "./example/HumanCellCycleSubset"
 thresholding::plot_t_vs_ev(iter_infile)
+
 # Thresholding the graph and saving to a new output file
 threshold <- 0.79
 abs_outfile <- "./example/HumanCellCycleSubset-ABSTHOLD.ncol"

@@ -25,7 +25,7 @@ find_last <- function(str, str_to_find){
 ##############################################################################
 #'                          get_iter_t_vals()
 #'                          
-#' User wrapper function for get_iterative_t_values
+#' User wrapper function for the intenal \code{get_iterative_t_values()}
 #' 
 #' Returns the thresholding data frame created by the internal
 #' get_iterative_t_values, which does not return anything to the user. This

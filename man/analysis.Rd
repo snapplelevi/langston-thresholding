@@ -84,7 +84,7 @@ Set this to \code{TRUE} to force overwrite the output file. The default, \code{F
 whether or not you wish to overwrite the output file.}
 }
 \value{
-Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
+Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 }
 \description{
 Weighted graphs thresholding analysis. This function iteratively performs absolute thresholding the input graph at specified threshold values [\code{lower}, \code{upper}].
@@ -105,7 +105,7 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 }
 \examples{
 #######    Variable Set-Up     #######
-data_file <- './example/HumanCellCycleSubset.ncol'      # .ncol weighted edge list
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
 data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 lower <- 0.6   
 
@@ -117,6 +117,7 @@ analysis(data_file,
 
 #######    Example 2 - Iterative methods #######
 # WARNING FOR EXAMPLES: this code may take a few minutes to run.
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 methods <- c(3,4,5,6)
 lower <- 0.7
 
@@ -131,7 +132,8 @@ analysis(data_file,
         )
 
 
-#######    Example 3 - iterative and power/significance methods ### ####
+#######    Example 3 - iterative and power/significance methods #######
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 methods <- c(8, 1, 3)    # select the three desired analysis methods
 lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
@@ -143,7 +145,4 @@ analysis(data_file,
          lower = lower,
          num_samples = num_samples,
          )
-
-######    Example 4 - local-global and iterative     methods #######
-print("COMING SOON 4")
 }

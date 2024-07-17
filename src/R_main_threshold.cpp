@@ -49,13 +49,13 @@
 //'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 //'        \code{"absolute"} thresholding methods.}
 //' @param local_global_alpha  Use local-global method to threshold with alpha = \code{local_global_alpha}. 
-//'        \strong{Only used with \code{method} == "local-global".}
+//'        \strong{Only used with \code{method == "local-global".}}
 //' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 //'        \code{method} == "\code{rank}".}
 //' @examples
-//' thresh <- 0.85
-//' infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 //' outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+//' thresh <- 0.85
 //' thresholding::threshold(infile, outfile, thresh = thresh)
 //' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 // [[Rcpp::export]]

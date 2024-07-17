@@ -1,7 +1,9 @@
 
 ################################################################################
-#'                      get_local_global_alpha()
-#' User wrapper function for \code{get_local_global_alpha_value()}
+#                       get_local_global_alpha()
+#
+#' User wrapper function for the internal \code{get_local_global_alpha_value()}
+#' 
 #' Returns the thresholding data frame created by the internal
 #' \code{get_local_global_alpha_value()}, which does not return anything to the user.
 #' 
@@ -12,9 +14,10 @@
 #' @param outfile_prefix Prefix of output file, which can have several
 #' output file paths if the same prefix is run with analysis() several times. 
 #' 
-#' Ex.) get_iter_t_vals("iter-prefix") will execute get_iterative_t_values
-#' on all files names iter-prefix-###.iterative.txt where ### is the process
-#' ID of the internal process (like 4318, 3341, 414143, etc.).
+#' Ex.) \code{get_local_global_alpha("local-prefix")} will execute \code{get_local_global_alpha_value()}
+#' on all files names local-prefix-###.iterative.txt where \code{###} is the unique combination
+#' of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
+#' methods were passed to \code{analysis()}.
 #' 
 #' @param recursive Option to allow for subdirectory searching of the file prefix.
 #' Set to FALSE for default in case of large subdirectories. This option is meant to help 

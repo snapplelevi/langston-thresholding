@@ -63,7 +63,7 @@
 #'        whether or not you wish to overwrite the output file. 
 #' @examples
 #' #######    Variable Set-Up     #######
-#' data_file <- './example/HumanCellCycleSubset.ncol'      # .ncol weighted edge list
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
 #' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 #' lower <- 0.6   
 #'
@@ -75,6 +75,7 @@
 #'
 #' #######    Example 2 - Iterative methods #######
 #' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' methods <- c(3,4,5,6)
 #' lower <- 0.7
 #' 
@@ -89,7 +90,8 @@
 #'         )
 #'
 #'
-#' #######    Example 3 - iterative and power/significance methods ### ####
+#' #######    Example 3 - iterative and power/significance methods #######
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' methods <- c(8, 1, 3)    # select the three desired analysis methods
 #' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 #' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
@@ -101,10 +103,7 @@
 #'          lower = lower,
 #'          num_samples = num_samples,
 #'          )
-#' 
-#' ######    Example 4 - local-global and iterative     methods #######
-#' print("COMING SOON 4")
-#' @returns Nothing. `analysis()` writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
+#' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0.0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L, overwrite = FALSE) {
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected, overwrite))
 }
@@ -132,13 +131,13 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 #'        \code{"absolute"} thresholding methods.}
 #' @param local_global_alpha  Use local-global method to threshold with alpha = \code{local_global_alpha}. 
-#'        \strong{Only used with \code{method} == "local-global".}
+#'        \strong{Only used with \code{method == "local-global".}}
 #' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 #'        \code{method} == "\code{rank}".}
 #' @examples
-#' thresh <- 0.85
-#' infile <- "extdata/HumanCellCycleSubset\code{\code{.ncol}}"
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
+#' thresh <- 0.85
 #' thresholding::threshold(infile, outfile, thresh = thresh)
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 threshold <- function(infile, outfile, method = "absolute", thresh = 0.0, local_global_alpha = 0.0, rank = 0L) {

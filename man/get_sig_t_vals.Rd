@@ -2,8 +2,7 @@
 % Please edit documentation in R/get_sig_t_vals.R
 \name{get_sig_t_vals}
 \alias{get_sig_t_vals}
-\title{get_sig_t_vals()
-User wrapper function for \code{get_significance_t_values()}}
+\title{User wrapper function for the internal \code{get_significance_t_values()}}
 \usage{
 get_sig_t_vals(outfile_prefix, recursive = FALSE)
 }
