@@ -33,7 +33,8 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
        - This package was developed with CMake version = 3.27 if you aren't sure which version to install.
      
 ## Installing the thresholding package
-1. **Install from devtools()**
+Currently, there are two options for installing the `thresholding` package. The first (1) method outlined below is most recommended as of July 2024. After the package gets published to CRAN, this option will be removed as the recommended installation method.
+1. **Install from devtools()** - ***RECOMMENDED***
    Use the following command in an R window if you have the `devtools` package installed already:
    
       `devtools::install_github("snapplelevi/langston-thresholding")`
