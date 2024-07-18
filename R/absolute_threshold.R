@@ -1,6 +1,30 @@
-# Function to apply a given absolute threshold to the .ncol input graph
-# Input:  .ncol file (same used in analysis function)
-# Output: .ncol file with absolute threshold applied
+########################## absolute_threshold() ######################
+#
+#
+#' Function to apply a given absolute threshold to the \code{.ncol} input graph
+#' 
+#' \code{absolute_threshold()} performs absolute thresholding on an input graph and 
+#' writes the thresholded graph to an output file. This function is tailored specifically
+#' for a clear absolute thresholding use case as compared to \code{threshold()}, which is the
+#' more general purpose thresholding function. 
+#' 
+#' @param infile The \code{.ncol} graph file to be thresholded. 
+#' @param outfile The output file path for the thresholded graph to be written to. 
+#' @param threshold The desired absolute threshold to apply to the input graph.
+#' @param overwrite A boolean parameter meant to prevent overwriting existing thresholded
+#' graph files. The default (\code{FALSE}) will display a menu to the user if the passed
+#' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
+#' the existing file without interruption from a workflow.
+#' @param sort_output Sorts the edges of the thresholded graph in descending order before
+#' writing them to \code{outfile}. 
+#' @examples
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' thresholding::absolute_threshold(infile, 
+#'                                  outfile = "./HCCS-ABSTHRESH.ncol",
+#'                                  threshold = 0.90,
+#'                                  sort_output = TRUE
+#'                                  )
+#' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 #' @export
 absolute_threshold <- function(infile,
                                outfile, 
@@ -21,13 +45,15 @@ absolute_threshold <- function(infile,
   # Set the parameter to TRUE for unconditional overwriting
   if(overwrite == FALSE && file.exists(outfile) == TRUE){
     
-    t <- paste0("You are about to overwrite the output file \'",
+    t <- paste0("You are about to overwrite the graph file \'",
                 outfile,
                 "\'. Continue with absolute thresholding?")
     response <- menu(c("Yes", "No"), title = t)
                   
     # User does not want to overwrite output file, so end function   
     if(response == 2){
+      print(paste0("--absolute_threshold() will not overwrite", outfile))
+      print(paste0("--Leaving absolute_threshold() early..."))
       return(invisible(NULL))
     }
   }

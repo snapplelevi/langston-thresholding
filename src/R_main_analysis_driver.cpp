@@ -415,7 +415,7 @@ void analysis(std::string infile,
                 int response = Rcpp::as<int>(Rcpp::wrap(r_menu(options)));
                 if(response == 2){
                     Rcpp::Rcout << "--analysis() will not overwrite " << file << ".\n";
-                    Rcpp::stop("\rLeaving analysis()f early.");
+                    Rcpp::stop("\rLeaving analysis() early.");
                 }
             }        
             

@@ -42,7 +42,7 @@
 //'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
 //'           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
 //'           \code{thresh} are retained.
-//'     \item \strong{\code{"local-global"}}: Local global pruning
+//'     \item \strong{\code{"local-global"}}: Local the global pruning method mentioned in the thresholding papers
 //'     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
 //'     }
 //' @param thresh The value to threshold the graph. The affect of this value depends on the thresolding
@@ -52,10 +52,39 @@
 //'        \strong{Only used with \code{method == "local-global".}}
 //' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 //'        \code{method} == "\code{rank}".}
+//' @param overwrite A boolean parameter meant to prevent overwriting existing thresholded
+//' graph files. The default (\code{FALSE}) will display a menu to the user if the passed
+//' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
+//' the existing file without interruption from a workflow.
 //' @examples
+//' ################ Example 1 ###################
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding"
+//' thresholding::threshold(infile, 
+//'                         outfile = "./HCCS-thresh-abs.ncol",
+//'                         method = "absolute",
+//'                         thresh = 0.8
+//'                         )
+//' ################ Example 2 ###################
 //' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-//' outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
-//' thresh <- 0.85
+//' thresholding::threshold(infile, 
+//'                         outfile = "./HCCS-thresh-strict.ncol",
+//'                         method = "strict",
+//'                         thresh = 0.8
+//'                         )
+//' ################ Example 3 ###################
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+//' thresholding::threshold(infile, 
+//'                         outfile = "./HCCS-thresh-local-global.ncol",
+//'                         method = "local-global",
+//'                         local_global_alpha = 0.5
+//'                         )
+//' ################ Example 4 ###################
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+//' thresholding::threshold(infile, 
+//'                         outfile = "./HCCS-thresh-strict.ncol",
+//'                         method = "rank",
+//'                         rank = 2
+//'                         )
 //' thresholding::threshold(infile, outfile, thresh = thresh)
 //' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 // [[Rcpp::export]]
@@ -64,7 +93,8 @@ int threshold(std::string infile,
               std::string method="absolute",
               double thresh=0.0,
               double local_global_alpha=0.0,
-              int rank=0
+              int rank=0,
+              bool overwrite = false
               )
 {
 
@@ -76,7 +106,31 @@ int threshold(std::string infile,
         Rcpp::Rcerr << "you have the proper permissions to read it.\n";
         Rcpp::stop(infile + " was not able to be opened");
     }
+    fin.close();
 
+    // Present user with the option to overwrite the output based on the output file
+    // and its prefix
+    // if the overwrite parameter is left as FALSE
+    // Set the parameter to TRUE for unconditional overwriting
+    Rcpp::Function r_glob("Sys.glob");   
+    Rcpp::Function r_menu("menu");
+    Rcpp::StringVector fileNames = r_glob(outfile);
+
+    if(fileNames.length() > 0){
+        if(!overwrite){
+            Rcpp::Rcout << "\nYou are about to overwrite the graph file:\n";
+            Rcpp::Rcout << "    " << outfile << "\n";
+            Rcpp::Rcout << "Continue with graph thresholding?\n";
+            Rcpp::CharacterVector options = Rcpp::CharacterVector::create("Yes", "No");
+            int response = Rcpp::as<int>(Rcpp::wrap(r_menu(options)));
+            if(response == 2){
+                Rcpp::Rcout << "--threshold() will not overwrite " << outfile << ".\n";
+                Rcpp::stop("\r--Leaving threshold() early.");
+            }
+        }        
+        Rcpp::Rcout << "\n----Continuing with threshold().\n";
+        Rcpp::Rcout << "----Overwriting graph file: " << outfile << "\n\n";
+    }
     // turn on attribute handling
     // for igraph to handle edge weights
     igraph_set_attribute_table(&igraph_cattribute_table);

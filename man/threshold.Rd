@@ -10,7 +10,8 @@ threshold(
   method = "absolute",
   thresh = 0,
   local_global_alpha = 0,
-  rank = 0L
+  rank = 0L,
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -25,7 +26,7 @@ threshold(
     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
           \code{thresh} are retained.
-    \item \strong{\code{"local-global"}}: Local global pruning
+    \item \strong{\code{"local-global"}}: Local the global pruning method mentioned in the thresholding papers
     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
     }}
 
@@ -38,6 +39,11 @@ threshold(
 
 \item{rank}{Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 \code{method} == "\code{rank}".}}
+
+\item{overwrite}{A boolean parameter meant to prevent overwriting existing thresholded
+graph files. The default (\code{FALSE}) will display a menu to the user if the passed
+\code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
+the existing file without interruption from a workflow.}
 }
 \value{
 Nothing. The thresholded graph is written to the file specified by outfile.
@@ -49,8 +55,33 @@ are presented in the comparative study paper linked here: \link{https://pubmed.n
 or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
+################ Example 1 ###################
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding"
+thresholding::threshold(infile, 
+                        outfile = "./HCCS-thresh-abs.ncol",
+                        method = "absolute",
+                        thresh = 0.8
+                        )
+################ Example 2 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-outfile <- "./HCCS_thresh_" + as.character(thresh) + "\code{\code{.ncol}}"
-thresh <- 0.85
+thresholding::threshold(infile, 
+                        outfile = "./HCCS-thresh-strict.ncol",
+                        method = "strict",
+                        thresh = 0.8
+                        )
+################ Example 3 ###################
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+thresholding::threshold(infile, 
+                        outfile = "./HCCS-thresh-local-global.ncol",
+                        method = "local-global",
+                        local_global_alpha = 0.5
+                        )
+################ Example 4 ###################
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+thresholding::threshold(infile, 
+                        outfile = "./HCCS-thresh-strict.ncol",
+                        method = "rank",
+                        rank = 2
+                        )
 thresholding::threshold(infile, outfile, thresh = thresh)
 }
