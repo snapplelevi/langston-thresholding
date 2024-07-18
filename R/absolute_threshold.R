@@ -55,6 +55,9 @@ absolute_threshold <- function(infile,
       print(paste0("--absolute_threshold() will not overwrite", outfile))
       print(paste0("--Leaving absolute_threshold() early..."))
       return(invisible(NULL))
+    } else {
+      print(paste0("----Continuing with absolute_threshold()."))
+      print(paste0("----Overwriting the graph file: ", outfile))
     }
   }
   

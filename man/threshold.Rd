@@ -56,7 +56,7 @@ or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_gradd
 }
 \examples{
 ################ Example 1 ###################
-infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding"
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
 thresholding::threshold(infile, 
                         outfile = "./HCCS-thresh-abs.ncol",
                         method = "absolute",

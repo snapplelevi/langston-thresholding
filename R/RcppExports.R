@@ -140,7 +140,7 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #' the existing file without interruption from a workflow.
 #' @examples
 #' ################ Example 1 ###################
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding"
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
 #' thresholding::threshold(infile, 
 #'                         outfile = "./HCCS-thresh-abs.ncol",
 #'                         method = "absolute",
