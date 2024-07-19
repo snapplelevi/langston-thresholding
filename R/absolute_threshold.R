@@ -23,7 +23,8 @@
 #' thresholding::absolute_threshold(infile, 
 #'                                  outfile = "./HCCS-ABSTHRESH.ncol",
 #'                                  threshold = 0.90,
-#'                                  sort_output = TRUE
+#'                                  sort_output = TRUE,
+#'                                  overwrite = TRUE
 #'                                  )
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 #' @export

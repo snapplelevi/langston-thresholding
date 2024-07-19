@@ -63,7 +63,8 @@ infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresho
 thresholding::threshold(infile, 
                         outfile = "./HCCS-thresh-abs.ncol",
                         method = "absolute",
-                        thresh = 0.8
+                        thresh = 0.8,
+                        overwrite = TRUE
                         )
 \dontrun{
 ################ Example 2 ###################

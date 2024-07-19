@@ -105,6 +105,7 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 }
 \examples{
 #######    Variable Set-Up     #######
+library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
 data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 lower <- 0.6   
@@ -115,7 +116,21 @@ analysis(data_file,
          lower = lower,
          )
 
-#######    Example 2 - Iterative methods #######
+#######    Example 2 - iterative and power/significance methods #######
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+methods <- c(8, 1, 3)    # select the three desired analysis methods
+lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
+num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
+
+# Note: analysis() will autogenerate an output file name based 
+#       on the input file path if a prefix is not passed.
+analysis(data_file, 
+         methods = methods,
+         lower = lower,
+         num_samples = num_samples,
+         )
+\dontrun{
+#######    Example 3 - Iterative methods #######
 # WARNING FOR EXAMPLES: this code may take a few minutes to run.
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 methods <- c(3,4,5,6)
@@ -131,18 +146,5 @@ analysis(data_file,
          lower = lower,
         )
 
-
-#######    Example 3 - iterative and power/significance methods #######
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-methods <- c(8, 1, 3)    # select the three desired analysis methods
-lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
-num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
-
-# Note: analysis() will autogenerate an output file name based 
-#       on the input file path if a prefix is not passed.
-analysis(data_file, 
-         methods = methods,
-         lower = lower,
-         num_samples = num_samples,
-         )
+}
 }

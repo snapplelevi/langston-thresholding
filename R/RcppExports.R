@@ -63,6 +63,7 @@
 #'        whether or not you wish to overwrite the output file. 
 #' @examples
 #' #######    Variable Set-Up     #######
+#' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
 #' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 #' lower <- 0.6   
@@ -73,7 +74,21 @@
 #'          lower = lower,
 #'          )
 #'
-#' #######    Example 2 - Iterative methods #######
+#' #######    Example 2 - iterative and power/significance methods #######
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' methods <- c(8, 1, 3)    # select the three desired analysis methods
+#' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
+#' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
+#' 
+#' # Note: analysis() will autogenerate an output file name based 
+#' #       on the input file path if a prefix is not passed.
+#' analysis(data_file, 
+#'          methods = methods,
+#'          lower = lower,
+#'          num_samples = num_samples,
+#'          )
+#' \dontrun{
+#' #######    Example 3 - Iterative methods #######
 #' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' methods <- c(3,4,5,6)
@@ -89,20 +104,7 @@
 #'          lower = lower,
 #'         )
 #'
-#'
-#' #######    Example 3 - iterative and power/significance methods #######
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' methods <- c(8, 1, 3)    # select the three desired analysis methods
-#' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
-#' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
-#' 
-#' # Note: analysis() will autogenerate an output file name based 
-#' #       on the input file path if a prefix is not passed.
-#' analysis(data_file, 
-#'          methods = methods,
-#'          lower = lower,
-#'          num_samples = num_samples,
-#'          )
+#' }
 #' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, min_alpha = 0.0, max_alpha = 4, alpha_increment = 0.1, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L, overwrite = FALSE) {
     invisible(.Call(`_thresholding_analysis`, infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected, overwrite))
@@ -147,7 +149,8 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #' thresholding::threshold(infile, 
 #'                         outfile = "./HCCS-thresh-abs.ncol",
 #'                         method = "absolute",
-#'                         thresh = 0.8
+#'                         thresh = 0.8,
+#'                         overwrite = TRUE
 #'                         )
 #' \dontrun{
 #' ################ Example 2 ###################

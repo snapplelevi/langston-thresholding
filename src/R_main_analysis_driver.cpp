@@ -255,6 +255,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'        whether or not you wish to overwrite the output file. 
 //' @examples
 //' #######    Variable Set-Up     #######
+//' library(thresholding)
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
 //' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 //' lower <- 0.6   
@@ -265,7 +266,21 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          lower = lower,
 //'          )
 //'
-//' #######    Example 2 - Iterative methods #######
+//' #######    Example 2 - iterative and power/significance methods #######
+//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+//' methods <- c(8, 1, 3)    # select the three desired analysis methods
+//' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
+//' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
+//' 
+//' # Note: analysis() will autogenerate an output file name based 
+//' #       on the input file path if a prefix is not passed.
+//' analysis(data_file, 
+//'          methods = methods,
+//'          lower = lower,
+//'          num_samples = num_samples,
+//'          )
+//' \dontrun{
+//' #######    Example 3 - Iterative methods #######
 //' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 //' methods <- c(3,4,5,6)
@@ -281,20 +296,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          lower = lower,
 //'         )
 //'
-//'
-//' #######    Example 3 - iterative and power/significance methods #######
-//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-//' methods <- c(8, 1, 3)    # select the three desired analysis methods
-//' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
-//' num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
-//' 
-//' # Note: analysis() will autogenerate an output file name based 
-//' #       on the input file path if a prefix is not passed.
-//' analysis(data_file, 
-//'          methods = methods,
-//'          lower = lower,
-//'          num_samples = num_samples,
-//'          )
+//' }
 //' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 // [[Rcpp::export]]
 void analysis(std::string infile, 
