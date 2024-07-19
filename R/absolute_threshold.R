@@ -18,6 +18,7 @@
 #' @param sort_output Sorts the edges of the thresholded graph in descending order before
 #' writing them to \code{outfile}. 
 #' @examples
+#' library(thresholding)
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' thresholding::absolute_threshold(infile, 
 #'                                  outfile = "./HCCS-ABSTHRESH.ncol",

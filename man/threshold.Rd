@@ -55,6 +55,9 @@ are presented in the comparative study paper linked here: \link{https://pubmed.n
 or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
+# Load the package
+library(thresholding)
+
 ################ Example 1 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
 thresholding::threshold(infile, 
@@ -62,6 +65,7 @@ thresholding::threshold(infile,
                         method = "absolute",
                         thresh = 0.8
                         )
+\dontrun{
 ################ Example 2 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 thresholding::threshold(infile, 
@@ -83,5 +87,5 @@ thresholding::threshold(infile,
                         method = "rank",
                         rank = 2
                         )
-thresholding::threshold(infile, outfile, thresh = thresh)
+}
 }

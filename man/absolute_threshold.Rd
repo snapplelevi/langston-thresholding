@@ -37,6 +37,7 @@ for a clear absolute thresholding use case as compared to \code{threshold()}, wh
 more general purpose thresholding function.
 }
 \examples{
+library(thresholding)
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 thresholding::absolute_threshold(infile, 
                                  outfile = "./HCCS-ABSTHRESH.ncol",

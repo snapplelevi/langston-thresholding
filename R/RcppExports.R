@@ -139,6 +139,9 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 #' the existing file without interruption from a workflow.
 #' @examples
+#' # Load the package
+#' library(thresholding)
+#'
 #' ################ Example 1 ###################
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
 #' thresholding::threshold(infile, 
@@ -146,6 +149,7 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #'                         method = "absolute",
 #'                         thresh = 0.8
 #'                         )
+#' \dontrun{
 #' ################ Example 2 ###################
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' thresholding::threshold(infile, 
@@ -167,7 +171,7 @@ analysis <- function(infile, methods = as.numeric( c()), outfile_prefix = "", lo
 #'                         method = "rank",
 #'                         rank = 2
 #'                         )
-#' thresholding::threshold(infile, outfile, thresh = thresh)
+#' }
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 threshold <- function(infile, outfile, method = "absolute", thresh = 0.0, local_global_alpha = 0.0, rank = 0L, overwrite = FALSE) {
     .Call(`_thresholding_threshold`, infile, outfile, method, thresh, local_global_alpha, rank, overwrite)
