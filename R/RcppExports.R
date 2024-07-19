@@ -70,7 +70,7 @@
 #'
 #' #######    Example 1 - No methods #######
 #' analysis(data_file, 
-#'          data_prefix,
+#'          outfile_prefix = data_prefix,
 #'          lower = lower,
 #'          )
 #'
@@ -88,7 +88,7 @@
 #'          num_samples = num_samples,
 #'          )
 #' \dontrun{
-#' #######    Example 3 - Iterative methods #######
+#' #######    Example 3 - More Iterative methods #######
 #' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' methods <- c(3,4,5,6)

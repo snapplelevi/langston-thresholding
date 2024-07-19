@@ -626,10 +626,16 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' find this method or alpha value in the files with the matching prefix.
 #' not show up 
 #' @examples
-#' prefix <- "./HumanCellCycleSubset"    # Prefix to the output file (specified by path)
-#' thresholding::get_results(prefix)
+#' date_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' file.copy(data_file, "./")     # Copy the file to your working directory
+#' outfile_prefix = "./get_results_test"
+#' analysis(data_file, 
+#'          outfile_prefix = outfile_prefix,
+#'          methods=c(1,3,8),
+#'          )
+#' thresholding::get_results(outfile_prefix)
 #' 
-#' thresholding::get_results(prefix, plot_iterative = TRUE)
+#' thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
 #' @export
 get_results <- function(outfile_prefix, plot_iterative = FALSE){
  
