@@ -6,8 +6,8 @@
 \usage{
 analysis(
   infile,
-  methods = as.numeric(c()),
   outfile_prefix = "",
+  methods = as.numeric(c()),
   lower = 0.5,
   upper = 0.99,
   increment = 0.01,
@@ -27,11 +27,18 @@ analysis(
 \item{infile}{File path for .ncol graph file (\link{https://lgl.sourceforge.net/}) to read in for analysis. 
 This file must be space delimited for this function to properly read in the graph's information.}
 
+\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
+\code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
+prefix and the ascending method numbers. 
+The input file prefix will be determined by the characters preceding the first period ('.') character.
+  An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
+     \code{myfile-47.<method_name>.txt}}
+
 \item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
 \itemize{
   \item 0 = all
   \item 1 = significance and power calculations (only valid for Pearson CC)
-  \item 2 = local-global
+  \item 2 = local-global (this will take a while with larger graphs)
   \item 3 = scale free
   \item 4 = maximal cliques
   \item 5 = spectral methods
@@ -43,15 +50,8 @@ This file must be space delimited for this function to properly read in the grap
 \itemize{
 \item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
 \item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
-}}
-
-\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
-\code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
-prefix and the ascending method numbers. 
-The input file prefix will be determined by the characters preceding the first period ('.') character.
-  An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
-     \code{myfile-47.<method_name>.txt}
- Method name can vary based on the methods used. This will either be \code{iterative}, \code{local_global}, or \code{statistical_errors}.}
+}
+        Method name can vary based on the methods used. This will either be \code{iterative}, \code{local_global}, or \code{statistical_errors}.}
 
 \item{lower}{Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)}
 

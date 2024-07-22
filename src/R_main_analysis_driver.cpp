@@ -212,11 +212,17 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' 
 //' @param infile File path for .ncol graph file (\link{https://lgl.sourceforge.net/}) to read in for analysis. 
 //' This file must be space delimited for this function to properly read in the graph's information.
+//' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
+//'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
+//'        prefix and the ascending method numbers. 
+//'        The input file prefix will be determined by the characters preceding the first period ('.') character.
+//'          An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
+//'             \code{myfile-47.<method_name>.txt}
 //' @param methods Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
 //' \itemize{
 //'   \item 0 = all
 //'   \item 1 = significance and power calculations (only valid for Pearson CC)
-//'   \item 2 = local-global
+//'   \item 2 = local-global (this will take a while with larger graphs)
 //'   \item 3 = scale free
 //'   \item 4 = maximal cliques
 //'   \item 5 = spectral methods
@@ -229,12 +235,6 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' \item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
 //' \item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 //' }
-//' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
-//'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
-//'        prefix and the ascending method numbers. 
-//'        The input file prefix will be determined by the characters preceding the first period ('.') character.
-//'          An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
-//'             \code{myfile-47.<method_name>.txt}
 //'         Method name can vary based on the methods used. This will either be \code{iterative}, \code{local_global}, or \code{statistical_errors}.
 //' @param lower Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)
 //' @param upper Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)
@@ -300,8 +300,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 // [[Rcpp::export]]
 void analysis(std::string infile, 
-              Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
               std::string outfile_prefix="",
+              Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
               double lower=0.5,
               double upper=0.99,
               double increment=0.01,

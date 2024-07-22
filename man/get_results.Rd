@@ -55,7 +55,9 @@ file.copy(data_file, "./")     # Copy the file to your working directory
 outfile_prefix = "./get_results_test"
 analysis(data_file, 
          outfile_prefix = outfile_prefix,
-         methods=c(1,3,8),
+         methods = c(1,3,8),
+         num_samples = 13,
+         overwrite = TRUE
          )
 thresholding::get_results(outfile_prefix)
 

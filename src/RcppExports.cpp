@@ -11,13 +11,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // analysis
-void analysis(std::string infile, Rcpp::NumericVector methods, std::string outfile_prefix, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, double min_alpha, double max_alpha, double alpha_increment, int num_samples, double significance_alpha, bool bonferroni_corrected, bool overwrite);
-RcppExport SEXP _thresholding_analysis(SEXP infileSEXP, SEXP methodsSEXP, SEXP outfile_prefixSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP min_alphaSEXP, SEXP max_alphaSEXP, SEXP alpha_incrementSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP bonferroni_correctedSEXP, SEXP overwriteSEXP) {
+void analysis(std::string infile, std::string outfile_prefix, Rcpp::NumericVector methods, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, double min_alpha, double max_alpha, double alpha_increment, int num_samples, double significance_alpha, bool bonferroni_corrected, bool overwrite);
+RcppExport SEXP _thresholding_analysis(SEXP infileSEXP, SEXP outfile_prefixSEXP, SEXP methodsSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP min_alphaSEXP, SEXP max_alphaSEXP, SEXP alpha_incrementSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP bonferroni_correctedSEXP, SEXP overwriteSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type infile(infileSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type methods(methodsSEXP);
     Rcpp::traits::input_parameter< std::string >::type outfile_prefix(outfile_prefixSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type methods(methodsSEXP);
     Rcpp::traits::input_parameter< double >::type lower(lowerSEXP);
     Rcpp::traits::input_parameter< double >::type upper(upperSEXP);
     Rcpp::traits::input_parameter< double >::type increment(incrementSEXP);
@@ -31,7 +31,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type significance_alpha(significance_alphaSEXP);
     Rcpp::traits::input_parameter< bool >::type bonferroni_corrected(bonferroni_correctedSEXP);
     Rcpp::traits::input_parameter< bool >::type overwrite(overwriteSEXP);
-    analysis(infile, methods, outfile_prefix, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected, overwrite);
+    analysis(infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, min_alpha, max_alpha, alpha_increment, num_samples, significance_alpha, bonferroni_corrected, overwrite);
     return R_NilValue;
 END_RCPP
 }

@@ -90,7 +90,6 @@ get_iterative_t_values <- function(files,
     
     # otherwise, append to array
     all_dfs <- rbind(all_dfs, df)
-    print('afterfffffff')
   }
   
   # Return empty df if there wasn't one big data frame made
@@ -631,7 +630,9 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' outfile_prefix = "./get_results_test"
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
-#'          methods=c(1,3,8),
+#'          methods = c(1,3,8),
+#'          num_samples = 13,
+#'          overwrite = TRUE
 #'          )
 #' thresholding::get_results(outfile_prefix)
 #' 
