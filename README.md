@@ -75,10 +75,18 @@ Currently, there are two options for installing the `thresholding` package. The 
        Note: this command will install to a default library (first entry in R's `.libPaths()`). To move the package installation to a specified location, run the command with:
        
        `install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here")`
-   
 
    4. After R finishes installing the package, the `thresholding.tar.gz` file can be deleted.
 
        
+## Using the thresholding package
+Use the `help(package = thresholding)` command to see a list of the package's functions.
+One the package is successfully installed, you can use the following methods to learn more about how to use a specific function in the package. 
+1. "?" Prefix before function name (example: `?thresholding::analysis`)
+2. "help()" function               (example: `help("analysis", package = "thresholding")`
+
+These commands would be entered in the R prompt and will open a documentation page inside your R IDE or in a new browser tab.
+
+
 **Please contact *lhochste@vols.utk.edu* if you have any trouble with installing the package or if there are any problems experienced while using the package. Thank you for trying out the Langston Lab's thresholding code!**
  
