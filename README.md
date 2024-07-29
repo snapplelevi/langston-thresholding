@@ -8,7 +8,7 @@ Navigate to [installation section](#installing-the-thresholding-package)  if [th
 
    
 ## System prerequisites
-We assume the user has a version of R installed. While not necessary, having an IDE like [RStudio](https://posit.co/products/open-source/rstudio/) will streamline package installation and utilization.
+We assume the user has a version of R 3.6 or higher is installed. While not necessary, having an IDE like [RStudio](https://posit.co/products/open-source/rstudio/) will streamline package installation and utilization.
 
 These thresholding codes depend on the external **igraph** C library for graph creation and manipulation. 
 Some external functions from **alglib** are also used and are included in the package already (they are compiled and linked during the package installation process as well)
