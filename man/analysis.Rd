@@ -106,8 +106,8 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 \examples{
 #######    Variable Set-Up     #######
 library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
-data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+data_prefix <- './HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 lower <- 0.6   
 
 #######    Example 1 - No methods #######

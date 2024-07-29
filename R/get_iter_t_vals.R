@@ -23,17 +23,19 @@ find_last <- function(str, str_to_find){
 }
 
 ##############################################################################
-#'                          get_iter_t_vals()
+#                          get_iter_t_vals()
 #'                          
 #' User wrapper function for the intenal \code{get_iterative_t_values()}
 #' 
+#' @description
+#' \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
+#' \strong{will lead to unintended behavior.}
+#' 
 #' Returns the thresholding data frame created by the internal
-#' get_iterative_t_values, which does not return anything to the user. This
+#' \code{get_iterative_t_values()} This
 #' data frame contains step-by-step thresholding figures for analysis methods, 
 #' edge counts, vertex counts, and other metrics computed as a result of the 
 #' \code{analysis()} function.
-#' 
-#' 
 #' 
 #' @param outfile_prefix Prefix of output file, which can have several
 #' output file paths if the same prefix is run with \code{analysis()} several times. 

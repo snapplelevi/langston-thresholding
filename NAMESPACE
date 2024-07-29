@@ -1,11 +1,15 @@
+# Register the dynamic library for compiled thresholding code and allow the
+# compiled functions to be attached to the thresholding namespace
 useDynLib(thresholding, .registration = TRUE)
 
 # Set up Rcpp when loading package using library(thresholding)
 importFrom(Rcpp, evalCpp)
+
+# Miscellanenous utilities
 importFrom(magrittr, "%>%")
 importFrom(stringr, str_extract_all)
 
-# RCpp analysis and thresholding functions - C++ code
+# Rcpp analysis and thresholding functions - C++ code
 export("analysis")
 export("threshold")
 

@@ -2,9 +2,7 @@
 % Please edit documentation in R/get_iter_t_vals.R
 \name{get_iter_t_vals}
 \alias{get_iter_t_vals}
-\title{get_iter_t_vals()
-                         
-User wrapper function for the intenal \code{get_iterative_t_values()}}
+\title{User wrapper function for the intenal \code{get_iterative_t_values()}}
 \usage{
 get_iter_t_vals(outfile_prefix, recursive = FALSE)
 }
@@ -38,8 +36,11 @@ each requested method (for the particular analysis output file(s) found from the
 and its corresponding threshold value.
 }
 \description{
+\strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
+\strong{will lead to unintended behavior.}
+
 Returns the thresholding data frame created by the internal
-get_iterative_t_values, which does not return anything to the user. This
+\code{get_iterative_t_values()} This
 data frame contains step-by-step thresholding figures for analysis methods, 
 edge counts, vertex counts, and other metrics computed as a result of the 
 \code{analysis()} function.

@@ -256,8 +256,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' @examples
 //' #######    Variable Set-Up     #######
 //' library(thresholding)
-//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
-//' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+//' data_prefix <- './HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 //' lower <- 0.6   
 //'
 //' #######    Example 1 - No methods #######
@@ -395,7 +395,7 @@ void analysis(std::string infile,
     } 
     else{
       stripped_prefix = outfile_prefix;
-      outfile_prefix += "-" + str_methods;
+      if(str_methods != "") outfile_prefix += "-" + str_methods;
     }
     
       

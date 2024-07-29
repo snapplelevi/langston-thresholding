@@ -3,7 +3,7 @@
 \name{get_results}
 \alias{get_results}
 \title{Returns the resulting analysis method thresholding values
-after running thresholding::analysis()}
+after running \code{thresholding::analysis()}}
 \usage{
 get_results(outfile_prefix, plot_iterative = FALSE)
 }
@@ -33,6 +33,9 @@ find this method or alpha value in the files with the matching prefix.
 not show up
 }
 \description{
+\strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
+\strong{will lead to unintended behavior.}
+
 \code{get_results()} will take an output file prefix and attempt to accumulate
 the results connected to that prefix. This prefix come in the form of analysis methods
 and their recommended thresholding value (as determined by \code{get_results()}).
@@ -45,7 +48,6 @@ to \code{analysis()} once with \code{methods=c(4,5)}, and another time with
    \item EXAMPLE_NAME-45.iterative.txt
    \item EXAMPLE_NAME-67.iterative.txt
 }
-
 When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
 files and combine the results from each method into one data structure.
 }
@@ -59,7 +61,5 @@ analysis(data_file,
          num_samples = 13,
          overwrite = TRUE
          )
-thresholding::get_results(outfile_prefix)
-
 thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
 }

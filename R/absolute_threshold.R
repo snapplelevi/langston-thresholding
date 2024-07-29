@@ -50,7 +50,7 @@ absolute_threshold <- function(infile,
     t <- paste0("You are about to overwrite the graph file \'",
                 outfile,
                 "\'. Continue with absolute thresholding?")
-    response <- menu(c("Yes", "No"), title = t)
+    response <- utils::menu(c("Yes", "No"), title = t)
                   
     # User does not want to overwrite output file, so end function   
     if(response == 2){
@@ -68,7 +68,12 @@ absolute_threshold <- function(infile,
   
   # Read in input file / ensure that infile exists/accessible
   # Allow any form of white space as separator
-  in_df <- read.table(infile, sep="", col.names=c("V1", "V2", "TH"))
+  vertex_col_1 <- "V1"
+  vertex_col_2 <- "V2"
+  threshold_col <- "TH"
+  in_df <- utils::read.table(infile, sep="", col.names=c(vertex_col_1,
+                                                         vertex_col_2,
+                                                         threshold_col))
   
   if(length(colnames(in_df)) != 3){
     message("The input file does not have three columns specified by the ncol format.")
@@ -88,8 +93,8 @@ absolute_threshold <- function(infile,
   }
   
   # Write to the path specifed by outfile
-  write.table(down_sel, 
-              outfile, 
-              row.names=FALSE,
-              col.names=FALSE)
+  utils::write.table(down_sel, 
+                     outfile, 
+                     row.names=FALSE,
+                     col.names=FALSE)
 }

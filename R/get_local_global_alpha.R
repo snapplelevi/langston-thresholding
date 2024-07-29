@@ -4,9 +4,14 @@
 #
 #' User wrapper function for the internal \code{get_local_global_alpha_value()}
 #' 
-#' Returns the thresholding data frame created by the internal
-#' \code{get_local_global_alpha_value()}, which does not return anything to the user.
+#' @description
+#' \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
+#' \strong{will lead to unintended behavior.}
 #' 
+#' Returns the thresholding data frame created by the internal
+#' \code{get_local_global_alpha_value()}.
+#' 
+#' @returns
 #' The returned data frame includes graph and graph method values for each 
 #' increment of the threshold. 
 #' 

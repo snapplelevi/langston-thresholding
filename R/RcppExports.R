@@ -64,8 +64,8 @@
 #' @examples
 #' #######    Variable Set-Up     #######
 #' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   # .ncol weighted edge list
-#' data_prefix <- './example/HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+#' data_prefix <- './HumanCellCycleSubset-thresh'  # prefix used for output file(s)
 #' lower <- 0.6   
 #'
 #' #######    Example 1 - No methods #######
@@ -112,7 +112,7 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 
 #' Strict thresholding for weighted graphs in \code{.ncol} format
 #'
-#' General graph thresholding function that reads in an \code{\code{.ncol}} graph file and writes
+#' General graph thresholding function that reads in an \code{.ncol} graph file and writes
 #' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
 #' are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
 #' or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}

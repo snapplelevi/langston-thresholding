@@ -1,10 +1,10 @@
 # Add make file info here (Test version for Windows local pkg build 2-25-24)
 
-# This file is called first in Unix-like systems during the R package build process. 
 
-# This file is called first in Windows systems during the R package build process before other steps proceed.
-# The external library code (igraph C library and some alglib functions) are required for the thresholding analysis
-# and thresholding method codes.
+# This file is called first in Windows systems during the R package build process 
+# before other steps proceed. The external library code (igraph C library and some 
+# alglib functions) are required for the thresholding analysis and thresholding 
+# method codes.
 
 # Extension for source files
 SRCEXT=cpp

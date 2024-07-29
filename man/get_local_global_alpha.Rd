@@ -29,11 +29,14 @@ If \code{TRUE}, \code{get_local_global_alpha()} will recursively searching throu
 of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
 with the specified outfile_prefix and ends with ".iterative.txt".}
 }
-\description{
-Returns the thresholding data frame created by the internal
-\code{get_local_global_alpha_value()}, which does not return anything to the user.
-}
-\details{
+\value{
 The returned data frame includes graph and graph method values for each 
 increment of the threshold.
+}
+\description{
+\strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
+\strong{will lead to unintended behavior.}
+
+Returns the thresholding data frame created by the internal
+\code{get_local_global_alpha_value()}.
 }

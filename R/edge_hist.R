@@ -54,16 +54,17 @@ edge_hist <- function(infile,
   colnames(raw_data)[3] <- "WEIGHT"
   
   # Validate that the third column is of type double or integer
-  stopifnot(is.double(raw_data$WEIGHT) |
-            is.integer(raw_data$WEIGHT))
+  base::stopifnot(is.double(raw_data[["WEIGHT"]]) |
+                  is.integer(raw_data[["WEIGHT"]]))
   
-  # Grab quantiles for histogram coloring - feature for later
-  quantiles <- quantile(raw_data$WEIGHT, 
-                        prob=c(0.25,0.5,0.75), 
-                        names=FALSE)
+  #############   Future feature (beyond ver 1.0.0   ###############
+  # Grab quantiles for histogram coloring
+  # quantiles <- quantile(raw_data$WEIGHT, 
+  #                       prob=c(0.25,0.5,0.75), 
+  #                       names=FALSE)
+  ##################################################################
   
-  
-  ##############   MAKING THE PLOT   ###############
+  #############   MAKING THE PLOT   ###############
   # This returns the plot to the user to either
   # store in a variable or pass directly to a 
   # call to show()... ex.  show(edge_hist(infile))
