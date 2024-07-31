@@ -40,7 +40,7 @@ Currently, there are two options for installing the `thresholding` package. The 
    
       `devtools::install_github("snapplelevi/langston-thresholding")`
 
-   You can use `install.packages(devtools)` in the R window if `devtools` isn't installed already).
+   You can use `install.packages("devtools")` in the R window if `devtools` isn't installed already).
    
    There are a few R packages that the **thresholding** package depends on and imports from. After running the `install_github` call, you will likely be prompted if you would like to *update* or *install* some of these packages. **Please install any packages if necessary.** For package updates, you can choose to take any action from the prompt including updating all packages, some packages, or no packages. You can skip the updating step by entering a blank input line (pressing the 'Enter' key once).
    
