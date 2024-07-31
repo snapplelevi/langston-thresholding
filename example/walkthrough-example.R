@@ -15,7 +15,7 @@ library(thresholding)
 
 # Relative path to .ncol data file
 data_file <- system.file("extdata", "HumanCellCycleSubset.ncol", package="thresholding")
-data_prefix <- './example/HumanCellCycleSubset'   # prefix used in other functions in package
+data_prefix <- './HumanCellCycleSubset'   # prefix used in other functions in package
 
 
 #          Step 1 - make edge weight histogram of data
@@ -95,12 +95,12 @@ print(get_res_D$alpha)
 # Testing the plot functionalites
 # can also do this to just display the plot instead of return it
 # get_results(data_prefix, plot_iterative = TRUE)
-iter_infile <- "./example/HumanCellCycleSubset"
+iter_infile <- "./HumanCellCycleSubset"
 thresholding::plot_t_vs_ev(iter_infile)
 
 # Thresholding the graph and saving to a new output file
 threshold <- 0.79
-abs_outfile <- "./example/HumanCellCycleSubset-ABSTHOLD.ncol"
+abs_outfile <- "./HumanCellCycleSubset-ABSTHOLD.ncol"
 
 # User option - allow option for copying output file if there 
 #         another file with a modified name (thresh suffix) to distinguish

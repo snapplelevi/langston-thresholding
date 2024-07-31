@@ -10,7 +10,7 @@ int output_results(std::ofstream outfile, std::string& message){
 std::string get_str_pid(){
     int pid = getpid();
     char str_pid[20];   // ex. 34567
-    sprintf(str_pid, "%d", pid);
+    snprintf(str_pid, sizeof(str_pif), "%d", pid);
     return str_pid;
 }
 

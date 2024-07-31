@@ -30,7 +30,7 @@ Maintainer: Levi Hochstetler (lhochste@vols.utk.edu)
 \keyword{ package }
 \seealso{
   https://github.com/carissableker/thresholding
-  https://github.com/snapplelevi/thresholding 
+  https://github.com/snapplelevi/langston-thresholding 
 }
 \examples{
   \dontrun{
