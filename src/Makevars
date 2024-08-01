@@ -62,7 +62,7 @@ makefiles=$(IGRAPHDIR)/build/Makefile \
 				  
 # Command to run inside the foreach macro
 # Removes all instances of carriage returns (simple CRLF to LF)
-cmd=sed -i '' -e s/\r//g' $(file);
+cmd=sed -i '' -e 's/\r//g' $(file);
 
 extract_igraph:
 # First attempt at compiling igraph with CMake
