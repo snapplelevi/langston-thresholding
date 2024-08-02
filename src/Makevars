@@ -22,7 +22,15 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(INCLUDEDIR)
 
 # added -lm and -llapack for Unix-like building
-PKG_LIBS =  -ligraph -lm -llapack -L../lib -fopenmp
+# use -fopenmp flag only for non-clang compilers (like g++)
+compiler = $(shell which $(CXX))
+clang_if_true = $(shell $(compiler) --version | grep -c clang)
+PKG_LIBS = 
+ifeq ($(clang_if_true), 1)
+	PKG_LIBS =  -ligraph -lm -llapack -L../lib
+else
+	PKG_LIBS = -ligraph -lm -llapack -L../lib -fopenmp
+endif
 
 IGRAPH_VER=igraph-0.9.9
 IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
