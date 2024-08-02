@@ -62,13 +62,13 @@ makefiles=$(IGRAPHDIR)/build/Makefile \
 				  
 # Command to run inside the foreach macro
 # Removes all instances of carriage returns (simple CRLF to LF)
-# Change logic from GNU sed to Mac OS X sed depending on OS version
-# 'file' declared in the extract_igraph foreach loop
-os_name=$(shell uname -s)
+# Change logic from GNU sed to Mac OS X sed depending on output of
+# sed --version (OS X does not have an output since it uses BSD sed)
+which_sed_am_i=sed --version > /dev/null 2>&1
 cmd=
-ifeq($(os_name), Linux)
+ifeq($(which_sed_am_i),)
 	cmd=sed -i 's/\r//g' $(file);
-else ifeq($(os_name), Darwin)
+else 
 	cmd=sed -i '' -e 's/\r//g' $(file);
 endif
 
