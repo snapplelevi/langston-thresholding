@@ -64,10 +64,10 @@ makefiles=$(IGRAPHDIR)/build/Makefile \
 # Removes all instances of carriage returns (simple CRLF to LF)
 # Change logic from GNU sed to Mac OS X sed depending on output of
 # sed --version (OS X does not have an output since it uses BSD sed)
-which_sed_am_i=sed --version > /dev/null 2>&1
+which_sed_am_i = $(shell sed --version > /dev/null 2>&1 && echo "gnu" || echo "bsd")
 cmd=
-ifeq($(which_sed_am_i),)
-	cmd=sed -i 's/\r//g' $(file);
+ifeq ($(which_sed_am_i),gnu)
+	cmd=$(shell which sed) -i 's/\r//g' $(file);
 else 
 	cmd=sed -i '' -e 's/\r//g' $(file);
 endif
