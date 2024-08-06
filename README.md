@@ -18,7 +18,7 @@ The following tools were used in development of this package in order to build a
 libraries and functions to the existing lab code. The [Rcpp package](https://www.rcpp.org/) library was used for the `analysis` and `threshold` functions in this package.
 
 ### Windows users
-- #### Rtools - recommended having the same version as your R version installed 
+- ### Rtools - recommended having the same version as your R version installed 
     - **Rtools** is a toolchain used by R to build source packages (i.e., packages that need code to be compiled within the package).
        - This package wraps an existing C++ command utility for these functionalities and thus needs compiled to be used within R. The [Rcpp](https://www.rcpp.org/) package was used to incorporate a smoother integration of the C++ code into an R package.
        - The C++ code depends on the **[igraph C library]([https://igraph.org/c/)** for network creation and manipulation. The **igraph** library uses the CMake build system to build a static library of **igraph**. This package needs to this static **igraph** library so that the C++ code can link to  **igraph** functions and data structures.
@@ -31,7 +31,7 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
 
 
 ### *Nix and Mac users (under development)
-- #### CMake (recommended version 3.0 or higher - 3.27 was used in package development)
+- ### CMake (recommended version 3.0 or higher - 3.27 was used in package development)
    - This package wraps an existing C++ command utility for these functionalities and thus needs compiled to be used within R. 
    - The C++ code depends on the **[igraph C library]([https://igraph.org/c/)** for network creation and manipulation. The **igraph** library uses the CMake build system to build and install **igraph**. This packages needs to build a static library of **igraph**
      so that the C++ code can link to the **igraph** functions and data structures and for future CRAN compatibility.
@@ -39,6 +39,13 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
    - If your machine does not come with CMake by default, then you can **[choose a version and install CMake with this link.](https://cmake.org/cmake/help/latest/release/index.html)**.
        - If you have **homebrew** installed, you could run `brew install cmake` and ensure **cmake** is on your path.
        - This package was developed with CMake version = 3.27 if you aren't sure which version to install. As of July 31, 2024, the most recent Cmake version is 3.30.
+- ### Lapack / Blas  
+    - Certain code within the **igraph** library depends on **lapack** being installed.  **lapack** depends on **blas**, which the first link further below shows also how to install. 
+    - Not having **lapack** will lead to linking errors at the final stage of package installation.
+    - If you receive a build error when installing this package, and **lapack** isn't installed on your machine, here are a few links that may help in installing the library:
+        - [Short guide on installation and proper directory placement of **lapack** and **blas**](https://coral.ise.lehigh.edu/jild13/2016/07/27/install-lapack-and-blas-on-linux-based-systems/)
+        - [Stack Overflow Response for the likely build error without **lapack**](https://stackoverflow.com/questions/27033243/usr-bin-ld-cannot-find-llapack)
+        - [Main **lapack** website](https://www.netlib.org/lapack/)
    
      
 ## Installing the thresholding package
