@@ -21,15 +21,16 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(EXTERNALDIR)/alglib \
 								-I$(INCLUDEDIR)
 
-# added -lm and -llapack for Unix-like building
+# added -lm for Unix-like building
 # use -fopenmp flag only for non-clang compilers (like g++)
 compiler = $(shell which $(CXX))
-clang_if_true = $(shell $(compiler) --version | grep -c clang)
-PKG_LIBS = 
-ifeq ($(clang_if_true), 1)
-	PKG_LIBS =  -L../lib -L/usr/lib -L/lib -ligraph -lm -llapack
-else
-	PKG_LIBS = -L../lib -L/usr/lib -L/lib -ligraph -lm -llapack -fopenmp
+not_clang_if_equals_zero = $(shell $(compiler) --version | grep -c clang)
+PKG_LIBS = -L../lib -L/usr/lib -L/lib -ligraph -lm 
+# Only add fopenmp flag if the compiler is not clang (may be a problem for
+# more niche default compilers, but clang is more prevalent right now. will see 
+# as the package userbase expands and more compilers are tested)
+ifeq ($(not_clang_if_equals_zero), 0)
+	PKG_LIBS += -fopenmp
 endif
 
 IGRAPH_VER=igraph-0.9.9
