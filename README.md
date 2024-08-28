@@ -38,15 +38,7 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
    - Run `Sys.which('make')` and `Sys.which('cmake')` in your R terminal to ensure these tools are on your path. It is likely that **make** is already on your path, but **cmake** may not be.
    - If your machine does not come with CMake by default, then you can **[choose a version and install CMake with this link.](https://cmake.org/cmake/help/latest/release/index.html)**.
        - If you have **homebrew** installed, you could run `brew install cmake` and ensure **cmake** is on your path.
-       - This package was developed with CMake version = 3.27 if you aren't sure which version to install. As of July 31, 2024, the most recent Cmake version is 3.30.
-- ### Lapack / Blas  
-    - Certain code within the **igraph** library depends on **lapack** being installed.  **lapack** depends on **blas**, which the first link further below shows also how to install. 
-    - Not having **lapack** will lead to linking errors at the final stage of package installation.
-    - If you receive a build error when installing this package, and **lapack** isn't installed on your machine, here are a few links that may help in installing the library:
-        - [Short guide on installation and proper directory placement of **lapack** and **blas**](https://coral.ise.lehigh.edu/jild13/2016/07/27/install-lapack-and-blas-on-linux-based-systems/)
-        - [Stack Overflow Response for the likely build error without **lapack**](https://stackoverflow.com/questions/27033243/usr-bin-ld-cannot-find-llapack)
-        - [Main **lapack** website](https://www.netlib.org/lapack/)
-   
+       - This package was developed with CMake version = 3.27 if you aren't sure which version to install. As of July 31, 2024, the most recent Cmake version is 3.30.  
      
 ## Installing the thresholding package
 Currently, there are two options for installing the `thresholding` package. The first (1) method outlined below is most recommended as of July 2024. After the package gets published to CRAN, this option will be removed as the recommended installation method.
