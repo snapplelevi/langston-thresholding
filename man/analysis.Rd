@@ -14,9 +14,6 @@ analysis(
   window_size = 5L,
   min_partition_size = 10L,
   min_clique_size = 5L,
-  min_alpha = 0,
-  max_alpha = 4,
-  alpha_increment = 0.1,
   num_samples = 0L,
   significance_alpha = 0.01,
   bonferroni_corrected = 0L,
@@ -36,9 +33,8 @@ The input file prefix will be determined by the characters preceding the first p
 
 \item{methods}{Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
 \itemize{
-  \item 0 = all
-  \item 1 = significance and power calculations (only valid for Pearson CC)
-  \item 2 = local-global (this will take a while with larger graphs)
+  \item 1 = all
+  \item 2 = significance and power calculations (only valid for Pearson CC)
   \item 3 = scale free
   \item 4 = maximal cliques
   \item 5 = spectral methods
@@ -51,7 +47,7 @@ The input file prefix will be determined by the characters preceding the first p
 \item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
 \item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 }
-        Method name can vary based on the methods used. This will either be \code{iterative}, \code{local_global}, or \code{statistical_errors}.}
+        The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.}
 
 \item{lower}{Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)}
 
@@ -65,18 +61,12 @@ The input file prefix will be determined by the characters preceding the first p
 
 \item{min_clique_size}{Minimum size of maximal cliques in maximal clique count (Default = 5)}
 
-\item{min_alpha}{Starting alpha value used in \strong{method 2 - local global pruning}.  \emph{Not used in any other methods.}  (Default = 0.0)}
-
-\item{max_alpha}{Ending alpha value used in \strong{method 2 - local global pruning}.  \emph{Not used in any other methods.}   (Default = 4.0)}
-
-\item{alpha_increment}{Size of increment of alpha value in \strong{method 2 - local global pruning}'s main loop. \emph{Not used in any other methods.}  (Default = 0.1)}
-
-\item{num_samples}{Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 1 - Power and Significance calculations}).
-\emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 1 to work.}} \emph{Not used in any other methods.}}
+\item{num_samples}{Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).
+\emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}}
 
 \item{significance_alpha}{Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)}
 
-\item{bonferroni_corrected}{Option to perform Bonferroni correction in \strong{method 1 - significance and power calculations}. 
+\item{bonferroni_corrected}{Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
 Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})}
 
 \item{overwrite}{Determines whether output file with given or generated prefix will be overwritten. 
@@ -93,11 +83,10 @@ Execution of \code{analysis()} ends after the '\code{upper}' threshold is reache
 too small to threshold further.
  
 The results at each step are written output files. There is always at least one output file, but there can be 
-up to three depending on the methods passed:
+up to two depending on the methods passed:
 \itemize{
   \item \code{<outfile_prefix>.iterative.txt}:          (\strong{guaranteed})
-  \item \code{<outfile_prefix>.statistical_errors.txt}: (method \strong{1})
-  \item \code{<outfile_prefix>.local_global.txt}:        (method \strong{2})
+  \item \code{<outfile_prefix>.statistical_errors.txt}: (method \strong{2})
 }
 }
 \details{
@@ -118,9 +107,9 @@ analysis(data_file,
 
 #######    Example 2 - iterative and power/significance methods #######
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-methods <- c(8, 1, 3)    # select the three desired analysis methods
+methods <- c(8, 2, 3)    # select the three desired analysis methods
 lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
-num_samples <- 13        # ONLY FOR METHOD 1 - number of samples in data set
+num_samples <- 13        # ONLY FOR METHOD 2 - number of samples in data set
 
 # Note: analysis() will autogenerate an output file name based 
 #       on the input file path if a prefix is not passed.

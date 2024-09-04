@@ -22,15 +22,15 @@ The returned list that can contain:
 \itemize{
    \item A nested list of keyed on analysis method names. The values of these
    keys will be the recommended threshold from the corresponding method. This will 
-   be called \code{"D"}.
+   be called "\code{D}."
    \item An alpha value representing the recommended significance value. This will 
-   be called \code{"alpha"}
+   be called "\code{alpha}." This is non-NaN if Method 2 - Power and Significance
+   was used in \code{analysis()}.
 }
 The output of \code{get_results()} and its separate wrappers will depend on the methods 
 passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
 for alpha does not show up in the returned list, then \code{get_results()} could not 
 find this method or alpha value in the files with the matching prefix.
-not show up
 }
 \description{
 \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 

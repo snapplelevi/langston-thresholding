@@ -23,7 +23,6 @@ export("absolute_threshold")
 export("get_results")
 export("get_iter_t_vals")
 export("get_sig_t_vals")
-export("get_local_global_alpha")
 
 # Plotting utilities - R scripts
 export("edge_hist")

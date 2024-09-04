@@ -2,8 +2,7 @@
 # 1. find_last()                    -> helper function , NOT exported
 # 2. get_iterative_t_vals()         -> NOT exported
 # 3. get_significance_t_vals()      -> NOT exported
-# 4. get_local_global_alpha_value() -> NOT exported
-# 5. get_results()                  -> exported
+# 4. get_results()                  -> exported
 
 ##############################################################################
 #                         find_last()
@@ -11,7 +10,7 @@
 # returns index of last character if found, returns -1 if not. 
 #
 # Used internally for finding multiple occurrences of file names the utility wrapper
-# functions ( get_iter_t_vals(), get_sig_t_vals(), get_local_global_alpha() )
+# functions ( get_iter_t_vals(), get_sig_t_vals() )
 find_last <- function(str, str_to_find){
   l = nchar(str)
   ind = -1
@@ -401,8 +400,7 @@ get_iterative_t_values <- function(files,
   
   # Loop through D and only save the non NaN values (the methods the user requested
   # will have valid thresholds attributed to them
-  # TODO: add this logic into Power/Sig and local_global (make function at top 
-  # of this file perhaps)
+  # TODO: add this logic into Power/Sig
   i = length(D$D)
   while(i > 0){
     if(is.nan(D$D[[i]])){
@@ -488,101 +486,6 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   return(power_df)
 }
 
-################################################################################
-#                    get_local_global_alpha_value() -- internal helper function
-# Helper function for thresholding::get_results()
-# Gets the alpha value from the local/global results
-#   D_local_global is a part of Carissa's function implementation, but get_results
-#   does not use it. For now, any interaction with 
-get_local_global_alpha_value <- function(files, D_local_global=NULL){
-  
-  # Make empty list
-  all_dfs <- c()
-  
-  # Append non-empty data frames to list
-  for(file in files){
-    
-    df <- utils::read.csv(file, sep="", row.names=NULL) 
-    
-    # Attempt to read in the file, but catch any errors and let user know
-    # that the file was 
-    tryCatch(
-      
-      expr = {
-        
-        # row.names = 1 SAME index_col = 0 in python?
-        df <- utils::read.csv(file, sep="", row.names=NULL)
-        
-      },
-      error = function(err){
-        writeLines("--get_results()  ---internal--->  get_local_global_alpha_value():", con = stderr())
-        stop(paste0("the file: ", file, "\n
-                     was not able to be read in by utils::read.csv.\n
-                     Make sure the file path is correct, and there is valid
-                     data in this file."))
-      }
-    )
-    
-    if(nrow(df) == 0){
-      next
-    }
-    else{
-      all_dfs <- rbind(all_dfs, df)
-    }
-  }
-  
-  if(length(all_dfs) == 0){
-    return(data.frame())
-  }
-  
-  #print(colnames(all_dfs))
-  # Combine dfs and group by the alpha value
-  # Equivalent of following line
-  # power_df = pd.concat(all_power_df).groupby("r").max()#skipna=True)    
-  df <- all_dfs %>%
-        dplyr::group_by(alpha) %>%
-        dplyr::filter(alpha == max(alpha)) %>%
-        dplyr::distinct()
-  
-  # Reset index
-  row.names(df) <- NULL
-  
-  # max_ac <- df[df["X2nd.eigenvalue"] < 1 & 
-  #               df["almost.disconnected.component.count"] > 1]
-  # max_ac <- subset(df, 
-  #                  (X2nd.eigenvalue < 1) & (almost.disconnected.component.count > 1)
-  #                  )
-  #print(df$X2nd.eigenvalue)
-  
-  
-  max_ac <- df %>% filter(X2nd.eigenvalue < 1 & almost.disconnected.component.count > 1)
-  #print(max_ac)
-  
-  if(nrow(max_ac) > 0){
-    min_alpha <- min(max_ac$alpha)
-    row_alpha_exist <- subset(max_ac, alpha == min_alpha)
-
-    alm_dis_max <- max(max_ac$almost.disconnected.component.count)
-    
-    r_a_m_tmp <- subset(max_ac, almost.disconnected.component.count == alm_dis_max)
-    row_alpha_max <- subset(r_a_m_tmp, alpha == min(alpha))
-
-
-    # Optional parameter D_local_global - add later but not necessary in core
-    # functionality of get_results()
-    # D_local_global["alpha_max"] = row_alpha_max.squeeze().to_dict()
-    # D_local_global["alpha_exist"] = row_alpha_exist.squeeze().to_dict()
-    
-    # print(paste0("Row alpha exist: ", row_alpha_exist))
-    # print(paste0("Row alpha max: ", row_alpha_max))
-  }
-  else{
-    return(data.frame())
-  }
-  
-  writeLines("############# get_local_global_alpha_value - DONE #############\n")
-  return(df)
-}
 
 ##############################################################################
 #' Returns the resulting analysis method thresholding values
@@ -619,15 +522,16 @@ get_local_global_alpha_value <- function(files, D_local_global=NULL){
 #' \itemize{
 #'    \item A nested list of keyed on analysis method names. The values of these
 #'    keys will be the recommended threshold from the corresponding method. This will 
-#'    be called \code{"D"}.
+#'    be called "\code{D}."
 #'    \item An alpha value representing the recommended significance value. This will 
-#'    be called \code{"alpha"}
+#'    be called "\code{alpha}." This is non-NaN if Method 2 - Power and Significance
+#'    was used in \code{analysis()}.
 #' }
 #' The output of \code{get_results()} and its separate wrappers will depend on the methods 
 #' passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
 #' for alpha does not show up in the returned list, then \code{get_results()} could not 
 #' find this method or alpha value in the files with the matching prefix.
-#' not show up 
+#'
 #' @examples
 #' date_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
@@ -647,16 +551,13 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
                        paste0(outfile_prefix, "*.iterative.txt")))
   sig_fnames = Sys.glob(file.path(getwd(),
                          paste0(outfile_prefix, "*.statistical_errors.txt")))           
-  loc_glo_fnames = Sys.glob(file.path(getwd(), 
-                        paste0(outfile_prefix, "*.local_global.txt")))
-  
+
   # Create list for each result type for convenient looping
   iterative <- list("iterative_result", it_fnames)
   significant <- list("significance_result", sig_fnames)
-  local_global <- list("local_global_result", loc_glo_fnames)
   
   # Create list of lists
-  all_results <- list(iterative, significant, local_global)
+  all_results <- list(iterative, significant)
   
   D <- new.env()  # Environment passed to helper functions (persists values)
   D$D <- list()   # Hash-map/Dictionary of method/threshold value pairs
@@ -690,10 +591,6 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
       print("-------- Starting get_significance_t_values --------")
       power_df <- supWarn(get_significance_t_values(files, D, min_power=0.8))
     } 
-    else if(method == "local_global_result"){
-      print("-------- Starting get_local_global_alpha value --------")
-      df_and_alpha <- supWarn(get_local_global_alpha_value(files))
-    }
   }
   
   writeLines("############# get_result - DONE #############\n")
