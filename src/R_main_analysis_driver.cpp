@@ -324,7 +324,7 @@ void analysis(std::string infile,
                                   0, //E
                                   bonferroni_corrected,
                                   outfile_name);
-        analysis_methods.erase(1);
+        analysis_methods.erase(2);
     }
 
     // End program if the only method desired was the significance and power calculations
@@ -382,7 +382,7 @@ void analysis(std::string infile,
     // Output header for iterative file contents
     std::stringstream header;
     header << "threshold";
-    header << "\tvertex_count\tedge_count";
+    header << "\tvertex-count\tedge-count";
     header << "\tconnected-component-count";
     header << "\tdensity\tdensity-orig-V";
     header << "\tlargest-cc-size\t2nd-largest-cc-size";
