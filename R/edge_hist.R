@@ -1,7 +1,7 @@
 #' edge_hist
 #' 
 #' Histogram function for displaying edge weight frequencies. \code{edge_hist()} requires that an 
-  #' \link{https://lgl.sourceforge.net/} file be passed. In other words, the .ncol file can be thought
+#' \url{https://lgl.sourceforge.net/} file be passed. In other words, the .ncol file can be thought
 #' of as a \strong{w}eighted \strong{e}dge \strong{l}ist (\strong{wel}). The first column contains rows of vertices, the
 #' second column contains rows of adjacent vertices, and the third column represents the weight for an edge
 #' between the vertex in the first column one and the vertex in the second column. 

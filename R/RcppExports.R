@@ -15,17 +15,19 @@
 #'   \item \code{<outfile_prefix>.statistical_errors.txt}: (method \strong{2})
 #' }
 #' 
-#' Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
+#' Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 #' 
-#' @param infile File path for .ncol graph file (\link{https://lgl.sourceforge.net/}) to read in for analysis. 
+#' @param infile File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 #' This file must be space delimited for this function to properly read in the graph's information.
 #' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
 #'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
 #'        prefix and the ascending method numbers. 
+#'          For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
+#'             \code{myfile-47.<method_name>.txt}.
 #'        The input file prefix will be determined by the characters preceding the first period ('.') character.
-#'          An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
-#'             \code{myfile-47.<method_name>.txt}
-#' @param methods Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
+#'         Otherwise, the user-provided value for \code{outfile_prefix} and the method numbers (if any) will be used in the output file's name.
+#' @param methods Numeric vector of analysis method integers. Defaults to an empty list (no analysis methods). These will be performed on each thresholding step and recorded
+#' into the output file(s). The number to method translation is given below:
 #' \itemize{
 #'   \item 1 = all
 #'   \item 2 = significance and power calculations (only valid for Pearson CC)
@@ -38,8 +40,8 @@
 #' }
 #'  Refer to the following papers for more detailed description of these methods: 
 #' \itemize{
-#' \item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
-#' \item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
+#' \item Carissa Bleker's thresholding dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/} 
+#' \item Dr. Langston, Grady, and Bleker's thresholding paper: \url{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 #' }
 #'         The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.
 #' @param lower Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)
@@ -109,8 +111,8 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #'
 #' General graph thresholding function that reads in an \code{.ncol} graph file and writes
 #' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
-#' are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
-#' or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
+#' are presented in the comparative study paper linked here: \url{https://pubmed.ncbi.nlm.nih.gov/38781420/}
+#' or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 #'
 #' @param infile The input \code{.ncol} graph file to be thresholded.
 #' @param outfile The path of the output file where the thresholded grpah will be written to.

@@ -533,7 +533,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' find this method or alpha value in the files with the matching prefix.
 #'
 #' @examples
-#' date_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
 #' outfile_prefix = "./get_results_test"
 #' analysis(data_file, 

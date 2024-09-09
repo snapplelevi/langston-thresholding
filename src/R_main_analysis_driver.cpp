@@ -96,17 +96,19 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'   \item \code{<outfile_prefix>.statistical_errors.txt}: (method \strong{2})
 //' }
 //' 
-//' Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
+//' Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 //' 
-//' @param infile File path for .ncol graph file (\link{https://lgl.sourceforge.net/}) to read in for analysis. 
+//' @param infile File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 //' This file must be space delimited for this function to properly read in the graph's information.
 //' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
 //'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
 //'        prefix and the ascending method numbers. 
+//'          For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
+//'             \code{myfile-47.<method_name>.txt}.
 //'        The input file prefix will be determined by the characters preceding the first period ('.') character.
-//'          An example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
-//'             \code{myfile-47.<method_name>.txt}
-//' @param methods Numeric vector of method integers. Defaults to an empty list. The number to method translation is given below:
+//'         Otherwise, the user-provided value for \code{outfile_prefix} and the method numbers (if any) will be used in the output file's name.
+//' @param methods Numeric vector of analysis method integers. Defaults to an empty list (no analysis methods). These will be performed on each thresholding step and recorded
+//' into the output file(s). The number to method translation is given below:
 //' \itemize{
 //'   \item 1 = all
 //'   \item 2 = significance and power calculations (only valid for Pearson CC)
@@ -119,8 +121,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' }
 //'  Refer to the following papers for more detailed description of these methods: 
 //' \itemize{
-//' \item Carissa Bleker's thresholding dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/} 
-//' \item Dr. Langston, Grady, and Bleker's thresholding paper: \link{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
+//' \item Carissa Bleker's thresholding dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/} 
+//' \item Dr. Langston, Grady, and Bleker's thresholding paper: \url{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 //' }
 //'         The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.
 //' @param lower Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)
@@ -290,7 +292,7 @@ void analysis(std::string infile,
 
     if(fileNames.length() > 0){
         for(auto file : fileNames){
-            if(!overwrite){
+            if(!overwrite && file != infile){
                 Rcpp::Rcout << "\nYou are about to overwrite the output file:\n";
                 Rcpp::Rcout << "    " << file << "\n";
                 Rcpp::Rcout << "Continue with graph threshold analysis?\n";
@@ -380,7 +382,7 @@ void analysis(std::string infile,
     // Output header for iterative file contents
     std::stringstream header;
     header << "threshold";
-    header << "\tvertex-count\tedge-count";
+    header << "\tvertex_count\tedge_count";
     header << "\tconnected-component-count";
     header << "\tdensity\tdensity-orig-V";
     header << "\tlargest-cc-size\t2nd-largest-cc-size";
@@ -395,7 +397,7 @@ void analysis(std::string infile,
 
     // Get the threshold increments - range() function from math_ext
     double t;
-    static const std::vector<double> t_vector = range(lower, upper, increment);
+    const std::vector<double> t_vector = range(lower, upper, increment);
     int num_increments = t_vector.size();
 
     Rcpp::Rcout << "Iterative thresholding\n";

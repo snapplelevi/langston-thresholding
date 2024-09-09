@@ -51,8 +51,8 @@ Nothing. The thresholded graph is written to the file specified by outfile.
 \description{
 General graph thresholding function that reads in an \code{.ncol} graph file and writes
 the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
-are presented in the comparative study paper linked here: \link{https://pubmed.ncbi.nlm.nih.gov/38781420/}
-or in Carissa Bleker's dissertation: \link{https://trace.tennessee.edu/utk_graddiss/5894/}
+are presented in the comparative study paper linked here: \url{https://pubmed.ncbi.nlm.nih.gov/38781420/}
+or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
 # Load the package
