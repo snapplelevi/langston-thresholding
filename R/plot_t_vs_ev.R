@@ -1,11 +1,21 @@
 #' Plots the edge (E) and vertex (V) counts of a graph at varying thresholds
 #' 
-#' Plots a graph's edge and vertices by threshold value on two different scales.
-#' Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds \
+#' Plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
+#' give more visual insight to the thresholds chosen by the iterative analysis methods of \code{analysis()},
+#' which are methods 3 through 8.
+#' 
+#' Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds
 #' against the V/E line plots. 
 #' 
-#' @param iter_prefix The prefix of the .iterative.txt file(s) from the \code{analysis()} function.
-#' @returns A ggplot object that can be displayed with show(), or by calling the plot_t_vs_ev() directly in the R terminal.
+#' @details 
+#' The vertical, orange lines represent a thresholding analysis method. The intersection point of both the V and E
+#' thresholding curves are denoted by red and blue squares. The method name is annotated for each vertical line. The x value (s)
+#' (threshold amount) that the method has yielded are where the vertical lines will appear. Use \code{get_results()} to see the 
+#' concrete value of these thresholds.
+#' 
+#' @param iter_prefix string. The prefix of the .iterative.txt file(s) from the output \code{analysis()} function, which
+#' is printed to the screen after \code{analysis()} ends.
+#' @returns A ggplot object that can be displayed with show() (can be stored or plotted directly by calling  \code{show(plot_t_vs_ev())} directly in the R terminal.)
 #' @export 
 plot_t_vs_ev <- function(iter_prefix){
   

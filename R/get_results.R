@@ -409,7 +409,7 @@ get_iterative_t_values <- function(files,
     i = i - 1
   }
   
-  writeLines("############# get_iterative_t_values - DONE #############")
+  writeLines("############# get_iterative_t_values - DONE #############\n")
   #print(paste0("D after: ", D$D))
   
   return(df)

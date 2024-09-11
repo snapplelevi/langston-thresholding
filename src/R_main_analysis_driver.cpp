@@ -98,9 +98,9 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' 
 //' Refer to Dr. Carissa Bleker's dissertation for more information about these analysis methods: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 //' 
-//' @param infile File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
+//' @param infile string. File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 //' This file must be space delimited for this function to properly read in the graph's information.
-//' @param outfile_prefix Prefix of output file in which analysis will be redirected to. If this is not specified,
+//' @param outfile_prefix string. Prefix of output file in which analysis will be redirected to. If this is not specified,
 //'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
 //'        prefix and the ascending method numbers. 
 //'          For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
@@ -125,31 +125,32 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' \item Dr. Langston, Grady, and Bleker's thresholding paper: \url{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 //' }
 //'         The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.
-//' @param lower Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)
-//' @param upper Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)
-//' @param increment Size of increment step in the thresholding loop
-//' @param window_size Sliding window size for spectral method (Default = 5)
-//' @param min_partition_size minimum size of graph or subgraph after threshold (Default = 10)
-//' @param min_clique_size Minimum size of maximal cliques in maximal clique count (Default = 5)
-//' @param num_samples Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).  
+//' @param lower numeric.Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)
+//' @param upper numeric. Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)
+//' @param increment numeric. Size of increment step in the thresholding loop
+//' @param window_size numeric. Sliding window size for spectral method (Default = 5)
+//' @param min_partition_size integer. minimum size of graph or subgraph after threshold (Default = 10)
+//' @param min_clique_size integer. Minimum size of maximal cliques in maximal clique count (Default = 5)
+//' @param num_samples integer. Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).  
 //'        \emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}
-//' @param significance_alpha Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)
-//' @param bonferroni_corrected Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
+//' @param significance_alpha numeric. Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)
+//' @param bonferroni_corrected boolean. Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
 //'        Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})
-//' @param overwrite Determines whether output file with given or generated prefix will be overwritten. 
+//' @param overwrite boolean. Determines whether output file with given or generated prefix will be overwritten. 
 //'        Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
 //'        whether or not you wish to overwrite the output file. 
 //' @examples
 //' #######    Variable Set-Up     #######
 //' library(thresholding)
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-//' data_prefix <- './HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+//' data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
 //' lower <- 0.6   
 //'
 //' #######    Example 1 - No methods #######
 //' analysis(data_file, 
 //'          outfile_prefix = data_prefix,
 //'          lower = lower,
+//'          overwrite = TRUE
 //'          )
 //'
 //' #######    Example 2 - iterative and power/significance methods #######
@@ -164,6 +165,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          methods = methods,
 //'          lower = lower,
 //'          num_samples = num_samples,
+//'          overwrite = TRUE
 //'          )
 //' \dontrun{
 //' #######    Example 3 - More Iterative methods #######
@@ -180,6 +182,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          outfile_prefix = "./example_2_it",
 //'          methods = methods,
 //'          lower = lower,
+//'          overwrite = TRUE
 //'         )
 //'
 //' }

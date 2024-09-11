@@ -7,11 +7,11 @@
 edge_hist(infile, bin_width = 0.01, sep = "")
 }
 \arguments{
-\item{infile}{File path to the .ncol formatted graph file (list of weighted edges - \strong{wel})}
+\item{infile}{string. File path to the .ncol formatted graph file (list of weighted edges - \strong{wel})}
 
-\item{bin_width}{(Optional) The width of each histogram bin. The default is bins of \strong{width} = 0.01}
+\item{bin_width}{numeric. The width of each histogram bin. The default is bins of \strong{width} = 0.01}
 
-\item{sep}{(Optional) Specifically decide how the columns in the \strong{wel} file are separated.
+\item{sep}{string. Specifically decide how the columns in the \strong{wel} file are separated.
 The default separator is any white space.}
 }
 \value{
@@ -26,7 +26,7 @@ between the vertex in the first column one and the vertex in the second column.
 }
 \examples{
 your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01, sep = '\t')
+save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
 show(save_plot)    ### the above call to edge_hist could also be wrapped in show()
 
 }

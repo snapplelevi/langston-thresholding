@@ -33,9 +33,8 @@ show(weight_hist)
 # Remember to give the number of samples using -n.
 # 
 # Method integers given for reference here:
-#       0 - all
-#       1 - significance and power calculations (only valid for Pearson CC)
-#       2 - local-global
+#       1 - all
+#       2 - significance and power calculations (only valid for Pearson CC)
 #       3 - scale free
 #       4 - maximal cliques
 #       5 - spectral methods
@@ -44,12 +43,12 @@ show(weight_hist)
 #       8 - percolation
 #       Use '?anaylsis' for more documentation
 
-# NOTE: num_samples, or number of samples, is NEEDED for doing method 1 (significance and power 
-# calculations). Supplying num_samples <= 4  when using method 1 will cause the analysis()
+# NOTE: num_samples, or number of samples, is NEEDED for doing method 2 (significance and power 
+# calculations). Supplying num_samples <= 4  when using method 2 will cause the analysis()
 # function to end execution. Not supplying the proper number of samples will lead to incorrect analysis()
 # results. There were 13 samples used in the data file given from Carissa's example data file
 # (HumanCellCycleSubset.ncol)
-methods <- c(8, 1, 3)    # select the three desired analysis methods
+methods <- c(8, 2, 3)    # select the three desired analysis methods
 starting_thresh <- 0.6   # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13 
 
@@ -80,7 +79,7 @@ thresholding::analysis(data_file,
 #       for the proper prefix to use
 # output_prefix <- "./example/HumanCellCycleSubset"
 
-output_prefix <- "USE THE OUTPUT PREFIX PRINTED AFTER analysis() RUNS"
+output_prefix <- "C:/Users/levij/AppData/Local/R/win-library/4.3/thresholding/extdata/HumanCellCycleSubset"
 get_results_out <- get_results(data_prefix)
 get_res_D <- get_results_out$D
 get_res_alpha <- get_res_D$alpha

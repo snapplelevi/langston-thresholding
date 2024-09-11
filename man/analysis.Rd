@@ -21,10 +21,10 @@ analysis(
 )
 }
 \arguments{
-\item{infile}{File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
+\item{infile}{string. File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 This file must be space delimited for this function to properly read in the graph's information.}
 
-\item{outfile_prefix}{Prefix of output file in which analysis will be redirected to. If this is not specified,
+\item{outfile_prefix}{string. Prefix of output file in which analysis will be redirected to. If this is not specified,
 \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
 prefix and the ascending method numbers. 
   For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
@@ -51,27 +51,27 @@ into the output file(s). The number to method translation is given below:
 }
         The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.}
 
-\item{lower}{Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)}
+\item{lower}{numeric.Lower bound to begin thresholding loop at (default = 0.5 ; lower >= 0)}
 
-\item{upper}{Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)}
+\item{upper}{numeric. Hard upper bound that ends thresholding  loop when \code{lower} value is greater than \code{upper} value (Default = 0.99)}
 
-\item{increment}{Size of increment step in the thresholding loop}
+\item{increment}{numeric. Size of increment step in the thresholding loop}
 
-\item{window_size}{Sliding window size for spectral method (Default = 5)}
+\item{window_size}{numeric. Sliding window size for spectral method (Default = 5)}
 
-\item{min_partition_size}{minimum size of graph or subgraph after threshold (Default = 10)}
+\item{min_partition_size}{integer. minimum size of graph or subgraph after threshold (Default = 10)}
 
-\item{min_clique_size}{Minimum size of maximal cliques in maximal clique count (Default = 5)}
+\item{min_clique_size}{integer. Minimum size of maximal cliques in maximal clique count (Default = 5)}
 
-\item{num_samples}{Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).
+\item{num_samples}{integer. Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).
 \emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}}
 
-\item{significance_alpha}{Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)}
+\item{significance_alpha}{numeric. Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)}
 
-\item{bonferroni_corrected}{Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
+\item{bonferroni_corrected}{boolean. Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
 Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})}
 
-\item{overwrite}{Determines whether output file with given or generated prefix will be overwritten. 
+\item{overwrite}{boolean. Determines whether output file with given or generated prefix will be overwritten. 
 Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
 whether or not you wish to overwrite the output file.}
 }
@@ -98,13 +98,14 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 #######    Variable Set-Up     #######
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-data_prefix <- './HumanCellCycleSubset-thresh'  # prefix used for output file(s)
+data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
 lower <- 0.6   
 
 #######    Example 1 - No methods #######
 analysis(data_file, 
          outfile_prefix = data_prefix,
          lower = lower,
+         overwrite = TRUE
          )
 
 #######    Example 2 - iterative and power/significance methods #######
@@ -119,6 +120,7 @@ analysis(data_file,
          methods = methods,
          lower = lower,
          num_samples = num_samples,
+         overwrite = TRUE
          )
 \dontrun{
 #######    Example 3 - More Iterative methods #######
@@ -135,6 +137,7 @@ analysis(data_file,
          outfile_prefix = "./example_2_it",
          methods = methods,
          lower = lower,
+         overwrite = TRUE
         )
 
 }
