@@ -108,7 +108,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'        The input file prefix will be determined by the characters preceding the first period ('.') character.
 //'         Otherwise, the user-provided value for \code{outfile_prefix} and the method numbers (if any) will be used in the output file's name.
 //' @param methods Numeric vector of analysis method integers. Defaults to an empty list (no analysis methods). These will be performed on each thresholding step and recorded
-//' into the output file(s). The number to method translation is given below:    
+//' into the output file(s). The number to method translation is given below:  
 //' \itemize{
 //'   \item 1 = all
 //'   \item 2 = significance and power calculations (only valid for Pearson CC)

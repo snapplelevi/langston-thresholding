@@ -393,11 +393,17 @@ get_iterative_t_values <- function(files,
     if(found_gupta){
       D$D['gupta_clustering'] <- df$threshold[[i]]
     }
+
     
-    if(!all(is.nan(df$random.clustering.coefficient))){
+    # Make sure there are at least some non-nan or non-infinite values
+    # in these clustering columns (this method was not requested if all
+    # are NaN or Inf)
+    if(!all(is.nan(df$random.clustering.coefficient)) 
+       && !all(is.infinite(df$random.clustering.coefficient))
+       && !all(is.nan(df$clustering.coefficient))
+       && !all(is.infinite(df$clustering.coefficient))){
       # elo clustering coefficient
       # first local maximum
-      
       
       #D['elo_clustering'] = df["threshold"][argrelextrema(C0_diffs, np.greater_equal)[0][0] + df.index[0]].min()
       
@@ -411,6 +417,7 @@ get_iterative_t_values <- function(files,
       C0_diffs <- C0_diffs[!is.nan(C0_diffs)]
       C0_diffs <- C0_diffs[!is.infinite(C0_diffs)]
       
+      print(C0_diffs)
       # Function to detect flat peaks
       find_flat_peaks <- function(v) {
         peaks <- pracma::findpeaks(v)
