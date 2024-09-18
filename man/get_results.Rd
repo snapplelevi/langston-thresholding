@@ -13,8 +13,8 @@ running the \code{analysis()} function (file would be <prefix>.iterative.txt). T
 output files will be assumed to be in the current working directory from where
 \code{get_results()} was called if no path is specified.}
 
-\item{plot_iterative}{Optionally plot the vertices and edges vs. threshold value as a graph.
-uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
+\item{plot_iterative}{Optionally plot the vertices and edges vs. threshold value.
+This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 the user needing to manually extract the required parameters.}
 }
 \value{

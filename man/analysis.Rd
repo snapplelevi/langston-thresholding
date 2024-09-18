@@ -26,14 +26,14 @@ This file must be space delimited for this function to properly read in the grap
 
 \item{outfile_prefix}{string. Prefix of output file in which analysis will be redirected to. If this is not specified,
 \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
-prefix and the ascending method numbers. 
+prefix and the method numbers (in ascending order)
   For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
-     \code{myfile-47.<method_name>.txt}.
+     \code{myfile-47.<method_name>.txt}. 
 The input file prefix will be determined by the characters preceding the first period ('.') character.
  Otherwise, the user-provided value for \code{outfile_prefix} and the method numbers (if any) will be used in the output file's name.}
 
 \item{methods}{Numeric vector of analysis method integers. Defaults to an empty list (no analysis methods). These will be performed on each thresholding step and recorded
-into the output file(s). The number to method translation is given below:
+into the output file(s). The number to method translation is given below:    
 \itemize{
   \item 1 = all
   \item 2 = significance and power calculations (only valid for Pearson CC)
@@ -46,7 +46,7 @@ into the output file(s). The number to method translation is given below:
 }
  Refer to the following papers for more detailed description of these methods: 
 \itemize{
-\item Carissa Bleker's thresholding dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/} 
+\item Dr. Carissa Bleker's thresholding dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/} 
 \item Dr. Langston, Grady, and Bleker's thresholding paper: \url{https://web.eecs.utk.edu/~mlangsto/JCB-Thresholding-Paper.pdf}
 }
         The method name in the outputfile name may vary based on the methods used. The name will either be \code{iterative} or \code{statistical_errors}.}
@@ -73,7 +73,8 @@ Applies Bonferroni correction to the value of significance_alpha if set to \code
 
 \item{overwrite}{boolean. Determines whether output file with given or generated prefix will be overwritten. 
 Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
-whether or not you wish to overwrite the output file.}
+whether or not you wish to overwrite the output file. The examples are defaulted to \code{TRUE} to avoid prompting this menu if the 
+example output files already exist.}
 }
 \value{
 Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.

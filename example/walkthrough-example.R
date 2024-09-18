@@ -22,8 +22,8 @@ data_prefix <- './HumanCellCycleSubset'   # prefix used in other functions in pa
 # First we can take a look at the edge weight distribution
 # Use '?thresholding::edge_hist' in R terminal for more documentation
 bin_width <- 0.01
-weight_hist <- edge_hist(data_file, bin_width = bin_width)
-show(weight_hist)
+edge_hist(data_file, bin_width = bin_width)
+
 
 #          Step 2 - running analysis on the graph
 # Now let's do the analysis of our graph. 

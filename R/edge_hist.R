@@ -13,10 +13,9 @@
 #' 
 #' @examples
 #' your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' save_plot <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
-#' show(save_plot)    ### the above call to edge_hist could also be wrapped in show()
+#' thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
 #' 
-#' @returns A ggplot object that can be displayed with show(), or by calling the edge_hist() directly in the R terminal.
+#' @returns Nothing. A plot of the edge histogram will be shown by calling show() internally.
 #' @export
 edge_hist <- function(infile,
                       bin_width=0.01,
@@ -65,15 +64,17 @@ edge_hist <- function(infile,
   ##################################################################
   
   #############   MAKING THE PLOT   ###############
-  # This returns the plot to the user to either
-  # store in a variable or pass directly to a 
-  # call to show()... ex.  show(edge_hist(infile))
-  ggplot2::ggplot(raw_data, ggplot2::aes(WEIGHT)) + 
-    ggplot2::geom_histogram(binwidth=bin_width,
-                            fill="orange",
-                            color="black") +
-    ggplot2::ggtitle(paste("Edge Weight Histogram for ", infile)) +
-    ggplot2::xlab("Edge Weight") +
-    ggplot2::ylab("Edge Count") +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+  # This stores the plot object and edge_hist will automatically show the
+  # final plot with show() below
+  plot_obj <- ggplot2::ggplot(raw_data, ggplot2::aes(WEIGHT)) + 
+              ggplot2::geom_histogram(binwidth=bin_width,
+                                      fill="orange",
+                                      color="black") +
+              ggplot2::ggtitle(paste("Edge Weight Histogram for ", infile)) +
+              ggplot2::xlab("Edge Weight") +
+              ggplot2::ylab("Edge Count") +
+              ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
+  
+  
+  show(plot_obj)
 }

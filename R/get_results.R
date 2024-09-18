@@ -98,18 +98,29 @@ get_iterative_t_values <- function(files,
   
   # Grouping by threshold and removing any duplicates from files with 
   # identical methods performed to preserve the max values
-  df <- all_dfs %>% 
-          dplyr::group_by(threshold) %>% 
-          dplyr::filter(threshold == max(threshold)) %>% 
-          dplyr::distinct()  %>% 
-          dplyr::arrange(threshold)
+  # df <- all_dfs %>% 
+  #         dplyr::group_by(threshold) %>% 
+  #         dplyr::filter(threshold == max(threshold)) %>% 
+  #         dplyr::distinct()  %>% 
+  #         dplyr::arrange(threshold)
+  
+  # Group by "threshold" and select the maximum for each group
+  df <- all_dfs %>%
+        dplyr::group_by(threshold) %>%
+        dplyr::summarise(dplyr::across(dplyr::everything(), max, na.rm = TRUE))
+  
+  # Sort by threshold
+  df <- df %>% dplyr::arrange(threshold)
   
   # print(colnames(df))
+  print(df)
+  
+  # Reset index
+  row.names(df) <- NULL
   
   writeLines("")
   writeLines("")
-  # Reset index
-  row.names(df) <- NULL
+  
 
   D$D['aplestin'] <- NaN
   D$D['cc_inflection'] <- NaN
@@ -146,12 +157,16 @@ get_iterative_t_values <- function(files,
   # Giant cc down inflection
   diffs <- diff(df$largest.cc.size)
   drop_cutoff <- sd(diffs)
-  diffs_b <- (abs(diffs) > drop_cutoff) & (diffs < 0)
+  diffs_b <- ((abs(diffs) > drop_cutoff) & (diffs < 0))
+  
   if(sum(diffs_b) > 0){
     # Find index of maximum difference and add the value of the
     # first index value (works same as df.index[0] in pandas)
-    offset <- which.max(diffs_b) + strtoi(rownames(df)[1])
+    # Subtract 1 to account for R's 1-indexing...
+    offset <- (which.max(diffs_b) - 1) + strtoi(rownames(df)[1])
     D$D['cc_inflection'] <- (df$threshold)[offset]
+    print(which.max(diffs_b))
+    print(strtoi(rownames(df)[1]))
   }
   
   # density minimum
@@ -236,7 +251,7 @@ get_iterative_t_values <- function(files,
   # Change values in subdf that are negative to be NaN
   # Otherwise, stay the same
   subdf <- subdf %>% 
-            dplyr::mutate(maximal.clique.count = 
+            dplyr::mutate(maximal.clique.ratio = 
                             dplyr::case_when(
                               maximal.clique.count == -1 ~ NaN,
                               .default = maximal.clique.count
@@ -249,7 +264,10 @@ get_iterative_t_values <- function(files,
     #     May need to tweak append logic           #
     ################################################
     sub.tmp <- subdf$maximal.clique.count
-    sub.app <- base::append(subdf$maximal.clique.count, NaN)
+    sub.app <- base::append(subdf$maximal.clique.count[
+                            2:length(subdf$maximal.clique.count)
+                            ]
+                            , NaN)
     
     base::transform(subdf,
                     maximal.clique.ratio = sub.tmp / sub.app)
@@ -355,7 +373,7 @@ get_iterative_t_values <- function(files,
     
     # first check: is there consistent increase in 
     # clustering coefficient?
-    if(sum(diffs > 0) > 3){
+    if(!any(is.na(diffs)) && sum(diffs > 0) > 3){
       cutoff <- sd(diffs[diffs > 0], na.rm=TRUE) * 0.3
       prev_prev_d <- diffs[1]
       prev_d <- diffs[2]
@@ -379,21 +397,65 @@ get_iterative_t_values <- function(files,
     if(!all(is.nan(df$random.clustering.coefficient))){
       # elo clustering coefficient
       # first local maximum
+      
+      
       #D['elo_clustering'] = df["threshold"][argrelextrema(C0_diffs, np.greater_equal)[0][0] + df.index[0]].min()
       
       tmp_diff <- df$clustering.coefficient - df$random.clustering.coefficient
       C0_diffs <- stats::runmed(tmp_diff, k = 3)
+
       elo_clustering_coefficient_diffs <- C0_diffs 
       df <- base::cbind(df, elo_clustering_coefficient_diffs)
       
+      # Remove NaN values to prevent issues with pracma::findpeaks  
+      C0_diffs <- C0_diffs[!is.nan(C0_diffs)]
+      C0_diffs <- C0_diffs[!is.infinite(C0_diffs)]
       
-      # Logic from python script (argrelextrema from scipy):
-      #D['elo_clustering'] = df["threshold"][argrelextrema(C0_diffs, np.greater_equal)[0][0] + df.index[0]].min()
-      #
-      # Adapted to findpeaks, which has a different output logic. Please leave a Github issue
-      # if this does not yield proper results. 
-      peaks <- pracma::findpeaks(C0_diffs)
-      D$D['elo_clustering'] <- min(df$threshold[ peaks[1][2] ] )
+      # Function to detect flat peaks
+      find_flat_peaks <- function(v) {
+        peaks <- pracma::findpeaks(v)
+        
+        # Initialize a list to store indices of flat peaks
+        flat_peaks <- c()
+        
+        # Manually find the flat peaks
+        for (i in 2:(length(v) - 1)) {
+          if (v[i] == v[i - 1] || v[i] == v[i + 1]) {
+            if (v[i] >= v[i - 1] && v[i] >= v[i + 1]) {
+              flat_peaks <- c(flat_peaks, i)
+            }
+          }
+        }
+        
+        return(list(peaks = peaks, flat_peaks = flat_peaks))
+      }
+      
+      both_peaks <- find_flat_peaks(C0_diffs)
+      is_peaks_null = is.null(both_peaks$peaks)
+      is_flat_peaks_null = is.null(both_peaks$flat_peaks)
+      
+      
+      offset <- NaN
+      if(!is_peaks_null && !is_flat_peaks_null){
+        offset <- min(both_peaks$flat_peaks[[1]], both_peaks$peaks[1][2])
+      } else if (!is_peaks_null){
+        offset <- both_peaks$peaks[1][2]
+      } else if(!is_flat_peaks_null){
+        offset <- both_peaks$flat_peaks[[1]]
+      }
+      
+      D$D['elo_clustering'] = df$threshold[offset]
+      
+      # print(paste0("C0_diffs AFTER NaN removed:"))
+      # print(C0_diffs)
+      # 
+      # # Adapted to findpeaks, which has a different output logic. Please leave a Github issue
+      # # if this does not yield proper results
+      # peaks <- pracma::findpeaks(C0_diffs)
+      # print("peaks: ")
+      # #print(peaks)
+      # #print(paste0("min expression : ", min(df$threshold[ peaks[1][2] ] )))
+      # D$D['elo_clustering'] <- min(df$threshold[ peaks[1][2] ] )
     }
     
   } # end outer if
@@ -403,13 +465,13 @@ get_iterative_t_values <- function(files,
   # TODO: add this logic into Power/Sig
   i = length(D$D)
   while(i > 0){
-    if(is.nan(D$D[[i]])){
+    if(is.nan(D$D[[i]]) || is.infinite(D$D[[i]])){
       D$D[[i]] <- NULL
     }
     i = i - 1
   }
   
-  writeLines("############# get_iterative_t_values - DONE #############\n")
+  writeLines("############# get_iterative_t_values - DONE #############")
   #print(paste0("D after: ", D$D))
   
   return(df)
@@ -513,9 +575,9 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' @param outfile_prefix File path and prefix for resulting output file from 
 #' running the \code{analysis()} function (file would be <prefix>.iterative.txt). The 
 #' output files will be assumed to be in the current working directory from where
-#' \code{get_results()} was called if no path is specified.
-#' @param plot_iterative Optionally plot the vertices and edges vs. threshold value as a graph.
-#' uses ggplot2 to automatically call this package's plot_t_vs_ev() function without
+#' \code{get_results()} was called if no path is specified. 
+#' @param plot_iterative Optionally plot the vertices and edges vs. threshold value.
+#' This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 #' the user needing to manually extract the required parameters.
 #' 
 #' @returns The returned list that can contain:
@@ -611,7 +673,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   #     to get whole list:         OUTPUT$D
   #     to get a specific element: OUTPUT$D$cc_inflection 
   D <- D$D
-  return(list(D = D, alpha = alpha))
+  return(D)
 }
 
 
