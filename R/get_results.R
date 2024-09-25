@@ -467,17 +467,7 @@ get_iterative_t_values <- function(files,
     
   } # end outer if
   
-  # Loop through D and only save the non NaN values (the methods the user requested
-  # will have valid thresholds attributed to them
-  # TODO: add this logic into Power/Sig
-  i = length(D$D)
-  while(i > 0){
-    if(is.nan(D$D[[i]]) || is.infinite(D$D[[i]])){
-      D$D[[i]] <- NULL
-    }
-    i = i - 1
-  }
-  
+
   writeLines("############# get_iterative_t_values - DONE #############")
   #print(paste0("D after: ", D$D))
   
@@ -551,6 +541,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   
   D$D[paste0("Power-", min_power)] <- min(power_df["r"][power_df["power"] >= min_power])
   
+  
   writeLines("############# get_significance_t_values - DONE #############\n")
   return(power_df)
 }
@@ -607,7 +598,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' outfile_prefix = "./get_results_test"
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
-#'          methods = c(1,3,8),
+#'          methods = c(2,3,8),
 #'          num_samples = 13,
 #'          overwrite = TRUE
 #'          )
@@ -664,6 +655,18 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   
   writeLines("############# get_result - DONE #############\n")
   
+  
+  
+  # Loop through D and only save the non NaN values (the methods the user requested
+  # will have valid thresholds attributed to them
+  # TODO: add this logic into Power/Sig
+  i = length(D$D)
+  while(i > 0){
+    if(is.nan(D$D[[i]]) || is.infinite(D$D[[i]])){
+      D$D[[i]] <- NULL
+    }
+    i = i - 1
+  }
   
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()
