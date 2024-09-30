@@ -55,8 +55,7 @@ get_iterative_t_values <- function(files,
                                    d_min_t=list(general=0)){
   
   
-  print(files)
-  # print(paste0("files inside: ", files))
+
   # Create array of data frames read in from files array
   all_dfs <- c()
   for(file in files){
@@ -113,15 +112,15 @@ get_iterative_t_values <- function(files,
   df <- df %>% dplyr::arrange(threshold)
   
   # print(colnames(df))
-  print(df)
+  # print(df)
   
   # Reset index
   row.names(df) <- NULL
   
+  # Formatting
   writeLines("")
   writeLines("")
   
-
   D$D['aplestin'] <- NaN
   D$D['cc_inflection'] <- NaN
   D$D['density_min'] <- NaN
@@ -165,8 +164,6 @@ get_iterative_t_values <- function(files,
     # Subtract 1 to account for R's 1-indexing...
     offset <- (which.max(diffs_b) - 1) + strtoi(rownames(df)[1])
     D$D['cc_inflection'] <- (df$threshold)[offset]
-    print(which.max(diffs_b))
-    print(strtoi(rownames(df)[1]))
   }
   
   # density minimum
@@ -292,13 +289,7 @@ get_iterative_t_values <- function(files,
   
   
   # aplestin
-  # ------------OLD -------------
-  # print("Nsv:")
-  # print(Nsv)
-  # print(sort(Nsv))
-  # print("df$threshold")
-  # print(df$threshold)
-  # 
+  # ------------OLD -------------  # 
   # Nsv <- df$edge.count / df$vertex.count
   
   # Error in pracma::gradient(Nsv, df$threshold) : 
@@ -417,7 +408,6 @@ get_iterative_t_values <- function(files,
       C0_diffs <- C0_diffs[!is.nan(C0_diffs)]
       C0_diffs <- C0_diffs[!is.infinite(C0_diffs)]
       
-      print(C0_diffs)
       # Function to detect flat peaks
       find_flat_peaks <- function(v) {
         peaks <- pracma::findpeaks(v)
@@ -468,7 +458,7 @@ get_iterative_t_values <- function(files,
   } # end outer if
   
 
-  writeLines("############# get_iterative_t_values - DONE #############")
+  writeLines("############# get_iterative_t_values - DONE #############\n")
   #print(paste0("D after: ", D$D))
   
   return(df)
@@ -639,10 +629,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
     
     if(method == "iterative_result"){
       i <- 1
-      # for(file in files){
-      #   print(paste0("File #", i, ": ", file))
-      #   i <- i + 1
-      # }
+
       print("-------- Starting get_iterative_t_values --------")
       # Supress min() and max() warnings returning Inf
       df <- supWarn(get_iterative_t_values(files, D))
@@ -653,9 +640,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
     } 
   }
   
-  writeLines("############# get_result - DONE #############\n")
-  
-  
+  writeLines("############# get_results() - DONE #############\n\n")
   
   # Loop through D and only save the non NaN values (the methods the user requested
   # will have valid thresholds attributed to them
@@ -671,7 +656,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
-    writeLines("############# plot_t_vs_ev() called #############\n")
+    writeLines("\n############# plot_t_vs_ev() called #############\n")
     show(thresholding::plot_t_vs_ev(outfile_prefix))
   }
   

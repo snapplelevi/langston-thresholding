@@ -81,14 +81,11 @@ thresholding::analysis(data_file,
 
 output_prefix <- "C:/Users/levij/AppData/Local/R/win-library/4.3/thresholding/extdata/HumanCellCycleSubset"
 get_results_out <- get_results(data_prefix)
-get_res_D <- get_results_out$D
-get_res_alpha <- get_res_D$alpha
 
 # Logical change - make get_results check which methods were used 
 # and only save those to D for output (no NaN'ers for things not used)
-print(get_results_out$D)
+print(get_results_out$density_min)
 print(get_res_D$whole_graph)
-print(get_res_D$alpha)
 
 #         Step 4a/b - Observe graph method thresholds and threshold graph
 # Testing the plot functionalites
