@@ -597,10 +597,8 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 get_results <- function(outfile_prefix, plot_iterative = FALSE){
  
   # Make so that all file with outfile_prefix are fetched
-  it_fnames <- Sys.glob(file.path(getwd(), 
-                       paste0(outfile_prefix, "*.iterative.txt")))
-  sig_fnames = Sys.glob(file.path(getwd(),
-                         paste0(outfile_prefix, "*.statistical_errors.txt")))           
+  it_fnames <- Sys.glob(file.path(paste0(outfile_prefix, "*.iterative.txt")))
+  sig_fnames = Sys.glob(file.path(paste0(outfile_prefix, "*.statistical_errors.txt")))           
 
   # Create list for each result type for convenient looping
   iterative <- list("iterative_result", it_fnames)
@@ -630,12 +628,12 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
     if(method == "iterative_result"){
       i <- 1
 
-      print("-------- Starting get_iterative_t_values --------")
+      print("-------- Starting get_iterative_t_values --------\n")
       # Supress min() and max() warnings returning Inf
       df <- supWarn(get_iterative_t_values(files, D))
     } 
     else if(method == "significance_result"){
-      print("-------- Starting get_significance_t_values --------")
+      print("-------- Starting get_significance_t_values --------\n")
       power_df <- supWarn(get_significance_t_values(files, D, min_power=0.8))
     } 
   }

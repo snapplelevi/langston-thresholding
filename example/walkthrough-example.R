@@ -80,7 +80,7 @@ thresholding::analysis(data_file,
 # output_prefix <- "./example/HumanCellCycleSubset"
 
 output_prefix <- "C:/Users/levij/AppData/Local/R/win-library/4.3/thresholding/extdata/HumanCellCycleSubset"
-get_results_out <- get_results(data_prefix)
+get_results_out <- get_results(output_prefix)
 
 # Logical change - make get_results check which methods were used 
 # and only save those to D for output (no NaN'ers for things not used)
