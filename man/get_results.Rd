@@ -5,7 +5,7 @@
 \title{Returns the resulting analysis method thresholding values
 after running \code{thresholding::analysis()}}
 \usage{
-get_results(outfile_prefix, plot_iterative = FALSE)
+get_results(outfile_prefix, plot_iterative = FALSE, return_dfs = FALSE)
 }
 \arguments{
 \item{outfile_prefix}{File path and prefix for resulting output file from 
@@ -16,6 +16,11 @@ output files will be assumed to be in the current working directory from where
 \item{plot_iterative}{Optionally plot the vertices and edges vs. threshold value.
 This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 the user needing to manually extract the required parameters.}
+
+\item{return_dfs}{Returns the iterative and significance data frames if they exist. These 
+are returned by \code{get_iter_t_vals()} and \code{get_sig_t_vals()} independently as well.
+Defaults to \code{FALSE} since these data frames can get rather long. The outputted list will
+be structured differently based on this input.}
 }
 \value{
 The returned list that can contain:
@@ -23,9 +28,9 @@ The returned list that can contain:
    \item A nested list of keyed on analysis method names. The values of these
    keys will be the recommended threshold from the corresponding method. This will 
    be called "\code{D}."
-   \item An alpha value representing the recommended significance value. This will 
-   be called "\code{alpha}." This is non-NaN if Method 2 - Power and Significance
-   was used in \code{analysis()}.
+   \item A nested list containing data frames and a list of methods list. Them methods list
+   is the same as described above. The data frames are included if they are valid based on the
+   \code{analysis()} output files found.
 }
 The output of \code{get_results()} and its separate wrappers will depend on the methods 
 passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
