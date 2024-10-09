@@ -70,11 +70,11 @@ get_iterative_t_values <- function(files,
         
       },
       error = function(err){
-        writeLines("--get_results()  ---internal---> get_iterative_t_values():",  con = stderr())
+        writeLines("[get_results]:  get_results() ---internal---> get_iterative_t_values():",  con = stderr())
         stop(paste0("the file: ", file, "\n
                      was not able to be read in by utils::read.csv.\n
                      Make sure the file path is correct, and there is valid
-                     data in this file."))
+                     data in this file. This can fail simply if the file is empty."))
       }
     )
     
@@ -458,7 +458,7 @@ get_iterative_t_values <- function(files,
   } # end outer if
   
 
-  writeLines("############# get_iterative_t_values - DONE #############\n")
+  writeLines("[get_results]:  get_iterative_t_values() - DONE \n")
   #print(paste0("D after: ", D$D))
   
   return(df)
@@ -532,7 +532,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   D$D[paste0("Power-", min_power)] <- min(power_df["r"][power_df["power"] >= min_power])
   
   
-  writeLines("############# get_significance_t_values - DONE #############\n")
+  writeLines("[get_results]: get_significance_t_values() - DONE \n")
   return(power_df)
 }
 
@@ -567,15 +567,19 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' @param plot_iterative Optionally plot the vertices and edges vs. threshold value.
 #' This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 #' the user needing to manually extract the required parameters.
+#' @param return_dfs Returns the iterative and significance data frames if they exist. These 
+#' are returned by \code{get_iter_t_vals()} and \code{get_sig_t_vals()} independently as well.
+#' Defaults to \code{FALSE} since these data frames can get rather long. The outputted list will
+#' be structured differently based on this input. 
 #' 
 #' @returns The returned list that can contain:
 #' \itemize{
 #'    \item A nested list of keyed on analysis method names. The values of these
 #'    keys will be the recommended threshold from the corresponding method. This will 
 #'    be called "\code{D}."
-#'    \item An alpha value representing the recommended significance value. This will 
-#'    be called "\code{alpha}." This is non-NaN if Method 2 - Power and Significance
-#'    was used in \code{analysis()}.
+#'    \item A nested list containing data frames and a list of methods list. Them methods list
+#'    is the same as described above. The data frames are included if they are valid based on the
+#'    \code{analysis()} output files found.
 #' }
 #' The output of \code{get_results()} and its separate wrappers will depend on the methods 
 #' passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
@@ -594,7 +598,9 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #'          )
 #' thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
 #' @export
-get_results <- function(outfile_prefix, plot_iterative = FALSE){
+get_results <- function(outfile_prefix, 
+                        plot_iterative = FALSE,
+                        return_dfs = FALSE){
  
   # Make so that all file with outfile_prefix are fetched
   it_fnames <- Sys.glob(file.path(paste0(outfile_prefix, "*.iterative.txt")))
@@ -628,17 +634,17 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
     if(method == "iterative_result"){
       i <- 1
 
-      print("-------- Starting get_iterative_t_values --------\n")
+      writeLines("[get_results]:  Starting get_iterative_t_values() \n")
       # Supress min() and max() warnings returning Inf
       df <- supWarn(get_iterative_t_values(files, D))
     } 
     else if(method == "significance_result"){
-      print("-------- Starting get_significance_t_values --------\n")
+      writeLines("[get_results]:  Starting get_significance_t_values() \n")
       power_df <- supWarn(get_significance_t_values(files, D, min_power=0.8))
     } 
   }
   
-  writeLines("############# get_results() - DONE #############\n\n")
+  writeLines("[get_results]:  DONE  \n\n")
   
   # Loop through D and only save the non NaN values (the methods the user requested
   # will have valid thresholds attributed to them
@@ -654,7 +660,7 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
-    writeLines("\n############# plot_t_vs_ev() called #############\n")
+    writeLines("\n[get_results]: plot_t_vs_ev() called\n")
     show(thresholding::plot_t_vs_ev(outfile_prefix))
   }
   
@@ -664,8 +670,28 @@ get_results <- function(outfile_prefix, plot_iterative = FALSE){
   #
   # ex. OUTPUT <- get_results("FILE-PREFIX")
   #     to get whole list:         OUTPUT$D
-  #     to get a specific element: OUTPUT$D$cc_inflection 
+  #     to get a specific element: OUTPUT$D$cc_inflection
+  
   D <- D$D
+  
+  if(return_dfs){
+    r_list <- list()
+    # Include iterative df if valid
+    if(all(dim(df)) != 0){
+      r_list$iter_df <- df
+    }
+    
+    # Include significance df if valid
+    if(all(dim(power_df)) != 0){
+      r_list$sig_df <- power_df
+    }
+    # Include the methods list (regardless) 
+    r_list$methods <- D
+    
+    return(r_list)
+  }
+  
+  # Just return the methods list if return_dfs = F
   return(D)
 }
 

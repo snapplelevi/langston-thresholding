@@ -48,7 +48,7 @@ edge_hist(data_file, bin_width = bin_width)
 # function to end execution. Not supplying the proper number of samples will lead to incorrect analysis()
 # results. There were 13 samples used in the data file given from Carissa's example data file
 # (HumanCellCycleSubset.ncol)
-methods <- c(8, 2, 3)    # select the three desired analysis methods
+methods <- c(8,  3)    # select the three desired analysis methods
 starting_thresh <- 0.6   # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13 
 
@@ -84,8 +84,9 @@ get_results_out <- get_results(output_prefix)
 
 # Logical change - make get_results check which methods were used 
 # and only save those to D for output (no NaN'ers for things not used)
+print(get_results_out)
 print(get_results_out$density_min)
-print(get_res_D$whole_graph)
+print(get_results_out$whole_graph)
 
 #         Step 4a/b - Observe graph method thresholds and threshold graph
 # Testing the plot functionalites
