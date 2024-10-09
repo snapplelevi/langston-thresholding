@@ -26,16 +26,13 @@ be structured differently based on this input.}
 The returned list that can contain:
 \itemize{
    \item A nested list of keyed on analysis method names. The values of these
-   keys will be the recommended threshold from the corresponding method. This will 
-   be called "\code{D}."
+   keys will be the recommended threshold from the corresponding method. "
    \item A nested list containing data frames and a list of methods list. Them methods list
    is the same as described above. The data frames are included if they are valid based on the
    \code{analysis()} output files found.
 }
 The output of \code{get_results()} and its separate wrappers will depend on the methods 
-passed to \code{analysis()}. Values will either be valid or +/-\code{Inf}. If a method and/or value
-for alpha does not show up in the returned list, then \code{get_results()} could not 
-find this method or alpha value in the files with the matching prefix.
+passed to \code{analysis()}. Values will be valid (non-\code{NaN} and non-\code{Inf}).
 }
 \description{
 \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 

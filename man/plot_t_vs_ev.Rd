@@ -11,20 +11,30 @@ plot_t_vs_ev(iter_prefix)
 is printed to the screen after \code{analysis()} ends.}
 }
 \value{
-A ggplot object that can be displayed with show() (can be stored or plotted directly by calling  \code{show(plot_t_vs_ev())} directly in the R terminal.)
+Nothing. Plots the ggplot2 object directly from the function.
 }
 \description{
 Plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
 give more visual insight to the thresholds chosen by the iterative analysis methods of \code{analysis()},
-which are methods 3 through 8.
+which are methods 3 through 8. Non-NaN and non-Inf analysis methods are plotted at their optimal thresholds
+against the V/E line plots.
 }
 \details{
-Additionally, non-NaN and non-Inf analysis methods are plotted at their optimal thresholds
-against the V/E line plots.
-
-
 The vertical, orange lines represent a thresholding analysis method. The intersection point of both the V and E
 thresholding curves are denoted by red and blue squares. The method name is annotated for each vertical line. The x value (s)
 (threshold amount) that the method has yielded are where the vertical lines will appear. Use \code{get_results()} to see the 
 concrete value of these thresholds.
+}
+\examples{
+library(thresholding)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+file.copy(data_file, "./")     # Copy the file to your working directory
+outfile_prefix = "./plot_t_vs_ev_test"
+analysis(data_file, 
+         outfile_prefix = outfile_prefix,
+         methods = c(2,3,8),
+         num_samples = 13,
+         overwrite = TRUE
+         )
+plot_t_vs_ev(outfile_prefix)
 }
