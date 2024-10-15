@@ -101,7 +101,7 @@ get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
   }
   
   # Run the iterative analysis on the found files
-  sig_df <- suppressWarnings(get_significance_t_values(it_fnames))
+  sig_df <- suppressWarnings(get_significance_t_values(it_fnames, list()))
   
   return(sig_df)
 }
