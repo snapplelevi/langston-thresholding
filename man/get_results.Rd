@@ -8,16 +8,16 @@ after running \code{thresholding::analysis()}}
 get_results(outfile_prefix, plot_iterative = FALSE, return_dfs = FALSE)
 }
 \arguments{
-\item{outfile_prefix}{File path and prefix for resulting output file from 
+\item{outfile_prefix}{string. Prefix for the resulting output file from 
 running the \code{analysis()} function (file would be <prefix>.iterative.txt). The 
 output files will be assumed to be in the current working directory from where
-\code{get_results()} was called if no path is specified.}
+\code{get_results()} was called if no path to the prefix is specified.}
 
-\item{plot_iterative}{Optionally plot the vertices and edges vs. threshold value.
+\item{plot_iterative}{boolean. Optionally plot the vertices and edges vs. threshold value.
 This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 the user needing to manually extract the required parameters.}
 
-\item{return_dfs}{Returns the iterative and significance data frames if they exist. These 
+\item{return_dfs}{boolean. Returns the iterative and significance data frames if they exist. These 
 are returned by \code{get_iter_t_vals()} and \code{get_sig_t_vals()} independently as well.
 Defaults to \code{FALSE} since these data frames can get rather long. The outputted list will
 be structured differently based on this input.}

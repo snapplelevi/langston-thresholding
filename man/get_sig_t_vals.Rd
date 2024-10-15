@@ -7,15 +7,16 @@
 get_sig_t_vals(outfile_prefix, recursive = FALSE)
 }
 \arguments{
-\item{outfile_prefix}{Prefix of output file, which can have several
-output file paths if the same prefix is run with analysis() several times. 
+\item{outfile_prefix}{string. Prefix of output file produce from \code{analysis()} 
+(identical to this parameter in this package's \code{get_results()}), which can have several
+output file paths if the same prefix is run with \code{analysis()} several times. 
 
 Ex.) \code{get_sig_t_vals("sig-prefix")} will execute \code{get_significance_t_values()}
 on all files names \code{sig-prefix-###.iterative.txt} where \code{###} is the unique combination
 of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
 methods were passed to \code{analysis()}.}
 
-\item{recursive}{Option to allow for subdirectory searching of the file prefix.
+\item{recursive}{boolean. Option to allow for subdirectory searching of the file prefix.
 Set to FALSE for default in case of large subdirectories. This option is meant to help 
 save time with R Studio and other editors' auto completion feature, which allows for tabbing
 to complete the file name from the present working directory (PWD) and maintaining the current
@@ -30,8 +31,8 @@ of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any 
 with the specified outfile_prefix and ends with ".iterative.txt".}
 }
 \value{
-The returned data frame includes graph and graph method values for each 
-increment of the threshold.
+The returned data frame includes Power analysis for values of 'r' and the corresponding
+power.
 }
 \description{
 \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
@@ -39,4 +40,18 @@ increment of the threshold.
 
 Returns the thresholding data frame created by the internal
 \code{get_significance_t_values()}.
+}
+\examples{
+library(thresholding)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+file.copy(data_file, "./")     # Copy the file to your working directory
+outfile_prefix = "./get_sig_t_vals_test"
+
+analysis(data_file, 
+         outfile_prefix = outfile_prefix,
+         methods = c(2,3,8),
+         num_samples = 13,
+         overwrite = TRUE
+)
+get_sig_t_vals(outfile_prefix)
 }

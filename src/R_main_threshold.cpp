@@ -33,9 +33,9 @@
 //' are presented in the comparative study paper linked here: \url{https://pubmed.ncbi.nlm.nih.gov/38781420/}
 //' or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 //'
-//' @param infile The input \code{.ncol} graph file to be thresholded.
-//' @param outfile The path of the output file where the thresholded grpah will be written to.
-//' @param method The method of thresholding can be one of these options:
+//' @param infile string. The input \code{.ncol} graph file to be thresholded.
+//' @param outfile string. The path of the output file where the thresholded grpah will be written to.
+//' @param method string. The method of thresholding can be one of these options:
 //' \enumerate{
 //'     \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
 //'            absolute value of the threshold value. (\code{weight} >= | \code{thresh} |)
@@ -45,14 +45,14 @@
 //'     \item \strong{\code{"local-global"}}: Local the global pruning method mentioned in the thresholding papers
 //'     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
 //'     }
-//' @param thresh The value to threshold the graph. The affect of this value depends on the thresolding
+//' @param thresh numeric. The value to threshold the graph. The affect of this value depends on the thresolding
 //'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 //'        \code{"absolute"} thresholding methods.}
-//' @param local_global_alpha  Use local-global method to threshold with alpha = \code{local_global_alpha}. 
+//' @param local_global_alpha  numeric. Use local-global method to threshold with alpha = \code{local_global_alpha}. 
 //'        \strong{Only used with \code{method == "local-global".}}
-//' @param rank Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
+//' @param rank numeric. Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 //'        \code{method} == "\code{rank}".}
-//' @param overwrite A boolean parameter meant to prevent overwriting existing thresholded
+//' @param overwrite boolean. A  parameter meant to prevent overwriting existing thresholded
 //' graph files. The default (\code{FALSE}) will display a menu to the user if the passed
 //' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 //' the existing file without interruption from a workflow.
@@ -68,6 +68,7 @@
 //'                         thresh = 0.8,
 //'                         overwrite = TRUE
 //'                         )
+//' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
 //' \dontrun{
 //' ################ Example 2 ###################
 //' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 

@@ -13,19 +13,19 @@ absolute_threshold(
 )
 }
 \arguments{
-\item{infile}{The \code{.ncol} graph file to be thresholded.}
+\item{infile}{string. The path to the \code{.ncol} graph file to be thresholded.}
 
-\item{outfile}{The output file path for the thresholded graph to be written to.}
+\item{outfile}{string. The output file path for the thresholded graph to be written to.}
 
-\item{threshold}{The desired absolute threshold to apply to the input graph.}
+\item{threshold}{numeric. The desired absolute threshold to apply to the input graph.}
 
-\item{overwrite}{A boolean parameter meant to prevent overwriting existing thresholded
+\item{overwrite}{boolean. A parameter meant to prevent overwriting existing thresholded
 graph files. The default (\code{FALSE}) will display a menu to the user if the passed
 \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 the existing file without interruption from a workflow.}
 
-\item{sort_output}{Sorts the edges of the thresholded graph in descending order before
-writing them to \code{outfile}.}
+\item{sort_output}{boolean. Sorts the edges of the thresholded graph in descending order before
+writing them to \code{outfile} if set to \code{TRUE}. Otherwise, descending order is not guaranteed.}
 }
 \value{
 Nothing. The thresholded graph is written to the file specified by outfile.
@@ -45,4 +45,5 @@ thresholding::absolute_threshold(infile,
                                  sort_output = TRUE,
                                  overwrite = TRUE
                                  )
+print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
 }

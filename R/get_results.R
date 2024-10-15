@@ -560,14 +560,14 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look at these 
 #' files and combine the results from each method into one data structure.
 #' 
-#' @param outfile_prefix File path and prefix for resulting output file from 
+#' @param outfile_prefix string. Prefix for the resulting output file from 
 #' running the \code{analysis()} function (file would be <prefix>.iterative.txt). The 
 #' output files will be assumed to be in the current working directory from where
-#' \code{get_results()} was called if no path is specified. 
-#' @param plot_iterative Optionally plot the vertices and edges vs. threshold value.
+#' \code{get_results()} was called if no path to the prefix is specified. 
+#' @param plot_iterative boolean. Optionally plot the vertices and edges vs. threshold value.
 #' This uses ggplot2 to automatically call this package's \code{plot_t_vs_ev()} function without
 #' the user needing to manually extract the required parameters.
-#' @param return_dfs Returns the iterative and significance data frames if they exist. These 
+#' @param return_dfs boolean. Returns the iterative and significance data frames if they exist. These 
 #' are returned by \code{get_iter_t_vals()} and \code{get_sig_t_vals()} independently as well.
 #' Defaults to \code{FALSE} since these data frames can get rather long. The outputted list will
 #' be structured differently based on this input. 

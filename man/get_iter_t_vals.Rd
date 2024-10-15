@@ -7,7 +7,8 @@
 get_iter_t_vals(outfile_prefix, recursive = FALSE)
 }
 \arguments{
-\item{outfile_prefix}{Prefix of output file, which can have several
+\item{outfile_prefix}{string. Prefix of output file produce from \code{analysis()} 
+(identical to this parameter in this package's \code{get_results()}), which can have several
 output file paths if the same prefix is run with \code{analysis()} several times. 
 
 Ex.) \code{get_iter_t_vals("iter-prefix")} will execute \code{get_iterative_t_values}
@@ -15,7 +16,7 @@ on all files names \code{iter-prefix-###.iterative.txt}, where \code{###} is the
 of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
 methods were passed to \code{analysis()}.}
 
-\item{recursive}{Option to allow for subdirectory searching of the file prefix.
+\item{recursive}{boolean. Option to allow for subdirectory searching of the file prefix.
 Set to FALSE for default in case of large subdirectories. This option is meant to help 
 save time with R Studio and other editors' auto completion feature, which allows for tabbing
 to complete the file name from the present working directory (PWD) and maintaining the current
@@ -44,4 +45,19 @@ Returns the thresholding data frame created by the internal
 data frame contains step-by-step thresholding figures for analysis methods, 
 edge counts, vertex counts, and other metrics computed as a result of the 
 \code{analysis()} function.
+}
+\examples{
+library(thresholding)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+file.copy(data_file, "./")     # Copy the file to your working directory
+outfile_prefix = "./get_iter_t_vals_test"
+
+analysis(data_file, 
+         outfile_prefix = outfile_prefix,
+         methods = c(2,3,8),
+         num_samples = 13,
+         overwrite = TRUE
+)
+get_iter_t_vals(outfile_prefix)
+
 }

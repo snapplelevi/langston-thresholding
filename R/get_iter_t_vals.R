@@ -35,9 +35,10 @@ find_last <- function(str, str_to_find){
 #' \code{get_iterative_t_values()} This
 #' data frame contains step-by-step thresholding figures for analysis methods, 
 #' edge counts, vertex counts, and other metrics computed as a result of the 
-#' \code{analysis()} function.
+#' \code{analysis()} function. 
 #' 
-#' @param outfile_prefix Prefix of output file, which can have several
+#' @param outfile_prefix string. Prefix of output file produce from \code{analysis()} 
+#' (identical to this parameter in this package's \code{get_results()}), which can have several
 #' output file paths if the same prefix is run with \code{analysis()} several times. 
 #' 
 #' Ex.) \code{get_iter_t_vals("iter-prefix")} will execute \code{get_iterative_t_values}
@@ -45,7 +46,7 @@ find_last <- function(str, str_to_find){
 #' of methods passed to \code{analysis()}. This value can be equal to nothing ("") if no
 #' methods were passed to \code{analysis()}.
 #' 
-#' @param recursive Option to allow for subdirectory searching of the file prefix.
+#' @param recursive boolean. Option to allow for subdirectory searching of the file prefix.
 #' Set to FALSE for default in case of large subdirectories. This option is meant to help 
 #' save time with R Studio and other editors' auto completion feature, which allows for tabbing
 #' to complete the file name from the present working directory (PWD) and maintaining the current
@@ -58,6 +59,20 @@ find_last <- function(str, str_to_find){
 #' If \code{TRUE}, \code{get_iter_t_vals()} will recursively searching through all files matching the Regex pattern
 #' of \code{^output_prefix.*\\.iterative\\.txt$}, which essentially allows for any file name that starts 
 #' with the specified outfile_prefix and ends with ".iterative.txt".
+#' 
+#' @examples
+#' library(thresholding)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' file.copy(data_file, "./")     # Copy the file to your working directory
+#' outfile_prefix = "./get_iter_t_vals_test"
+#' 
+#' analysis(data_file, 
+#'          outfile_prefix = outfile_prefix,
+#'          methods = c(2,3,8),
+#'          num_samples = 13,
+#'          overwrite = TRUE
+#' )
+#' get_iter_t_vals(outfile_prefix)
 #' 
 #' @returns A list containing both a dataframe and a list. The dataframe contains the raw interative
 #' thresholding data at each threshold value for the requested methods. The nested list contains
@@ -114,5 +129,5 @@ get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
   D_iter$D <- list()
   iter_df <- suppressWarnings(get_iterative_t_values(it_fnames, D_iter))
 
-  return(list(iter_df = iter_df, D_iter = D_iter))
+  return(list(iter_df = iter_df, methods = D_iter$D))
 }

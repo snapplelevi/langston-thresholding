@@ -15,11 +15,11 @@ threshold(
 )
 }
 \arguments{
-\item{infile}{The input \code{.ncol} graph file to be thresholded.}
+\item{infile}{string. The input \code{.ncol} graph file to be thresholded.}
 
-\item{outfile}{The path of the output file where the thresholded grpah will be written to.}
+\item{outfile}{string. The path of the output file where the thresholded grpah will be written to.}
 
-\item{method}{The method of thresholding can be one of these options:
+\item{method}{string. The method of thresholding can be one of these options:
 \enumerate{
     \item \strong{\code{"absolute"}}: Retains all edges that are  greater than or equal to the 
            absolute value of the threshold value. (\code{weight} >= | \code{thresh} |)
@@ -30,17 +30,17 @@ threshold(
     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
     }}
 
-\item{thresh}{The value to threshold the graph. The affect of this value depends on the thresolding
+\item{thresh}{numeric. The value to threshold the graph. The affect of this value depends on the thresolding
 \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 \code{"absolute"} thresholding methods.}}
 
-\item{local_global_alpha}{Use local-global method to threshold with alpha = \code{local_global_alpha}. 
+\item{local_global_alpha}{numeric. Use local-global method to threshold with alpha = \code{local_global_alpha}. 
 \strong{Only used with \code{method == "local-global".}}}
 
-\item{rank}{Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
+\item{rank}{numeric. Use top \code{rank} ranked edges per vertex to threshold graph. \strong{Only used when
 \code{method} == "\code{rank}".}}
 
-\item{overwrite}{A boolean parameter meant to prevent overwriting existing thresholded
+\item{overwrite}{boolean. A  parameter meant to prevent overwriting existing thresholded
 graph files. The default (\code{FALSE}) will display a menu to the user if the passed
 \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 the existing file without interruption from a workflow.}
@@ -66,6 +66,7 @@ thresholding::threshold(infile,
                         thresh = 0.8,
                         overwrite = TRUE
                         )
+print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
 \dontrun{
 ################ Example 2 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
