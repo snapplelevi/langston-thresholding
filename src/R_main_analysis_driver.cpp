@@ -740,7 +740,7 @@ void analysis(std::string infile,
 //     Rcpp::Rcout <<  "\t        Prefix to the output files to the analysis file(s).\n";
 //     Rcpp::Rcout <<  "\t        Example: If the prefix is \"graph-output\", the output is graph-output.<method_name>.txt";
 //     Rcpp::Rcout <<  "\t                 where method name is the type of analysis performed, such as iterative or statistical_errors\n";
-//     Rcpp::Rcout <<  "\t                 The method(s) are controlled by the optional \"methods\" argument.\n\n";
+//     Rcpp::Rcout <<  "\t                 The method(s) are controlled by the optional \"methods\" argument.\n\n"; 
 
 //     Rcpp::Rcout <<  "Optional:\n";
 //     Rcpp::Rcout <<  "\t3.) methods: string input  (defaults to empty string)\n";

@@ -11,10 +11,10 @@ plot_t_vs_ev(iter_prefix)
 is printed to the screen after \code{analysis()} ends.}
 }
 \value{
-Nothing. Plots the ggplot2 object directly from the function.
+The \code{ggplot2} object to be shown with \code{show()} or to be customized afterwards.
 }
 \description{
-Plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
+Returns a \code{ggplot2} object that plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
 give more visual insight to the thresholds chosen by the iterative analysis methods of \code{analysis()},
 which are methods 3 through 8. Non-NaN and non-Inf analysis methods are plotted at their optimal thresholds
 against the V/E line plots.
@@ -36,5 +36,5 @@ analysis(data_file,
          num_samples = 13,
          overwrite = TRUE
          )
-plot_t_vs_ev(outfile_prefix)
+show(plot_t_vs_ev(outfile_prefix))
 }

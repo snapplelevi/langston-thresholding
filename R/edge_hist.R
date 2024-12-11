@@ -13,9 +13,10 @@
 #' 
 #' @examples
 #' your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
+#' plot_obj <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
+#' show(plot_obj)
 #' 
-#' @returns Nothing. A plot of the edge histogram will be shown by calling show() internally.
+#' @returns \code{ggplot2} object for modification and for showing with \code{show()}.
 #' @export
 edge_hist <- function(infile,
                       bin_width=0.01,
@@ -76,5 +77,5 @@ edge_hist <- function(infile,
               ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
   
   
-  show(plot_obj)
+  return(plot_obj)
 }

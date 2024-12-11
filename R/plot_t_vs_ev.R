@@ -1,6 +1,6 @@
 #' Plots the edge (E) and vertex (V) counts of a graph at varying thresholds
 #' 
-#' Plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
+#' Returns a \code{ggplot2} object that plots a graph's edge and vertices by threshold value on two different scales. This function is intended to 
 #' give more visual insight to the thresholds chosen by the iterative analysis methods of \code{analysis()},
 #' which are methods 3 through 8. Non-NaN and non-Inf analysis methods are plotted at their optimal thresholds
 #' against the V/E line plots. 
@@ -14,7 +14,7 @@
 #' 
 #' @param iter_prefix string. The prefix of the .iterative.txt file(s) from the output \code{analysis()} function, which
 #' is printed to the screen after \code{analysis()} ends.
-#' @returns Nothing. Plots the ggplot2 object directly from the function.
+#' @returns The \code{ggplot2} object to be shown with \code{show()} or to be customized afterwards. 
 #' @examples
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
@@ -26,36 +26,9 @@
 #'          num_samples = 13,
 #'          overwrite = TRUE
 #'          )
-#' plot_t_vs_ev(outfile_prefix)
+#' show(plot_t_vs_ev(outfile_prefix))
 #' @export 
 plot_t_vs_ev <- function(iter_prefix){
-  
-  
-  # # Validate that iter_prefix is valid
-  # if(file.exists(iter_prefix) == FALSE){
-  #   writeLines(paste0("-- plot_t_vs_ev(): The input file \'", iter_prefix, "\'"))
-  #   writeLines(paste0("--                 was not able to be opened... please check spelling or the"))
-  #   writeLines(paste0("--                 working directory if the file path is relative."))
-  #   writeLines(paste0("--"))
-  #   writeLines(paste0("-- Leaving plot_t_vs_ev()"))
-  #   return(invisible(NULL))
-  # }
-  # 
-  # 
-  # # Strip the .iterative.txt suffix from the precise file name to use in get_iter_t_vals
-  # iter_ext <- ".iterative.txt"
-  # stripped_list <- unlist(strsplit(iter_prefix, iter_ext, fixed=TRUE))
-  # 
-  # # Make sure that there is only one .iterative.txt and that the extension
-  # # is truly the extension (end of the file name)
-  # if(length(stripped_list) != 2 &&
-  #    stripped_list[[2]] != iter_ext){
-  #   print("Print out error messages for .iterative.txt file ext. being wrong")
-  #   return(invisible(NULL))
-  # }
-  # 
-  #
-  
   
   # Get the results from analysis to get the D$D list
   #stripped_prefix <- stripped_list[[2]]
@@ -75,7 +48,8 @@ plot_t_vs_ev <- function(iter_prefix){
   # }
   
   # Store D_iter$D list into D for easier reading / less typing
-  D <- iter_results$D_iter$D
+  print(iter_results)
+  D <- iter_results$methods
   
   # Set up structures for storing plotting data
   annotations <- list()

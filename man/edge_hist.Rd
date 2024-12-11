@@ -15,7 +15,7 @@ edge_hist(infile, bin_width = 0.01, sep = "")
 The default separator is any white space.}
 }
 \value{
-Nothing. A plot of the edge histogram will be shown by calling show() internally.
+\code{ggplot2} object for modification and for showing with \code{show()}.
 }
 \description{
 Histogram function for displaying edge weight frequencies. \code{edge_hist()} requires that an 
@@ -26,6 +26,7 @@ between the vertex in the first column one and the vertex in the second column.
 }
 \examples{
 your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
+plot_obj <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
+show(plot_obj)
 
 }
