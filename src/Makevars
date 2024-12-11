@@ -84,10 +84,20 @@ endif
 
 extract_igraph:
 # First attempt at compiling igraph with CMake
+# For future reference: https://igraph.org/c/html/latest/igraph-Installation.html
+# LOTS of troubles with Unix like and Linux installs. Trying manual flags here
 	@mkdir -p $(IGRAPHDIR)
 	cd $(EXTERNALDIR) && tar -xv$(COMPRESSION)f $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
 	@mkdir -p $(IGRAPHDIR)/build
-	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+																		-DIGRAPH_USE_INTERNAL_BLAS=ON \
+																		-DIGRAPH_USE_INTERNAL_LAPACK=ON \
+																		-DIGRAPH_USE_INTERNAL_ARPACK=ON \
+																		-DIGRAPH_USE_INTERNAL_GLPK=ON \
+																		-DIGRAPH_USE_INTERNAL_GMP=ON \
+																		-DIGRAPH_USE_INTERNAL_PLFIT=ON \
+																		-DBLA_VENDOR=OpenBLAS \
+																		-DIGRAPH_GRAPHML_SUPPORT=ON
 	cd $(IGRAPHDIR)/build && cmake --build . -j
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 # Change CRLF to LF in specified Makfiles (made by cmake) 
