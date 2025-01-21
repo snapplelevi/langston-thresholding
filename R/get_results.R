@@ -61,7 +61,7 @@ get_iterative_t_values <- function(files,
   for(file in files){
     
     # Attempt to read in the file, but catch any errors and let user know
-    # that the file was 
+    # that the file was not able to be opened
     tryCatch(
       
       expr = {
@@ -475,7 +475,29 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   all_power_df <- c()  
   
   for(file in files){
-    
+    # Attempt to read in the file, but catch any errors and let user know
+    # that the file was not able to be opened
+    tryCatch(
+      
+      expr = {
+        
+        df <- utils::read.csv(file, sep="")
+        
+      },
+      error = function(err){
+        writeLines("[get_results]:  get_results() ---internal---> get_significance_t_values():",  con = stderr())
+        stop(paste0("the file: ", file, "\n
+                     was not able to be read in by utils::read.csv.\n
+                     Make sure the file path is correct, and there is valid
+                     data in this file. This can fail simply if the file is empty."))
+      }
+    )
+
+    # Print info to user about file
+    writeLines("-------------------- Files and the number of rows -------------------- ")
+    writeLines(paste0("File: ", file, "        nrows: ", nrow(df)))
+    writeLines("")
+
     line1 <- readLines(file, n=1)
     vals <- stringr::str_extract_all(line1, "\\d*(\\.)?\\d+")[[1]]
     
@@ -484,7 +506,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     r <- as.double(vals[[3]])
     
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
-    
+    writeLines(paste0("\tType I: ", as.numeric(r), '\n'))
     # Attempt to read in the file, but catch any errors and let user know
     # that the file was 
     tryCatch(

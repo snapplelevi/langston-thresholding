@@ -340,9 +340,6 @@ void analysis(std::string infile,
     // For igraph to handle edge weights
     igraph_set_attribute_table(&igraph_cattribute_table);
 
-    // Hold the result of the thresholding analysis process
-    int status = 0;
-
     // Load graph   
     // Ensure path to infile containing graph info is valid
     // read_graph checks to make sure that file opened is an existing file and passes
@@ -604,7 +601,7 @@ void analysis(std::string infile,
                     scale_free_alpha = scale_free_result.alpha;
                 }
 
-                ///////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////// 
                 // Random Matrix Theory
                 else if(m==6){
                     random_matrix_theory(G,
@@ -622,7 +619,7 @@ void analysis(std::string infile,
                     igraph_transitivity_undirected(&G, &clustering_coefficient, IGRAPH_TRANSITIVITY_NAN);
 
                     // threshold G_random an d get random clustering coefficient
-                    int threshold_status2 = threshold_graph(t, G_random);
+                    // int threshold_status2 = threshold_graph(t, G_random);
                     //std::cout << "\n" <<  threshold_status2 << "   " << igraph_vcount(&G_random) << "  " << igraph_ecount(&G_random) << std::endl;
                     igraph_transitivity_undirected(&G_random, &clustering_coefficient_r, IGRAPH_TRANSITIVITY_NAN);
                 }
@@ -666,8 +663,8 @@ void analysis(std::string infile,
     Rcpp::Rcout << "and extension from the file path) to retrieve the recommended\n";
     Rcpp::Rcout << "threshold for each requested method.\n";
     Rcpp::Rcout << "\nExample: \n";
-    Rcpp::Rcout << "\tFile name/path:" << outfile_name << '\n';
-    Rcpp::Rcout << "\tPrefix:        " << stripped_prefix << '\n';
+    Rcpp::Rcout << "\tFile name/path: " << outfile_name << '\n';
+    Rcpp::Rcout << "\tPrefix:         " << stripped_prefix << '\n';
 
     igraph_destroy(&G);
 }
