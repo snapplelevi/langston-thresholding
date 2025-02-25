@@ -96,8 +96,7 @@ extract_igraph:
 																		-DIGRAPH_USE_INTERNAL_GLPK=ON \
 																		-DIGRAPH_USE_INTERNAL_GMP=ON \
 																		-DIGRAPH_USE_INTERNAL_PLFIT=ON \
-																		-DBLA_VENDOR=OpenBLAS \
-																		-DIGRAPH_GRAPHML_SUPPORT=ON
+																		-DBLA_VENDOR=OpenBLAS
 	cd $(IGRAPHDIR)/build && cmake --build . -j
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 # Change CRLF to LF in specified Makfiles (made by cmake) 
