@@ -28,6 +28,20 @@ find_last <- function(str, str_to_find){
   return(ind)
 }
 
+##############################################################################
+#                         remove_invalid_values()
+# Helper function to remove NaN and Inf values out of a list
+remove_invalid_values <- function(input_list){
+  i = length(input_list)
+  while(i > 0){
+    if(is.nan(input_list[[i]]) || is.infinite(input_list[[i]])){
+      input_list[[i]] <- NULL
+    }
+    i = i - 1
+  }
+  
+  return(input_list)
+}
 
 
 ##############################################################################
@@ -457,6 +471,8 @@ get_iterative_t_values <- function(files,
     
   } # end outer if
   
+  
+  D$D <- remove_invalid_values(D$D)
 
   writeLines("[get_results]:  get_iterative_t_values() - DONE \n")
   #print(paste0("D after: ", D$D))
@@ -507,6 +523,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     
     D$D[paste0("TypeI-", alpha)] <- as.numeric(r)
     writeLines(paste0("\tType I: ", as.numeric(r), '\n'))
+    writeLines(paste0("\tAlpha: ", as.numeric(alpha), '\n'))
     # Attempt to read in the file, but catch any errors and let user know
     # that the file was 
     tryCatch(
@@ -535,6 +552,8 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     
   } # end file for-loop
   
+  # No rows in the stat df, just return NaN values and an 
+  # empty data frame since nothing was done
   if(length(all_power_df) == 0){
     D$D[paste0("TypeI-", alpha)] <- NaN
     D$D[paste0("Power-", min_power)] <- NaN
@@ -549,10 +568,12 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     dplyr::filter(r == max(r)) %>%
     dplyr::distinct()
   
+  # Reset the index
   row.names(power_df) <- NULL
   
   D$D[paste0("Power-", min_power)] <- min(power_df["r"][power_df["power"] >= min_power])
   
+  D$D <- remove_invalid_values(D$D)
   
   writeLines("[get_results]: get_significance_t_values() - DONE \n")
   return(power_df)
@@ -668,13 +689,19 @@ get_results <- function(outfile_prefix,
   # Loop through D and only save the non NaN values (the methods the user requested
   # will have valid thresholds attributed to them
   # TODO: add this logic into Power/Sig
-  i = length(D$D)
-  while(i > 0){
-    if(is.nan(D$D[[i]]) || is.infinite(D$D[[i]])){
-      D$D[[i]] <- NULL
-    }
-    i = i - 1
-  }
+  # i = length(D$D)
+  # while(i > 0){
+  #   if(is.nan(D$D[[i]]) || is.infinite(D$D[[i]])){
+  #     D$D[[i]] <- NULL
+  #   }
+  #   i = i - 1
+  # }
+  
+  
+  # Simplify things with naming and remove any NaN or +/- Inf values from 
+  # the methods list 
+  D <- D$D
+
   
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()
@@ -683,15 +710,7 @@ get_results <- function(outfile_prefix,
     show(thresholding::plot_t_vs_ev(outfile_prefix))
   }
   
-  # Results accessible by <out_variable>$D ; <out_variable>$alpha
-  # or
-  #               <out_variable>["D"] ; <out_variable>["alpha"]
-  #
-  # ex. OUTPUT <- get_results("FILE-PREFIX")
-  #     to get whole list:         OUTPUT$D
-  #     to get a specific element: OUTPUT$D$cc_inflection
   
-  D <- D$D
   
   if(return_dfs){
     r_list <- list()

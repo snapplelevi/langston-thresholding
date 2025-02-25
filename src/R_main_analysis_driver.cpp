@@ -669,7 +669,7 @@ void analysis(std::string infile,
     igraph_destroy(&G);
 }
 
-
+ 
 
 /////////////// update later after basic functionality of analysis function works //////////////
 // Helper code to print out help information if inputs are incorrect

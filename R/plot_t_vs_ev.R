@@ -47,14 +47,12 @@ plot_t_vs_ev <- function(iter_prefix){
   #   return(invisible(NULL))
   # }
   
-  # Store D_iter$D list into D for easier reading / less typing
-  print(iter_results)
-  D <- iter_results$methods
+  methods <- iter_results$methods
   
   # Set up structures for storing plotting data
   annotations <- list()
   labels <- list()
-  names_vec <- names(D)
+  names_vec <- names(methods)
   
   ###########################################################
   # NEED TO REMOVE POWER AND SIGNFICANCE AND ANY OTHER 
@@ -63,16 +61,16 @@ plot_t_vs_ev <- function(iter_prefix){
   
   # Used for keeping track of which element of the list you're on
   #     Used to get the string representation of the analysis method name
-  #     for each corresponding value in D
+  #     for each corresponding value in methods
   index <- 1
   
-  # Loop through threshold values stored in D
-  for(cur_val in D){
+  # Loop through threshold values stored in methods
+  for(cur_val in methods){
     
-    # Extract the string 'key' for the current threshold val in D
-    method_name <- names(D)[index]
+    # Extract the string 'key' for the current threshold val in methods
+    method_name <- names(methods)[index]
     
-    # Skip these two fields of D since they are non-iterative
+    # Skip these two fields of methods since they are non-iterative
     # They will screw up the plotting later if left in the labels
     if (grepl("^Power-", method_name)==TRUE|| grepl("TypeI-", method_name)==TRUE){
       next;
@@ -93,12 +91,12 @@ plot_t_vs_ev <- function(iter_prefix){
         annot <- names(annotations)[annot_index]
         
         # START DEBUGGING IF THIS WORKS OR NOT
-        if(method_name == 'spectral_methods'){
-          
-          # print(paste0(cur_val, " and ", annot_val))
-          # print(paste0("method_name: ", method_name, " and ", annot))
-          # print(dplyr::near(cur_val, annot_val, tol=1e-09))
-        }        
+        # if(method_name == 'spectral_methods'){
+        #   
+        #   # print(paste0(cur_val, " and ", annot_val))
+        #   # print(paste0("method_name: ", method_name, " and ", annot))
+        #   # print(dplyr::near(cur_val, annot_val, tol=1e-09))
+        # }        
         # END DEBUGGING BLOCK
         
         
@@ -241,6 +239,7 @@ plot_t_vs_ev <- function(iter_prefix){
     #print(paste0(method_name, "   ", unique_df$vertex.count[unique_df$threshold==x_coord]))
     #print(paste0(method_name, "   ", unique_df$edge.count[unique_df$threshold==x_coord]))
     
+    # Give some more spacing 
     PLOT <- PLOT +
             ggplot2::geom_vline(xintercept=x_coord,
                                 linetype="solid",
@@ -273,11 +272,11 @@ plot_t_vs_ev <- function(iter_prefix){
                               label=annot_string,
                               x=x_coord,
                               y=0.1*v_count,
-                              angle=25,
+                              angle=20,
                               size=3.2
             )
   } # end of method annotation loop
-  # print("done with loop")
+  
   # Return the ggplot2 object for variable storage or direct plotting with show()
   return(PLOT)
   
