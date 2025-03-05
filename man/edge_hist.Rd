@@ -4,7 +4,7 @@
 \alias{edge_hist}
 \title{edge_hist}
 \usage{
-edge_hist(infile, bin_width = 0.01, sep = "")
+edge_hist(infile, bin_width = 0.01, sep = "", title = "")
 }
 \arguments{
 \item{infile}{string. File path to the .ncol formatted graph file (list of weighted edges - \strong{wel})}
@@ -13,6 +13,8 @@ edge_hist(infile, bin_width = 0.01, sep = "")
 
 \item{sep}{string. Specifically decide how the columns in the \strong{wel} file are separated.
 The default separator is any white space.}
+
+\item{title}{string. Optional user-supplied name for title. Default title is "Edge Edge Weight Histogram for <INPUT_FILE>"}
 }
 \value{
 \code{ggplot2} object for modification and for showing with \code{show()}.

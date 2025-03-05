@@ -10,6 +10,7 @@
 #' @param bin_width numeric. The width of each histogram bin. The default is bins of \strong{width} = 0.01
 #' @param sep string. Specifically decide how the columns in the \strong{wel} file are separated.
 #' The default separator is any white space.
+#' @param title string. Optional user-supplied name for title. Default title is "Edge Edge Weight Histogram for <INPUT_FILE>"
 #' 
 #' @examples
 #' your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
@@ -20,11 +21,12 @@
 #' @export
 edge_hist <- function(infile,
                       bin_width=0.01,
-                      sep = ""
+                      sep = "",
+                      title=""
                       )
 {
   
-  # Make sure the file exists 
+  # Make sure the file exists
   if(!file.exists(infile)){
     stop(paste("\redge_hist(): the file \"", infile, "\" does not exist.\nLeaving edge_hist()..."))
   }
@@ -57,6 +59,11 @@ edge_hist <- function(infile,
   base::stopifnot(is.double(raw_data[["WEIGHT"]]) |
                   is.integer(raw_data[["WEIGHT"]]))
   
+  # Check if the user has supplied a custom title, supply default if not
+  if(title == ""){
+    title <- paste("Edge Weight Histogram for ", infile)
+  }
+  
   #############   Future feature (beyond ver 1.0.0   ###############
   # Grab quantiles for histogram coloring
   # quantiles <- quantile(raw_data$WEIGHT, 
@@ -71,7 +78,7 @@ edge_hist <- function(infile,
               ggplot2::geom_histogram(binwidth=bin_width,
                                       fill="orange",
                                       color="black") +
-              ggplot2::ggtitle(paste("Edge Weight Histogram for ", infile)) +
+              ggplot2::ggtitle(title) +
               ggplot2::xlab("Edge Weight") +
               ggplot2::ylab("Edge Count") +
               ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
