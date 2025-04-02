@@ -225,8 +225,11 @@ plot_t_vs_ev <- function(iter_prefix){
     for(label_method in labels[[method_name]]){
       annot_string <- paste0(annot_string, label_method, '\n')
     }
-    x_coord <- annotations[[method_name]]
     
+    # Values from graph at the particular threshold value
+    x_coord <- annotations[[method_name]]
+    v_num <- unique_df$vertex.count[unique_df$threshold==x_coord]
+    e_num <- unique_df$edge.count[unique_df$threshold==x_coord]
     # Don't break the ggplot2::geom_point by a method having a suggested threshold
     # over the max possible threshold number. Not sure how this is happening for 
     # method='rmt' in particular, but need to double check get_results() is behaving
@@ -251,7 +254,7 @@ plot_t_vs_ev <- function(iter_prefix){
             # Shape 23 = 45 degree square
     
             ggplot2::geom_point(x=x_coord,
-                                y=unique_df$vertex.count[unique_df$threshold==x_coord],
+                                y=v_num,
                                 color="blue",
                                 shape=23,
                                 fill="blue",
@@ -260,7 +263,7 @@ plot_t_vs_ev <- function(iter_prefix){
             # # Point for the edge curve
             # Shape 23 = 45 degree square
             ggplot2::geom_point(x=x_coord,
-                                y=(1/factor)*unique_df$edge.count[unique_df$threshold==x_coord],
+                                y=(1/factor) * e_num,
                                 color="red",
                                 shape=23,
                                 fill="red",
@@ -268,12 +271,18 @@ plot_t_vs_ev <- function(iter_prefix){
                                 ) +
             # Add the method name annotations to the vertical line
             # Do this last so that the string is on the highest layer
+            #
+            # Add a little padding to the x val to prevent text being cropped on the 
+            # left side of y-axis
+            #
+            # Add a inverse offset to the y val to try and prevent text overlapping with 
+            # other plot elements
             ggplot2::annotate("text",
                               label=annot_string,
-                              x=x_coord,
-                              y=0.1*v_count,
-                              angle=20,
-                              size=3.2
+                              x=x_coord + 0.01*x_coord,
+                              y=v_count*(1 - (e_num / e_count) + 0.05),
+                              angle=0,
+                              size=3.0
             )
   } # end of method annotation loop
   
