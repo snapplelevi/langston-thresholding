@@ -134,8 +134,6 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' @param num_samples integer. Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).  
 //'        \emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}
 //' @param significance_alpha numeric. Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)
-//' @param bonferroni_corrected boolean. Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
-//'        Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})
 //' @param overwrite boolean. Determines whether output file with given or generated prefix will be overwritten. 
 //'        Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
 //'        whether or not you wish to overwrite the output file. The examples are defaulted to \code{TRUE} to avoid prompting this menu if the 
@@ -189,7 +187,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' }
 //' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 // [[Rcpp::export]]
-void analysis(std::string infile, 
+std::string analysis(std::string infile, 
               std::string outfile_prefix="",
               Rcpp::NumericVector methods=Rcpp::NumericVector::create(), 
               double lower=0.5,
@@ -200,10 +198,11 @@ void analysis(std::string infile,
               int min_clique_size=5,
               int num_samples=0,
               double significance_alpha=0.01,
-              bool bonferroni_corrected=0,
               bool overwrite = false
               )
 {
+    // Save a string to return in case of an early return
+    const std::string fail_string = "analysis_failed";
 
     // Make sure the input file is able to be accessed
     std::ifstream exists;
@@ -323,17 +322,21 @@ void analysis(std::string infile,
     // Have to have n - number of samples (not number of variables)
     if(analysis_methods.find(2) != analysis_methods.end()){
         outfile_name = outfile_prefix + ".statistical_errors.txt";
+        // TODO: Fix setjmp() failure in dependency to restore old formal argument: 
+        // bool bonferroni_corrected=0,  
+        // This was was in OG packge, but  setjmp() to fail in lglib::invstudenttdistribution 
+        // in src/specialfuntions.cpp
         control_statistical_errors(significance_alpha,
                                   num_samples,
                                   0, //E
-                                  bonferroni_corrected,
+                                  false,   // was bonferroni_corrected previously. Turned off so doesn't break when true
                                   outfile_name);
         analysis_methods.erase(2);
     }
 
     // End program if the only method desired was the significance and power calculations
     if (analysis_methods.size() == 0){
-        return;
+        return fail_string;
     }
 
     // Turn on attribute handling
@@ -467,7 +470,6 @@ void analysis(std::string infile,
 
     double  scale_free_pvalue               = std::nan("");
     double  scale_free_KS                   = std::nan("");
-    double  scale_free_xmin                 = std::nan("");
     double  scale_free_alpha                = std::nan("");
 
     igraph_real_t clustering_coefficient    = std::nan("");
@@ -597,7 +599,6 @@ void analysis(std::string infile,
                     scale_free_test(G, V, scale_free_result);
                     scale_free_pvalue = scale_free_result.p;
                     scale_free_KS = scale_free_result.D;
-                    scale_free_xmin = scale_free_result.xmin;
                     scale_free_alpha = scale_free_result.alpha;
                 }
 
@@ -667,127 +668,8 @@ void analysis(std::string infile,
     Rcpp::Rcout << "\tPrefix:         " << stripped_prefix << '\n';
 
     igraph_destroy(&G);
+
+    return stripped_prefix;
 }
 
  
-
-/////////////// update later after basic functionality of analysis function works //////////////
-// Helper code to print out help information if inputs are incorrect
-
-// Display argument information on terminal for thresholding::analysis()
-// 
-// NOT EXPORTED YET AS OF VERSION 1.0.0
-// Sept 4 2024: MAKE SURE THIS WOULD ACTUALLY MATCH THE FUNCTION DOCUMENTATION FOR ANALYSIS
-// void help(){
-//     /*
-//     Rcpp::Rcerr <<  "\n";
-//     Rcpp::Rcerr <<  "    Usage: \n";
-//     Rcpp::Rcerr <<  "    " << "thresholdAnaylsis"  << " [-OPTIONS]... <GRAPH FILE PATH> <OUTPUT FILE PATH> \n\n";
-//     Rcpp::Rcerr <<  "    Graph has to be in .ncol format. \n";
-//     Rcpp::Rcerr <<  "    Output file path is the prefix to the results files, which will be of the form: \n";
-//     Rcpp::Rcerr <<  "        <OUTPUT FILE PATH>.pid.<method_name>.txt\n\n";
-//     Rcpp::Rcerr <<  "    Options: \n";
-//     Rcpp::Rcerr <<  "      -l  --lower                  <value>     lower bound on thresholds to test (default 0.5)\n";
-//     Rcpp::Rcerr <<  "      -u  --upper                  <value>     upper bound on thresholds to test (default 0.99)\n";
-//     Rcpp::Rcerr <<  "      -i  --increment              <value>     threshold increment (default 0.01)\n";
-//     Rcpp::Rcerr <<  "      -w  --windowsize             <value>     sliding window size for spectral method (default 5)\n";
-//     Rcpp::Rcerr <<  "      -p  --minimumpartitionsize   <value>     minimum size of graph or subgraph after threshold (default 10)\n";
-//     Rcpp::Rcerr <<  "      -n  --num_samples            <value>     number of samples for significance and power calculations (default NULL)\n";
-//     Rcpp::Rcerr <<  "      -b  --bonferroni_correction              switch to perform bonferroni corrections in significance and power calculations (default FALSE)\n";
-//     Rcpp::Rcerr <<  "      -c  --minimum_cliquesize     <value>     minimum size of maximal cliques in maximal clique count (default 5)\n";
-//     Rcpp::Rcerr <<  "      -m  --methods                <value>     comma separated list of methods (defaults to none)\n";
-//     Rcpp::Rcerr <<  "                                                   0 - all\n";
-//     Rcpp::Rcerr <<  "                                                   1 - significance and power calculations (only valid for Pearson CC)\n";
-//     Rcpp::Rcerr <<  "                                                   2 - local-global\n";
-//     Rcpp::Rcerr <<  "                                                   3 - scale free\n";
-//     Rcpp::Rcerr <<  "                                                   4 - maximal cliques\n";
-//     Rcpp::Rcerr <<  "                                                   5 - spectral methods\n";
-//     Rcpp::Rcerr <<  "                                                   6 - random matrix theory\n";
-//     Rcpp::Rcerr <<  "                                                   7 - clustering coefficient\n";
-//     Rcpp::Rcerr <<  "                                                   8 - percolation\n";
-//     Rcpp::Rcerr <<  "      -h  --help                               print this help and exit\n";
-//     Rcpp::Rcerr <<  "\n";
-//     */
-//     Rcpp::Rcout <<  "\n";
-//     Rcpp::Rcout <<  "--------------Langston Lab Thresholding Analysis Techniques (2023)---------------\n";
-//     Rcpp::Rcout <<  "                               analysis()                               \n";
-//     Rcpp::Rcout <<  "Synopsis:\n";
-//     Rcpp::Rcout <<  "    analysis(infile, outfile_prefix,\n";
-//     Rcpp::Rcout <<  "                      methods="",  lower=0.5,  upper=0.99, \n";
-//     Rcpp::Rcout <<  "                      increment=0.01,  window_size=5,  min_partition_size=10, \n";
-//     Rcpp::Rcout <<  "                      min_clique_size=5,  min_alpha=0,  max_alpha=4,\n";
-//     Rcpp::Rcout <<  "                      alpha_increment=0.1,  num_samples=0,\n";
-//     Rcpp::Rcout <<  "                      significance_alpha=0.01,  bonferroni_corrected=0)\n";
-//     Rcpp::Rcout <<  "\n";
-//     Rcpp::Rcout <<  "Arguments to analysis():\n";
-//     Rcpp::Rcout <<  "Required:\n";
-//     Rcpp::Rcout <<  "\t1.) infile: string input\n";
-//     Rcpp::Rcout <<  "\t        The weighted edge list (.wel) file input. This file is in the .ncol format as specified by\n";
-//     Rcpp::Rcout <<  "\t        the Large Graph Layout group: https://lgl.sourceforge.net/#FileFormat.\n\n";
-    
-//     Rcpp::Rcout <<  "\t        In this application, the graph input file is simple, weighted, undirected. The vertices in the .wel\n";
-//     Rcpp::Rcout <<  "\t        file follow the following format where the arrow represents whitespace: \n";
-//     Rcpp::Rcout <<  "\t          vertex1⇥vertex2⇥weight1,2\n";
-//     Rcpp::Rcout <<  "\t          vertex1⇥vertex3⇥weight1,3\n";
-//     Rcpp::Rcout <<  "\t          ...\n\n";
-
-//     Rcpp::Rcout <<  "\t         NOTE: vertex names cannot contain whitespace.\n\n";
-
-//     Rcpp::Rcout <<  "\t2.) outfile_prefix: string input\n";
-//     Rcpp::Rcout <<  "\t        Prefix to the output files to the analysis file(s).\n";
-//     Rcpp::Rcout <<  "\t        Example: If the prefix is \"graph-output\", the output is graph-output.<method_name>.txt";
-//     Rcpp::Rcout <<  "\t                 where method name is the type of analysis performed, such as iterative or statistical_errors\n";
-//     Rcpp::Rcout <<  "\t                 The method(s) are controlled by the optional \"methods\" argument.\n\n"; 
-
-//     Rcpp::Rcout <<  "Optional:\n";
-//     Rcpp::Rcout <<  "\t3.) methods: string input  (defaults to empty string)\n";
-//     Rcpp::Rcout <<  "\t        Comma separated list of analysis operations to complete. These methods are represented by an integer";
-//     Rcpp::Rcout <<  "\t        which is mapped to its corresponding method internally. The following methods are currently available:\n\n";
-//     Rcpp::Rcout <<  "\t             0 - all (methods 1-7 will be performed)\n";
-//     Rcpp::Rcout <<  "\t             1 - significance and power calculations (only valid for Pearson CC)\n";
-//     Rcpp::Rcout <<  "\t             2 - local-global\n";
-//     Rcpp::Rcout <<  "\t             3 - scale free\n";
-//     Rcpp::Rcout <<  "\t             4 - maximal cliques\n";
-//     Rcpp::Rcout <<  "\t             5 - spectral methods\n";
-//     Rcpp::Rcout <<  "\t             6 - random matrix theory\n";
-//     Rcpp::Rcout <<  "\t             7 - clustering coefficient\n";
-//     Rcpp::Rcout <<  "\t             8 - percolation\n\n";
-//     Rcpp::Rcout <<  "\t        Example: methods=\"2, 5\""; 
-//     Rcpp::Rcout <<  "\t                 methods=\"6, 1\"  (Note: methods will be performed in numerical order internally, but the order";
-//     Rcpp::Rcout <<  "\t                 which they are passed to the function doesn't matter.)\n\n";
-
-//     Rcpp::Rcout <<  "\t4.) lower: floating point input  (defaults to 0.5)\n";
-//     Rcpp::Rcout <<  "\t        Initial lower bound for  thresholding loop. The loop ends when the current threshold value surpasses the upper bound limit.\n";
-//     Rcpp::Rcout <<  "\t        NOTe: lower must be less than or equal to upper (lower <= upper) for function to continue.\n\n";
-//     Rcpp::Rcout <<  "\t        Example: lower=0.6\n\n";
-
-//     Rcpp::Rcout <<  "\t5.) upper: floating point input (defaults to 0.99)\n";
-//     Rcpp::Rcout <<  "\t        Upper bound for the thresholding loop; Thresholding ends when the current threshold value is greater than";
-//     Rcpp::Rcout <<  "\t        this parameter.\n";
-//     Rcpp::Rcout <<  "\t        NOTE: the upper must be greater than or equal to the lower input (lower <= upper) for the function to continue.\n\n";
-//     Rcpp::Rcout <<  "\t        Example: upper=0.93\n\n";
-
-//     Rcpp::Rcout <<  "\t6.) increment: floating point input (defaults to 0.01)\n";
-//     Rcpp::Rcout <<  "\t        This value controls the step of the thresholding loop. On each pass, the graph is thresholded at the current";
-//     Rcpp::Rcout <<  "\t        thresholding value.\n";
-//     Rcpp::Rcout <<  "\t        After the thresholding step, the value is incremented by the increment parameter (which is 0.01 by default).\n";
-//     Rcpp::Rcout <<  "\t        The increment parameter gives finer control to which thresholding values are used in the analysis. This parameter can also\n";
-//     Rcpp::Rcout <<  "\t        work alongside the lower and upper parameters to limit the scope and depth of thresholding userd.\n\n";
-//     Rcpp::Rcout <<  "\t        Example: increment=0.0001  - finer grain thresholding\n";
-//     Rcpp::Rcout <<  "\t                increment=0.05    - coarser thresholding\n\n";
-
-//     Rcpp::Rcout <<  "\t7.) window_size: integer input (defaults to 5)\n";
-//     Rcpp::Rcout <<  "\t         NOTE: this parameter is only used for spectral graph methods, which are used in the local-global (#2) and spectral (#5) analysis methods\n";
-//     Rcpp::Rcout <<  "\t         Used in spectral methods to create a differences vector with the specified sliding window width.\n";
-//     Rcpp::Rcout <<  "\t         window_size controls the size of the difference vector and the distance of the window between each difference pair.\n";
-//     Rcpp::Rcout <<  "\t         For example, a vector of size 10 with elements [0,1,2,3,4,5,6,7,8,9] exists.\n";
-//     Rcpp::Rcout <<  "\t         IF window_size=7, the output vector will have a size of 3. The first elements compared are 0 [ind = 0] and 7 [ind = 7].\n";
-//     Rcpp::Rcout <<  "\t         This difference is then stored. Next, the window is shifted by one. The next elements compared are\n";
-//     Rcpp::Rcout <<  "\t         1 [ind = 1] and 8 [ind = 8]. This process repeats until the window extends past the end of the vector.\n";
-//     Rcpp::Rcout <<  "\t         The vector that this internal difference function makes is then [7, 7, 7].\n\n";
-//     Rcpp::Rcout <<  "\t         Example: window_size=10   (NOTE: window_size should be greater than the min_partition_size. If this is not true, then\n";
-//     Rcpp::Rcout <<  "\t         the default values for each parameter will be used.)\n\n";
-
-//     Rcpp::Rcout <<  "\t8.) min_partition_size: integer input (defaults to 10)\n";
-//     Rcpp::Rcout <<  "\t";        
-// }

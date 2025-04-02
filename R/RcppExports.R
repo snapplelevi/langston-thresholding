@@ -53,8 +53,6 @@
 #' @param num_samples integer. Number of samples in Pearson Correlation Coefficient data (only used for \strong{analysis method 2 - Power and Significance calculations}).  
 #'        \emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}
 #' @param significance_alpha numeric. Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)
-#' @param bonferroni_corrected boolean. Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
-#'        Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})
 #' @param overwrite boolean. Determines whether output file with given or generated prefix will be overwritten. 
 #'        Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
 #'        whether or not you wish to overwrite the output file. The examples are defaulted to \code{TRUE} to avoid prompting this menu if the 
@@ -107,8 +105,8 @@
 #'
 #' }
 #' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
-analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, num_samples = 0L, significance_alpha = 0.01, bonferroni_corrected = 0L, overwrite = FALSE) {
-    invisible(.Call(`_thresholding_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, num_samples, significance_alpha, bonferroni_corrected, overwrite))
+analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, num_samples = 0L, significance_alpha = 0.01, overwrite = FALSE) {
+    .Call(`_thresholding_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, num_samples, significance_alpha, overwrite)
 }
 
 #' Strict thresholding for weighted graphs in \code{.ncol} format

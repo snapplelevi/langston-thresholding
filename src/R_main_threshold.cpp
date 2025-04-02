@@ -1,7 +1,7 @@
 // RCpp wrapper of Carissa Bleker's main_threhsold C++ code
 // made on dev
-// Carissa BLeker
-// cbleker@vols.utk.edu
+// Original author: Carissa Bleker
+// Adapated author: Levi Hochstetler
 #include <RcppCommon.h>
 #include <Rcpp.h>
 #include <igraph.h>
@@ -153,15 +153,14 @@ int threshold(std::string infile,
     Rcpp::Rcout << "Original number edges:    " << igraph_ecount(&G) << "\n";
     Rcpp::Rcout << "--------------------------------------------------------------------\n";
 
-    // ADD DOCS HERE!!!
-    if (method == "strict"){
-        threshold_graph(thresh, G, true);
+    if (method == "absolute"){
+        threshold_graph(thresh, G);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
-    }
-    else if (method == "absolute"){
-        threshold_graph(thresh, G);
+    } 
+    else if (method == "strict"){
+        threshold_graph(thresh, G, true);
         write_graph(outfile, G);
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&G) << "\n";
@@ -181,11 +180,8 @@ int threshold(std::string infile,
         Rcpp::Rcout << "Resulting number vertices: " << igraph_vcount(&new_G) << "\n";
         Rcpp::Rcout << "Resulting number edges:    " << igraph_ecount(&new_G) << "\n";
    }
-   // TODO: refactor the the code to support a strict threshold instead of requiring that absolute
-   // thresholding by default? Carissa's code requires that one of the above options are entered
-   // to work properly. Is it meaningful to only threshold one side of a distribution?
     else {
-        Rcpp::Rcerr << "The option: \"" << method << "\" is not supported.\n";
+        Rcpp::Rcerr << "The thresholding method argument method = \"" << method << "\" is not supported.\n";
         Rcpp::Rcerr << "Exiting threshold() now...\n"; 
     }
 

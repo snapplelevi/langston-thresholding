@@ -552,11 +552,12 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
     
   } # end file for-loop
   
-  # No rows in the stat df, just return NaN values and an 
-  # empty data frame since nothing was done
+  # No rows in the stat df, just return an empty power_df
   if(length(all_power_df) == 0){
     D$D[paste0("TypeI-", alpha)] <- NaN
     D$D[paste0("Power-", min_power)] <- NaN
+    writeLines("                Nothing in the stat df, returning early\n")
+    writeLines("[get_results]:  get_significance_t_values() - DONE \n")
     return(data.frame())
   }
   
@@ -575,7 +576,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
   
   D$D <- remove_invalid_values(D$D)
   
-  writeLines("[get_results]: get_significance_t_values() - DONE \n")
+  writeLines("[get_results]:  get_significance_t_values() - DONE \n\n")
   return(power_df)
 }
 
@@ -701,7 +702,7 @@ get_results <- function(outfile_prefix,
   # Simplify things with naming and remove any NaN or +/- Inf values from 
   # the methods list 
   D <- D$D
-
+  D <- remove_invalid_values(D)
   
   # Plot vertex and edge counts by threshold value if user specifies
   # instead of making seperate call to plot_t_vs_ev()

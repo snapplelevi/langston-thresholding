@@ -66,7 +66,7 @@ double control_statistical_errors(double significance_alpha,
 	// Range from l to u, incrementing by increment
 	std::vector<double> r_range = range(0.01, 0.99, 0.01);
 
-    for(int i=0; i<r_range.size(); i++){
+    for(std::size_t i=0; i<r_range.size(); i++){
     	double r_alternative=r_range[i];
     	double z_r = fisher_transform(r_alternative, num_samples);
 
