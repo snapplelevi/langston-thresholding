@@ -30,3 +30,7 @@ Packaged: 2024-02-10 21:47:04 UTC; levij
 Author: Levi Hochstetler [cre],
   Gabriel Johnson [aut],
   Carissa Bleker [aut]
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -16,7 +16,6 @@ analysis(
   min_clique_size = 5L,
   num_samples = 0L,
   significance_alpha = 0.01,
-  bonferroni_corrected = 0L,
   overwrite = FALSE
 )
 }
@@ -67,9 +66,6 @@ into the output file(s). The number to method translation is given below:
 \emph{\strong{\code{num_samples} must be positive, non-zero, and match the number of samples from the original dataset for method 2 to work.}} \emph{Not used in any other methods.}}
 
 \item{significance_alpha}{numeric. Probability of rejecting the null hypothesis when the null hypothesis is true.  (Default = 0.01)}
-
-\item{bonferroni_corrected}{boolean. Option to perform Bonferroni correction in \strong{method 2 - Significance and Power calculations}. 
-Applies Bonferroni correction to the value of significance_alpha if set to \code{TRUE}. \emph{Not used in any other methods.} (default \code{FALSE})}
 
 \item{overwrite}{boolean. Determines whether output file with given or generated prefix will be overwritten. 
 Set this to \code{TRUE} to force overwrite the output file. The default, \code{FALSE}, will display a menu asking
