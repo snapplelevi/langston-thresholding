@@ -9,47 +9,48 @@
 SRCEXT = cpp
 
 SRCDIR=${CURDIR}
-INCLUDEDIR=$(SRCDIR)/../include
+INCLUDEDIR=$(SRCDIR)/include
+INSTDIR=$(SRCDIR)/../inst
 EXTERNALDIR=$(SRCDIR)/../external
 BUILDDIR=$(SRCDIR)/../build
 LIBDIR=$(SRCDIR)/../lib
 
 
+IGRAPH_VER=igraph-0.9.9
+IGRAPHDIR=$(INSTDIR)/$(IGRAPH_VER)
+# Comes after the "." for the file extension. Set to xz, but could be tar.gz
+# For both igraph and alglib
+TAR_EXT=tar.xz
+COMPRESSION=
+
+# GNU directives to set tar extract flag based on the type of compressed
+# tar archivethe package uses. 
+# CRAN asks for external libraries to be in tar.xz format.
+ifeq ($(TAR_EXT), tar.xz)
+	COMPRESSION=J
+else ifeq ($(TAR_EXT), tar.gz)
+	COMPRESSION=z
+endif
+
+
 CXXSTD = -std=c++11
 PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(IGRAPHDIR)/build/include \
-								-I$(EXTERNALDIR)/alglib \
+								-I$(INSTDIR)/alglib \
 								-I$(INCLUDEDIR)
+
+PKG_LIBS = -L../lib -L/usr/lib -L/lib -ligraph -lm 
 
 # added -lm for Unix-like building
 # use -fopenmp flag only for non-clang compilers (like g++)
 compiler = $(shell which $(CXX))
 not_clang_if_equals_zero = $(shell $(compiler) --version | grep -c clang)
-PKG_LIBS = -L../lib -L/usr/lib -L/lib -ligraph -lm 
 # Only add fopenmp flag if the compiler is not clang (may be a problem for
 # more niche default compilers, but clang is more prevalent right now. will see 
 # as the package userbase expands and more compilers are tested)
 ifeq ($(not_clang_if_equals_zero), 0)
 	PKG_LIBS += -fopenmp
 endif
-
-IGRAPH_VER=igraph-0.9.9
-IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
-IGRAPH_TAR_EXT=tar.xz
-COMPRESSION=
-
-# GNU directives to set tar extract flag based on the type of compressed
-# tar archivethe package uses. 
-# CRAN asks for external libraries to be in tar.xz format.
-ifeq ($(IGRAPH_TAR_EXT), tar.xz)
-	COMPRESSION=J
-else ifeq ($(IGRAPH_TAR_EXT), tar.gz)
-	COMPRESSION=z
-endif
-
-
-.PHONY: all extract_igraph clean
-all: extract_igraph  $(SHLIB) 
 
 # File names to manually edit using sed for converting CRLF to LF
 # in the produced makefiles
@@ -82,12 +83,18 @@ else
 endif
 
 
+.PHONY: all extract_alglib extract_igraph clean
+all: extract_igraph  $(SHLIB) 
+
+
+# Extract the alglib tar file into the instdir, .Rinstignore will remove it from installed package
+extract_alglib:
+	cd $(INSTDIR) && tar -xv$(COMPRESSION)f $(INSTDIR)/alglib.$(TAR_EXT) -C $(INSTDIR)
+
 extract_igraph:
-# First attempt at compiling igraph with CMake
 # For future reference: https://igraph.org/c/html/latest/igraph-Installation.html
-# LOTS of troubles with Unix like and Linux installs. Trying manual flags here
 	@mkdir -p $(IGRAPHDIR)
-	cd $(EXTERNALDIR) && tar -xv$(COMPRESSION)f $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
+	cd $(INSTDIR) && tar -xv$(COMPRESSION)f $(IGRAPHDIR).$(TAR_EXT) -C $(INSTDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 																		-DIGRAPH_USE_INTERNAL_BLAS=ON \
@@ -99,7 +106,8 @@ extract_igraph:
 																		-DBLA_VENDOR=OpenBLAS
 	cd $(IGRAPHDIR)/build && cmake --build . -j
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
-# Change CRLF to LF in specified Makfiles (made by cmake) 
+# Use the GNU makefile macro foreach to go through all files and change
+# CRLF to LF by removing the carriage return
 	$(foreach file, $(makefiles), $(cmd))
 
 clean:

@@ -10,24 +10,26 @@
 SRCEXT=cpp
 
 SRCDIR=${CURDIR}
-INCLUDEDIR=$(SRCDIR)/../include
+INCLUDEDIR=$(SRCDIR)/include
+INSTDIR=$(SRCDIR)/../inst
 EXTERNALDIR=$(SRCDIR)/../external
 BUILDDIR=$(SRCDIR)/../build
-LIBDIR=$(SRCDIR)/../lib
+LIBDIR=$(SRCDIR)/../inst
 
 
-# Comes after the "." for the file extension. Set to xz, but could be tar.gz
 IGRAPH_VER=igraph-0.9.9
-IGRAPHDIR=$(EXTERNALDIR)/$(IGRAPH_VER)
-IGRAPH_TAR_EXT=tar.xz
+IGRAPHDIR=$(INSTDIR)/$(IGRAPH_VER)
+# Comes after the "." for the file extension. Set to xz, but could be tar.gz
+# For both igraph and alglib
+TAR_EXT=tar.xz
 COMPRESSION=
 
 # GNU directives to set tar extract flag based on the type of compressed
 # tar archivethe package uses. 
 # CRAN asks for external libraries to be in tar.xz format.
-ifeq ($(IGRAPH_TAR_EXT), tar.xz)
+ifeq ($(TAR_EXT), tar.xz)
 	COMPRESSION=J
-else ifeq ($(IGRAPH_TAR_EXT), tar.gz)
+else ifeq ($(TAR_EXT), tar.gz)
 	COMPRESSION=z
 endif
 
@@ -35,12 +37,9 @@ endif
 CXXSTD = -std=c++11
 PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(IGRAPHDIR)/build/include \
-								-I$(EXTERNALDIR)/alglib \
+								-I$(INSTDIR)/alglib \
 								-I$(INCLUDEDIR)
-
-
-# Linking flags for build process
-PKG_LIBS =  -ligraph -L../lib -fopenmp
+PKG_LIBS =  -ligraph -L$(LIBDIR) -fopenmp
 
 # File names to manually edit using sed for converting CRLF to LF
 # in the produced makefiles
@@ -64,16 +63,17 @@ makefiles=$(IGRAPHDIR)/build/Makefile \
 # Removes all instances of carriage returns (simple CRLF to LF)
 cmd=sed -i 's/\r//g' $(file);
 
-.PHONY: all extract_igraph e_igraph clean
+.PHONY: all extract_alglib extract_igraph clean
+all: extract_alglib extract_igraph $(SHLIB)
 
-# old working version ----- all: extract_igraph  $(SHLIB) 
-all: extract_igraph $(SHLIB)
+# Extract the alglib tar file into the instdir, .Rinstignore will remove it from installed package
+extract_alglib:
+	cd $(INSTDIR) && tar -xv$(COMPRESSION)f $(INSTDIR)/alglib.$(TAR_EXT) -C $(INSTDIR)
 
 extract_igraph:
-# First attempt at compiling igraph (v > 0.9) with CMake
-#cd $(EXTERNALDIR) && tar -xvzf $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
-	cd $(EXTERNALDIR) && tar -xv$(COMPRESSION)f $(EXTERNALDIR)/$(IGRAPH_VER).$(IGRAPH_TAR_EXT) -C $(EXTERNALDIR)
-	@echo $(IGRAPHDIR)
+# For future reference: https://igraph.org/c/html/latest/igraph-Installation.html
+# https://github.com/cran/rgdal/tree/master/build (package that uses compiled external deps.)
+	cd $(INSTDIR) && tar -xv$(COMPRESSION)f $(IGRAPHDIR).$(TAR_EXT) -C $(INSTDIR)
 	@mkdir -p $(IGRAPHDIR)/build
 # This option works in Unix (Makevars) - so far Windows builds work without it
 # cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
