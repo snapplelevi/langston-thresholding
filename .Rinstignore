@@ -1,0 +1,4 @@
+external/*
+inst/igraph*
+inst/alglib*
+inst/lib*

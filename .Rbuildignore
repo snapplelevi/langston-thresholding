@@ -1,1 +1,6 @@
-^\./external/igraph-0\.9\.9$
+^doc$
+^Meta$
+example_files/*
+external/*
+README.md
+NEWS.md
