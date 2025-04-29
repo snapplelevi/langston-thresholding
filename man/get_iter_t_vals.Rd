@@ -47,6 +47,7 @@ edge counts, vertex counts, and other metrics computed as a result of the
 \code{analysis()} function.
 }
 \examples{
+\dontrun{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 file.copy(data_file, "./")     # Copy the file to your working directory
@@ -59,5 +60,5 @@ analysis(data_file,
          overwrite = TRUE
 )
 get_iter_t_vals(outfile_prefix)
-
+}
 }

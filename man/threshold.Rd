@@ -15,7 +15,7 @@ threshold(
 )
 }
 \arguments{
-\item{infile}{string. The input \code{.ncol} graph file to be thresholded.}
+\item{infile}{string. The path of the input \code{.ncol} graph file to be thresholded.}
 
 \item{outfile}{string. The path of the output file where the thresholded grpah will be written to.}
 
@@ -26,11 +26,11 @@ threshold(
     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
           \code{thresh} are retained.
-    \item \strong{\code{"local-global"}}: Local the global pruning method mentioned in the thresholding papers
+    \item \strong{\code{"local-global"}}: Local-global pruning method mentioned in the thresholding papers
     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
     }}
 
-\item{thresh}{numeric. The value to threshold the graph. The affect of this value depends on the thresolding
+\item{thresh}{numeric. The value to threshold the graph. The affect of this value depends on the thresholding
 \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 \code{"absolute"} thresholding methods.}}
 
@@ -55,6 +55,7 @@ are presented in the comparative study paper linked here: \url{https://pubmed.nc
 or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
+\dontrun{
 # Load the package
 library(thresholding)
 
@@ -67,6 +68,8 @@ thresholding::threshold(infile,
                         overwrite = TRUE
                         )
 print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
+}
+
 \dontrun{
 ################ Example 2 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 

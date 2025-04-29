@@ -54,6 +54,7 @@ When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look a
 files and combine the results from each method into one data structure.
 }
 \examples{
+\dontrun{
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 file.copy(data_file, "./")     # Copy the file to your working directory
 outfile_prefix = "./get_results_test"
@@ -64,4 +65,5 @@ analysis(data_file,
          overwrite = TRUE
          )
 thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
+}
 }
