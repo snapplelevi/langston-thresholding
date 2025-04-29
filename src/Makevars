@@ -13,7 +13,7 @@ INCLUDEDIR=$(SRCDIR)/include
 INSTDIR=$(SRCDIR)/../inst
 EXTERNALDIR=$(SRCDIR)/../external
 BUILDDIR=$(SRCDIR)/../build
-LIBDIR=$(SRCDIR)/../lib
+LIBDIR=$(SRCDIR)/../inst
 
 
 IGRAPH_VER=igraph-0.9.9
@@ -39,7 +39,7 @@ PKG_CPPFLAGS = 	-I$(IGRAPHDIR)/include \
 								-I$(INSTDIR)/alglib \
 								-I$(INCLUDEDIR)
 
-PKG_LIBS = -L../lib -L/usr/lib -L/lib -ligraph -lm 
+PKG_LIBS = -L/usr/lib -L$(LIBDIR) -ligraph -lm 
 
 # added -lm for Unix-like building
 # use -fopenmp flag only for non-clang compilers (like g++)
