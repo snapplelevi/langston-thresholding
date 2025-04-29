@@ -84,8 +84,7 @@ endif
 
 
 .PHONY: all extract_alglib extract_igraph clean
-all: extract_igraph  $(SHLIB) 
-
+all: extract_alglib extract_igraph  $(SHLIB) 
 
 # Extract the alglib tar file into the instdir, .Rinstignore will remove it from installed package
 extract_alglib:
