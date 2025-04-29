@@ -140,6 +140,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'        example output files already exist.
 //' @examples
 //' #######    Variable Set-Up     #######
+//' \dontrun{
 //' library(thresholding)
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
 //' data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
@@ -151,7 +152,9 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          lower = lower,
 //'          overwrite = TRUE
 //'          )
+//' } 
 //'
+//' \dontrun{ 
 //' #######    Example 2 - iterative and power/significance methods #######
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 //' methods <- c(8, 2, 3)    # select the three desired analysis methods
@@ -166,6 +169,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          num_samples = num_samples,
 //'          overwrite = TRUE
 //'          )
+//' }
+//'
 //' \dontrun{
 //' #######    Example 3 - More Iterative methods #######
 //' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
@@ -184,7 +189,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          overwrite = TRUE
 //'         )
 //'
-//' }
+//' } 
+//' # End "dontrun" block
 //' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 // [[Rcpp::export]]
 std::string analysis(std::string infile, 
@@ -286,8 +292,7 @@ std::string analysis(std::string infile,
     
       
     // Present user with the option to overwrite the output based on the output file
-    // and its prefix
-    // if the overwrite parameter is left as FALSE
+    // and its prefix if the overwrite parameter is left as FALSE
     // Set the parameter to TRUE for unconditional overwriting
     Rcpp::Function r_glob("Sys.glob");   
     Rcpp::Function r_menu("menu");
@@ -308,9 +313,11 @@ std::string analysis(std::string infile,
             }        
             
         }
-        Rcpp::Rcout << "\n----Continuing with analysis().\n";
+        Rcpp::Rcout << "\n";
+        Rcpp::Rcout << "----Continuing with analysis().\n";
         Rcpp::Rcout << "----Overwriting output files with prefix of " << outfile_prefix << "\n\n";
     }
+
     // Stores the outfile name passed to analysis functions at multiple points throughout 
     // the analysis execution
     std::string outfile_name;
@@ -386,16 +393,16 @@ std::string analysis(std::string infile,
     // Output header for iterative file contents
     std::stringstream header;
     header << "threshold";
-    header << "\tvertex-count\tedge-count";
-    header << "\tconnected-component-count";
-    header << "\tdensity\tdensity-orig-V";
-    header << "\tlargest-cc-size\t2nd-largest-cc-size";
-    header << "\tclustering-coefficient\trandom-clustering-coefficient";
-    header << "\t2nd-eigenvalue\talmost-disconnected-component-count";
-    header << "\tmaximal-clique-count\tclique-number";
-    header << "\tpoisson-chi2\tpoisson-pvalue";
-    header << "\tgoe-chi2\tgoe-pvalue";
-    header << "\tscale-free-KS\tscale-free-KS-p-value\tscale-free-alpha";
+    header << "\tvertex.count\tedge.count";
+    header << "\tconnected.component.count";
+    header << "\tdensity\tdensity.orig.V";
+    header << "\tlargest.cc.size\tsecond.largest.cc.size";
+    header << "\tclustering.coefficient\trandom.clustering.coefficient";
+    header << "\tsecond.eigenvalue\talmost.disconnected.component.count";
+    header << "\tmaximal.clique.count\tclique.number";
+    header << "\tpoisson.chi2\tpoisson.pvalue";
+    header << "\tgoe.chi2\tgoe.pvalue";
+    header << "\tscale.free.KS\tscale.free.KS.p.value\tscale.free.alpha";
     out << header.str();
     out << '\n';
 

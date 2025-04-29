@@ -24,7 +24,7 @@ int spectral_methods(igraph_t& G_cc,
     int cluster_end = 0;
     bool in_step = false;
 
-    for(int i=0; i<window_differences.size(); i++){
+    for(std::size_t i=0; i<window_differences.size(); i++){
 
         double d = window_differences[i];
 

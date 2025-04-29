@@ -168,7 +168,7 @@ int largest_connected_component(igraph_t &G, igraph_t &G_cc,
 }
 
 // Fiedler vector: eigen-vector corresponding to first non-zero eigen-value
-// Assume connected graph -> 2nd eigenvector
+// Assume connected graph -> second eigenvector
 int Fiedler_vector(igraph_t &G,
                    igraph_vector_t &eigenvector,
                    igraph_real_t &eigenvalue){
@@ -214,7 +214,7 @@ int Fiedler_vector(igraph_t &G,
 
     // should be 0.0 (or there abouts)
     //std::cout << " 1st eigenvalue: " << VECTOR_IG(values)[0] << std::endl;
-    //std::cout << " 2nd eigenvalue: " << VECTOR_IG(values)[1] << std::endl;
+    //std::cout << " second eigenvalue: " << VECTOR_IG(values)[1] << std::endl;
 
     // set eigenvalue and eigenvector of interest
     eigenvalue = VECTOR_IG(values)[1];

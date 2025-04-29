@@ -146,8 +146,8 @@ int local_global_method(igraph_t& G,
 	header << "\tmean-k";
 	header << "\tdensity";
 	header << "\tconnected-component-count";
-    header << "\tlargest-cc-size\t2nd-largest-cc-size";
-    header << "\t2nd-eigenvalue\talmost-disconnected-component-count";
+    header << "\tlargest-cc-size\tsecond-largest-cc-size";
+    header << "\tsecond-eigenvalue\talmost-disconnected-component-count";
     out << header.str();
     out << '\n';
 

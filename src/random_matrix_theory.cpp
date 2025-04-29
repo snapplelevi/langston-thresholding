@@ -58,7 +58,8 @@ int random_matrix_theory(igraph_t& G,
 
     int NNSD_size = NNSD.size();
 
-    double NNSD_mean = mean(NNSD);
+    // Unused in OG package, kept here for future reference
+    // double NNSD_mean = mean(NNSD);
 
     //std::cout << "\nNNSD_size " << NNSD_size << "\n";
     for (int i=0; i < NNSD_size; i++){

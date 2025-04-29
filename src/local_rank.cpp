@@ -6,7 +6,7 @@ int local_rank(igraph_t& G,
 			   igraph_t& new_G){
 
     igraph_integer_t E = igraph_ecount(&G);
-    igraph_integer_t V = igraph_vcount(&G);
+    // igraph_integer_t V = igraph_vcount(&G);  // Unused in this function, was in OG C++ package
 
 	igraph_vit_t v_iterator;
 	igraph_vit_create(&G, igraph_vss_all(), &v_iterator);
@@ -46,7 +46,7 @@ int local_rank(igraph_t& G,
 			igraph_vector_t incident_eids;
 			igraph_vector_init(&incident_eids, num_neighbours);
 
-		  	int i=0; // neighbour index for incident_weights
+			std::size_t i=0; // neighbour index for incident_weights
 		  	while (!IGRAPH_EIT_END(e_iterator)){
 		  		e_id = IGRAPH_EIT_GET(e_iterator);
 		  		w = igraph_cattribute_EAN(&G, "weight", e_id);
