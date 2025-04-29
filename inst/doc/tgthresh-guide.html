@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Levi Hochstetler" />
+
+
+<title>Using tgthresh for graph thresholding and analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Using tgthresh for graph thresholding and
+analysis</h1>
+<h4 class="author">Levi Hochstetler</h4>
+<h4 class="date">16 April, 2025</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#workflow" id="toc-workflow"><span class="toc-section-number">2</span> Standard tgthresh Workflow</a>
+<ul>
+<li><a href="#setup" id="toc-setup"><span class="toc-section-number">2.1</span> Setup</a></li>
+<li><a href="#edge_hist-visualize-graph-edge-weight-distribution" id="toc-edge_hist-visualize-graph-edge-weight-distribution"><span class="toc-section-number">2.2</span> <code>edge_hist()</code>:
+visualize graph edge weight distribution</a></li>
+<li><a href="#analysis-run-thresholding-method-calculations-and-analyses" id="toc-analysis-run-thresholding-method-calculations-and-analyses"><span class="toc-section-number">2.3</span> <code>analysis()</code>: run
+thresholding method calculations and analyses</a></li>
+<li><a href="#get_results-extract-ideal-thresholds-from-raw-output-files-of-analysis" id="toc-get_results-extract-ideal-thresholds-from-raw-output-files-of-analysis"><span class="toc-section-number">2.4</span> <code>get_results()</code>:
+extract ideal thresholds from raw output files of
+<code>analysis()</code></a></li>
+<li><a href="#plot_t_vs_ev-plot-thresholding-vs.-edges-and-vertices-plot_t_vs_ev" id="toc-plot_t_vs_ev-plot-thresholding-vs.-edges-and-vertices-plot_t_vs_ev"><span class="toc-section-number">2.5</span> <code>plot_t_vs_ev()</code>: Plot
+Thresholding vs. Edges and Vertices {plot_t_vs_ev}</a></li>
+<li><a href="#threshold-apply-a-threshold-to-a-graph-and-save-to-an-output-file" id="toc-threshold-apply-a-threshold-to-a-graph-and-save-to-an-output-file"><span class="toc-section-number">2.6</span> <code>threshold()</code>: apply a
+threshold to a graph and save to an output file</a></li>
+</ul></li>
+<li><a href="#other_functions" id="toc-other_functions"><span class="toc-section-number">3</span> Other functions</a>
+<ul>
+<li><a href="#absolute_threshold-utility-for-directly-applying-an-absolute-threshold" id="toc-absolute_threshold-utility-for-directly-applying-an-absolute-threshold"><span class="toc-section-number">3.1</span> <code>absolute_threshold()</code>:
+utility for directly applying an absolute threshold</a></li>
+<li><a href="#get_iter_t_vals-get_sig_t_vals-utilities-for-extracting-results-and-dataframes-from-analysis-files" id="toc-get_iter_t_vals-get_sig_t_vals-utilities-for-extracting-results-and-dataframes-from-analysis-files"><span class="toc-section-number">3.2</span>
+<code>get_iter_t_vals() / get_sig_t_vals()</code>: utilities for
+extracting results and dataframes from <code>analysis</code>
+files</a></li>
+</ul></li>
+<li><a href="#conclusion" id="toc-conclusion"><span class="toc-section-number">4</span> Closing summary</a></li>
+<li><a href="#references" id="toc-references"><span class="toc-section-number">5</span> References</a></li>
+</ul>
+</div>
+
+<!-- Options for how the R code blocks look in the manual -->
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Finna cite <span class="citation">(<a href="#ref-JCB">Bleker, Grady,
+and Langston 2024</a>)</span> here. what does this look like?</p>
+<p>Introduce the package purpose and use case here</p>
+<p>Mention the type of graph input file</p>
+<p>This R package is meant to wrap and adapt the functionality from an
+existing C++ command line tool for the same purpose. This original
+package was written by Dr. Carissa Bleker, and its code, shell script
+tools, and Jupyter notebooks can be found on <a href="https://github.com/carissableker/thresholding">Github</a>. These
+tools and features were adapted to better accommodate R’s capabilities.
+Some features and function options were removed due to problems in the
+original tool. This package was written using the <strong>Rcpp</strong>
+Library <span class="citation">(<a href="#ref-RCPP">Eddelbuettel and
+François 2011</a>)</span> to more easily port the C++ logic to R
+code.</p>
+<p>Input graphs need to be in <strong>.ncol</strong> format (<a href="https://lgl.sourceforge.net/#FileFormat" class="uri">https://lgl.sourceforge.net/#FileFormat</a>) to be read
+correctly by the package’s internal use of
+<code>igraph_read_graph_ncol()</code>. The format is defined by Large
+Graph Layout. In this application, it is a simple weighted, whitespace
+separated edge list. Furthermore, vertex names in the edge list cannot
+contain whitespace.</p>
+</div>
+<div id="workflow" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Standard tgthresh
+Workflow</h1>
+<p>A general workflow for utilizing tgthresh’s functionalities will
+follow these outlined steps. Plotting functions in the tgthresh workflow
+are optional but provided in this workflow guide for a better
+understanding of the necessary input data they require.</p>
+<div id="setup" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Setup</h2>
+<p>The package can be loaded to the workspace like other installed R
+packages. The following tutorial will use the
+“<em>HumanCellCycleSubset.ncol</em>” graph file located in the package’s
+<code>extdata</code> directory. Each row in this edge list contains two
+genes (vertices) that are connected with a Pearson Correlation value
+(edge weight) for how strong their relationship is.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(thresholding)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>input_graph_path <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;HumanCellCycleSubset.ncol&quot;</span>, <span class="at">package=</span><span class="st">&quot;thresholding&quot;</span>)</span></code></pre></div>
+</div>
+<div id="edge_hist-visualize-graph-edge-weight-distribution" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+<code>edge_hist()</code>: visualize graph edge weight distribution</h2>
+<p>Using <code>edge_hist</code> will provide a quick and simple way to
+display a histogram of the edge weight distribution of an input graph
+file (see <a href="#introduction">Introduction</a> for more details
+about the <em>.ncol</em> format). <code>edge_hist</code> takes in the
+path of the input graph files and several optional parameters that
+adjust the width of the histogram bins, additional control for the
+separator of the <em>.ncol</em> graph input file, and giving a title to
+the output plot. <code>edge_hist</code> returns a <code>ggplot2</code>
+object to allow for further modification of the graph’s contents beyond
+what <code>edge_hist</code> provides.</p>
+<p>Here is a simple example of using <code>edge_hist</code> using the
+sample graph data provided in tgthresh:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>edge_hist_plot <span class="ot">&lt;-</span> <span class="fu">edge_hist</span>(input_graph_path, <span class="at">title=</span><span class="st">&quot;Demo of edge_hist&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Reading in the weighted edge list in  C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset.ncol ...&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Success - weighted edge list read!&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">show</span>(edge_hist_plot)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="analysis-run-thresholding-method-calculations-and-analyses" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+<code>analysis()</code>: run thresholding method calculations and
+analyses</h2>
+<p><code>analysis</code> can perform an assortment of thresholding
+algorithms during an iterative thresholding loop. These algorithms, or
+methods, are further described in <span class="citation">(<a href="#ref-JCB">Bleker, Grady, and Langston 2024</a>)</span>. However,
+XXX and XXX were excluded from the current version of this package fo
+<code>analysis</code> writes the output of its operations to files
+ending with <code>.iterative.txt</code> or
+<code>.statistical.errors.txt</code> to conform with the behavior of the
+existing C++ package [cite pkg here again?]. <em><code>analysis</code>
+will return the file path prefix that will later be used by
+<code>get_results</code> so it is recommended to store the output inside
+a variable for later use in script workflows.</em></p>
+<p>Like, <code>edge_hist</code> and the other functions,
+<code>analysis</code> will take the path of the input graph file as a
+mandatory argument. All other arguments are optional, but core
+functionality will greatly be impacted by <code>methods</code>,
+<code>lower</code>, <code>upper</code>, <code>increment</code>, and
+<code>num_samples</code> (only for the Significance and Power
+Calculations method). As <code>analysis</code> forms a large portion of
+tgthresh’s utility, more documentation about the additional parameters
+would not fit into a vignette guide. Please run
+<code>?tgthresh::analysis</code> in the R console for more details on
+the optional parameters.</p>
+<p>An example call to <code>analysis</code> is provided here. Many
+optional parameters were left as default, but this example is guaranteed
+to run quickly. Some methods may lead to longer run times depending on
+the size of the input graph and the method selected so it is best to
+keep in mind the <code>lower</code>, <code>upper</code>, and
+<code>increment</code> values in case the code takes longer than
+intended.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>methods <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">3</span>, <span class="dv">2</span>)       <span class="co"># select desired analysis methods</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>starting_thresh <span class="ot">&lt;-</span> <span class="fl">0.7</span>   <span class="co"># choose lower bound thresholding value that thresholding loop </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>num_samples <span class="ot">&lt;-</span> <span class="dv">13</span>        <span class="co"># running sig. and power - need the number of samples from data set</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># Using overwrite = TRUE for vignette building purposes, read ?analysis for more </span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># on this optional parameter</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>analysis_out_prefix <span class="ot">&lt;-</span><span class="fu">analysis</span>(input_graph_path, </span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>                               <span class="at">methods =</span> methods, </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>                               <span class="at">lower =</span> starting_thresh,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>                               <span class="at">num_samples =</span> num_samples,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>                               <span class="at">overwrite =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>                               )</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; Initial analysis parameters</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; ------------------------------------------------</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; input graph file:      C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset.ncol</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; output file prefix:    </span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; lower threshold:       0.7</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; upper threshold:       0.99</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; threshold increment:   0.01</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; ------------------------------------------------</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; ----Continuing with analysis().</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; ----Overwriting output files with prefix of C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset-238</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; Loading graph...</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; Done! Graph has been loaded.</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; Number vertices:  7077</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; Number edges:     250000  (maximum possible number of edges 25038426)</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; Iterative thresholding</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; Number steps: 30</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; Iterative analysis methods requested:</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt;  3: Scale Free Methods</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt;  8: Percolation Methods</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; Step: 1, Threshold: 0.7</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt;      Vertices: 4608  Edges: 5427</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; Step: 2, Threshold: 0.71</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt;      Vertices: 4309  Edges: 4792</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; Step: 3, Threshold: 0.72</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt;      Vertices: 3988  Edges: 4150</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; Step: 4, Threshold: 0.73</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt;      Vertices: 3613  Edges: 3563</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; Step: 5, Threshold: 0.74</span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt;      Vertices: 3291  Edges: 3039</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; Step: 6, Threshold: 0.75</span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt;      Vertices: 2987  Edges: 2597</span></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt; Step: 7, Threshold: 0.76</span></span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt;      Vertices: 2687  Edges: 2206</span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-61"><a href="#cb3-61" tabindex="-1"></a><span class="co">#&gt; Step: 8, Threshold: 0.77</span></span>
+<span id="cb3-62"><a href="#cb3-62" tabindex="-1"></a><span class="co">#&gt;      Vertices: 2379  Edges: 1849</span></span>
+<span id="cb3-63"><a href="#cb3-63" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-64"><a href="#cb3-64" tabindex="-1"></a><span class="co">#&gt; Step: 9, Threshold: 0.78</span></span>
+<span id="cb3-65"><a href="#cb3-65" tabindex="-1"></a><span class="co">#&gt;      Vertices: 2089  Edges: 1557</span></span>
+<span id="cb3-66"><a href="#cb3-66" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-67"><a href="#cb3-67" tabindex="-1"></a><span class="co">#&gt; Step: 10, Threshold: 0.79</span></span>
+<span id="cb3-68"><a href="#cb3-68" tabindex="-1"></a><span class="co">#&gt;      Vertices: 1846  Edges: 1308</span></span>
+<span id="cb3-69"><a href="#cb3-69" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-70"><a href="#cb3-70" tabindex="-1"></a><span class="co">#&gt; Step: 11, Threshold: 0.8</span></span>
+<span id="cb3-71"><a href="#cb3-71" tabindex="-1"></a><span class="co">#&gt;      Vertices: 1534  Edges: 1028</span></span>
+<span id="cb3-72"><a href="#cb3-72" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-73"><a href="#cb3-73" tabindex="-1"></a><span class="co">#&gt; Step: 12, Threshold: 0.81</span></span>
+<span id="cb3-74"><a href="#cb3-74" tabindex="-1"></a><span class="co">#&gt;      Vertices: 1282  Edges: 823</span></span>
+<span id="cb3-75"><a href="#cb3-75" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-76"><a href="#cb3-76" tabindex="-1"></a><span class="co">#&gt; Step: 13, Threshold: 0.82</span></span>
+<span id="cb3-77"><a href="#cb3-77" tabindex="-1"></a><span class="co">#&gt;      Vertices: 1043  Edges: 637</span></span>
+<span id="cb3-78"><a href="#cb3-78" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-79"><a href="#cb3-79" tabindex="-1"></a><span class="co">#&gt; Step: 14, Threshold: 0.83</span></span>
+<span id="cb3-80"><a href="#cb3-80" tabindex="-1"></a><span class="co">#&gt;      Vertices: 848   Edges: 502</span></span>
+<span id="cb3-81"><a href="#cb3-81" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-82"><a href="#cb3-82" tabindex="-1"></a><span class="co">#&gt; Step: 15, Threshold: 0.84</span></span>
+<span id="cb3-83"><a href="#cb3-83" tabindex="-1"></a><span class="co">#&gt;      Vertices: 700   Edges: 398</span></span>
+<span id="cb3-84"><a href="#cb3-84" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-85"><a href="#cb3-85" tabindex="-1"></a><span class="co">#&gt; Step: 16, Threshold: 0.85</span></span>
+<span id="cb3-86"><a href="#cb3-86" tabindex="-1"></a><span class="co">#&gt;      Vertices: 523   Edges: 290</span></span>
+<span id="cb3-87"><a href="#cb3-87" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-88"><a href="#cb3-88" tabindex="-1"></a><span class="co">#&gt; Step: 17, Threshold: 0.86</span></span>
+<span id="cb3-89"><a href="#cb3-89" tabindex="-1"></a><span class="co">#&gt;      Vertices: 399   Edges: 212</span></span>
+<span id="cb3-90"><a href="#cb3-90" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-91"><a href="#cb3-91" tabindex="-1"></a><span class="co">#&gt; Step: 18, Threshold: 0.87</span></span>
+<span id="cb3-92"><a href="#cb3-92" tabindex="-1"></a><span class="co">#&gt;      Vertices: 283   Edges: 147</span></span>
+<span id="cb3-93"><a href="#cb3-93" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-94"><a href="#cb3-94" tabindex="-1"></a><span class="co">#&gt; Step: 19, Threshold: 0.88</span></span>
+<span id="cb3-95"><a href="#cb3-95" tabindex="-1"></a><span class="co">#&gt;      Vertices: 190   Edges: 98</span></span>
+<span id="cb3-96"><a href="#cb3-96" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-97"><a href="#cb3-97" tabindex="-1"></a><span class="co">#&gt; Step: 20, Threshold: 0.89</span></span>
+<span id="cb3-98"><a href="#cb3-98" tabindex="-1"></a><span class="co">#&gt;      Vertices: 119   Edges: 61</span></span>
+<span id="cb3-99"><a href="#cb3-99" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-100"><a href="#cb3-100" tabindex="-1"></a><span class="co">#&gt; Step: 21, Threshold: 0.9</span></span>
+<span id="cb3-101"><a href="#cb3-101" tabindex="-1"></a><span class="co">#&gt;      Vertices: 81    Edges: 41</span></span>
+<span id="cb3-102"><a href="#cb3-102" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-103"><a href="#cb3-103" tabindex="-1"></a><span class="co">#&gt; Step: 22, Threshold: 0.91</span></span>
+<span id="cb3-104"><a href="#cb3-104" tabindex="-1"></a><span class="co">#&gt;      Vertices: 47    Edges: 24</span></span>
+<span id="cb3-105"><a href="#cb3-105" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-106"><a href="#cb3-106" tabindex="-1"></a><span class="co">#&gt; Step: 23, Threshold: 0.92</span></span>
+<span id="cb3-107"><a href="#cb3-107" tabindex="-1"></a><span class="co">#&gt;      Vertices: 20    Edges: 10</span></span>
+<span id="cb3-108"><a href="#cb3-108" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-109"><a href="#cb3-109" tabindex="-1"></a><span class="co">#&gt; Step: 24, Threshold: 0.93</span></span>
+<span id="cb3-110"><a href="#cb3-110" tabindex="-1"></a><span class="co">#&gt;  Graph too small, finished. </span></span>
+<span id="cb3-111"><a href="#cb3-111" tabindex="-1"></a><span class="co">#&gt; Thresholding and analysis completed!!!</span></span>
+<span id="cb3-112"><a href="#cb3-112" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-113"><a href="#cb3-113" tabindex="-1"></a><span class="co">#&gt; Use the thresholding::get_results() function along with the</span></span>
+<span id="cb3-114"><a href="#cb3-114" tabindex="-1"></a><span class="co">#&gt; output file PREFIX (which excludes the analysis method integers</span></span>
+<span id="cb3-115"><a href="#cb3-115" tabindex="-1"></a><span class="co">#&gt; and extension from the file path) to retrieve the recommended</span></span>
+<span id="cb3-116"><a href="#cb3-116" tabindex="-1"></a><span class="co">#&gt; threshold for each requested method.</span></span>
+<span id="cb3-117"><a href="#cb3-117" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-118"><a href="#cb3-118" tabindex="-1"></a><span class="co">#&gt; Example: </span></span>
+<span id="cb3-119"><a href="#cb3-119" tabindex="-1"></a><span class="co">#&gt;  File name/path: C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset-238.iterative.txt</span></span>
+<span id="cb3-120"><a href="#cb3-120" tabindex="-1"></a><span class="co">#&gt;  Prefix:         C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset</span></span></code></pre></div>
+</div>
+<div id="get_results-extract-ideal-thresholds-from-raw-output-files-of-analysis" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span>
+<code>get_results()</code>: extract ideal thresholds from raw output
+files of <code>analysis()</code></h2>
+<p><code>get_results</code> is used to identify promising thresholds
+from the raw output files generated by <code>analysis</code>. It takes
+in the output file prefix (return value of <code>analysis</code>) and
+runs additional threshold calculations. Without any optional parameters,
+it will return a list of corresponding thresholds for each method that
+was used when <code>analysis</code> ran.</p>
+<p><code>get_results</code> can also output the raw R dataframes from
+<code>analysis</code> and <code>show()</code> a plot a graph of where
+the promising thresholds overlayed over the graph’s vertices and edges
+through the thresholding process (see <a href="#plot_t_vs_ev">plot_t_vs_ev</a> for more details on this plot. The
+option to plot in <code>get_results</code> will not return the
+<code>ggplot2</code> object that <code>plot_t_vs_ev</code> does).</p>
+<p>The most basic usage of <code>get_results</code> is shown here:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>get_results_out <span class="ot">&lt;-</span> <span class="fu">get_results</span>(analysis_out_prefix)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [get_results]:  Starting get_iterative_t_values() </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; -------------------- Files and the number of rows -------------------- </span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; File: C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset-238.iterative.txt        nrows: 23</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; [get_results]:  get_iterative_t_values() - DONE </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; [get_results]:  Starting get_significance_t_values() </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; -------------------- Files and the number of rows -------------------- </span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; File: C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset-238.statistical_errors.txt        nrows: 101</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;  Type I: 0.683528</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;  Alpha: 0.01</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; [get_results]:  get_significance_t_values() - DONE </span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt; [get_results]:  DONE</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="fu">print</span>(get_results_out)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; $cc_inflection</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt; [1] 0.7</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt; $density_min</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt; [1] 0.7</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt; $scale_free</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt; [1] 0.82</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt; $whole_graph</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt; [1] 0.7</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt; $`TypeI-0.01`</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt; [1] 0.683528</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; $`Power-0.8`</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; [1] 0.8</span></span></code></pre></div>
+<p>Individual threshold values can then be extracted from this list.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>chosen_threshold <span class="ot">&lt;-</span> get_results_out[[<span class="st">&#39;scale_free&#39;</span>]]</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># or</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>chosen_threshold <span class="ot">&lt;-</span> get_results_out<span class="sc">$</span>scale_free</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">print</span>(chosen_threshold)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; [1] 0.82</span></span></code></pre></div>
+<p>If Method 2 (Significance and Power calculations) was used, then
+dedicated statistical methods will also be set. The names of these
+methods will vary, one of them depend on the <code>alpha</code> value
+passed to <code>analysis</code>. Since this guide uses the Significance
+and Power method with a default value for <code>alpha</code>, the
+corresponding method output names are given here:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">print</span>(get_results_out[[<span class="st">&#39;TypeI-0.01&#39;</span>]])</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [1] 0.683528</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">print</span>(get_results_out[[<span class="st">&#39;Power-0.8&#39;</span>]])</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; [1] 0.8</span></span></code></pre></div>
+</div>
+<div id="plot_t_vs_ev-plot-thresholding-vs.-edges-and-vertices-plot_t_vs_ev" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span>
+<code>plot_t_vs_ev()</code>: Plot Thresholding vs. Edges and Vertices
+{plot_t_vs_ev}</h2>
+<p>To get a clearer picture of where the recommended threshold values
+intersect with the input graph’s vertices and edges,
+<code>plot_t_vs_ev</code> plots vertical lines across the edge and
+vertex curves from the thresholding loop. This function simply takes the
+prefix returned from <code>analysis</code> to make the plot. The
+outputted plot will only contain the <strong>iterative</strong> methods
+from the <code>analysis</code> results (no Significance and Power
+recommended values will be included on the plot.)</p>
+<p>Similar to <code>edge_hist</code>, <code>plot_t_vs_ev</code> returns
+a <code>ggplot2</code> object so that the user can control further plot
+manipulation. An example of storing the <code>ggplot2</code> object and
+displaying the plot is provided:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>results_plot <span class="ot">&lt;-</span> <span class="fu">plot_t_vs_ev</span>(analysis_out_prefix)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; -------------------- Files and the number of rows -------------------- </span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; File: C:/Users/levij/AppData/Local/Temp/RtmpSWrmlx/temp_libpathac04fa73eac/thresholding/extdata/HumanCellCycleSubset-238.iterative.txt        nrows: 23</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; [get_results]:  get_iterative_t_values() - DONE</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>results_plot <span class="ot">&lt;-</span> results_plot <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="st">&quot;Edge v. Vertices of Demo Graph&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">show</span>(results_plot)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="threshold-apply-a-threshold-to-a-graph-and-save-to-an-output-file" class="section level2" number="2.6">
+<h2><span class="header-section-number">2.6</span>
+<code>threshold()</code>: apply a threshold to a graph and save to an
+output file</h2>
+<p>Now that there are several thresholds outputted, a threshold can now
+be applied to the input graph. <code>threshold</code> will ensure that a
+new graph file is outputted with the edges removed according to one of
+several thresholding methods:</p>
+<ul>
+<li>“<strong><em>absolute</em></strong>” (default): Retains all edges
+that are greater than or equal to the absolute value of the threshold
+value. (weight &gt;= | thresh |)</li>
+<li>“<strong><em>strict</em></strong>”: “strict”: Retains edges that are
+strictly greater than thresh if thresh &gt;= 0. If thresh &lt; 0, all
+negative edges less than thresh are retained.</li>
+<li>“<strong><em>local-global</em></strong>”: Local-global pruning
+method referenced in <span class="citation">(<a href="#ref-JCB">Bleker,
+Grady, and Langston 2024</a>)</span>.</li>
+<li>“<strong><em>rank</em></strong>”: Use the top ranked edges per
+vertex to threshold graph. Control the thresholding algorithm by varying
+the <code>rank</code> parameter to other integer values.</li>
+</ul>
+<p>You must provide both the input file path and output file paths to
+this function. The output graph file will have the edges removed from
+the graph according to the <code>thresh</code> value and the string
+<code>method</code> selected.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Save the output file path for convenience</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>output_graph_path <span class="ot">=</span> <span class="st">&quot;./scale_free_threshold_0.82.ncol&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">threshold</span>(input_graph_path,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>          <span class="at">outfile =</span> output_graph_path,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>          <span class="at">method =</span> <span class="st">&quot;absolute&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>          <span class="at">thresh =</span> chosen_threshold,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>          <span class="at">overwrite =</span> <span class="cn">TRUE</span>   <span class="co"># included to ensure graph file gets written in vignette</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>          )</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; ----Continuing with threshold().</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; ----Overwriting graph file: ./scale_free_threshold_0.82.ncol</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; Loading graph ... Graph loaded.</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; --------------------------------------------------------------------</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; Original number vertices: 7077</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; Original number edges:    250000</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt; --------------------------------------------------------------------</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; Resulting number vertices: 1043</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt; Resulting number edges:    637</span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; --------------------------------------------------------------------</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="co">#&gt; Done! Thresholded graph saved to: ./scale_free_threshold_0.82.ncol</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#&gt; --------------------------------------------------------------------</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
+<p>The output graph file will now contain the thresholded graph. (Note
+that all the output edges have weights of less than or equal to -0.82,
+or greater than or equal to 0.82. These were controlled by the
+<code>thresh</code> parameter and the <code>&quot;absolute&quot;</code>
+method).</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Display the results of absolute thresholding at 0.82</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>first_50_thresholded_lines <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.csv</span>(output_graph_path, <span class="at">nrows=</span><span class="dv">50</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">print</span>(first_50_thresholded_lines)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt;                  D26155_at.X95239_at.0.892201022704</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; 1                D26155_at X53795_at 0.821122708618</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; 2         X16662_at HG1148-HT1148_at 0.842791859382</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; 3          M28213_at HG2171-HT2241_at 0.85979152503</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 4                U58046_at S62539_at 0.845625842854</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 5                M86933_at X68486_at 0.878548883674</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; 6                M31551_at X59131_at 0.824128259515</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 7                L48513_at X05309_at 0.858687461852</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 8           L11702_at Y11710_rna1_at 0.854148268902</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 9                L11702_at X13444_at 0.850435607541</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 10              L11702_at D42044_at -0.913790680763</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 11              M59964_at X59766_at -0.872615449889</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 12       M16973_at HG2441-HT2537_at -0.885607820085</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 13 Z23090_at AFFX-HSAC07/X00351_M_at 0.902877085085</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 14               Z23090_at J04617_at 0.834700176585</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 15              U84720_at X90840_at -0.857422566733</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 16             D14658_at L49229_f_at 0.874358960624</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 17               X81420_at U63090_at 0.910991354443</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 18  M31303_rna1_at HG2981-HT3938_at -0.827452887192</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 19               M26602_at BioC-3_at 0.879492900419</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 20              X15675_at M60092_at -0.834874038402</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 21              U11821_at U79245_at -0.835617074788</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; 22               M37075_at D00763_at 0.876146195283</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; 23              U14187_at X59834_at -0.862790064454</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; 24               U05659_at U16127_at 0.882021341156</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt; 25                X58298_at X63759_at 0.86780249911</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a><span class="co">#&gt; 26               X97302_at X04325_at 0.878686527511</span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a><span class="co">#&gt; 27               U33841_at U79249_at 0.856540549732</span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a><span class="co">#&gt; 28               S77356_at D86963_at 0.912702155113</span></span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a><span class="co">#&gt; 29              D80008_at Z33642_at -0.839369724472</span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a><span class="co">#&gt; 30              U01160_at M60299_at -0.856929146065</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a><span class="co">#&gt; 31               U82320_at M20919_at 0.850798720918</span></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a><span class="co">#&gt; 32          Z15114_at X67247_rna1_at 0.820832288306</span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a><span class="co">#&gt; 33              M13058_at J03027_at -0.850482686262</span></span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a><span class="co">#&gt; 34          HG644-HT644_at M73482_at 0.848385967488</span></span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a><span class="co">#&gt; 35          HG644-HT644_at Y07867_at 0.821279799569</span></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a><span class="co">#&gt; 36              U46689_at U65402_at -0.824443967053</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a><span class="co">#&gt; 37               D83779_at L10615_at 0.821158845746</span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a><span class="co">#&gt; 38               U72514_at L03427_at -0.86382525718</span></span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a><span class="co">#&gt; 39         Y07701_at M64554_rna1_at -0.833533460216</span></span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a><span class="co">#&gt; 40              U20230_at M92287_at -0.838758983978</span></span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a><span class="co">#&gt; 41              U20230_at L10717_at -0.865109386902</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a><span class="co">#&gt; 42               M94547_at X66358_at 0.822750331138</span></span>
+<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a><span class="co">#&gt; 43              M94547_at U09564_at -0.837665998159</span></span>
+<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a><span class="co">#&gt; 44               U20285_at D13705_at 0.844363670447</span></span>
+<span id="cb9-49"><a href="#cb9-49" tabindex="-1"></a><span class="co">#&gt; 45               L36531_at X06482_at -0.92840912816</span></span>
+<span id="cb9-50"><a href="#cb9-50" tabindex="-1"></a><span class="co">#&gt; 46        L36531_at HG3859-HT4129_at 0.832411595267</span></span>
+<span id="cb9-51"><a href="#cb9-51" tabindex="-1"></a><span class="co">#&gt; 47           L37033_at X66114_rna1_at 0.84369358574</span></span>
+<span id="cb9-52"><a href="#cb9-52" tabindex="-1"></a><span class="co">#&gt; 48              S62027_at X16609_at -0.911230238096</span></span>
+<span id="cb9-53"><a href="#cb9-53" tabindex="-1"></a><span class="co">#&gt; 49              L02648_at U79293_at -0.864267067528</span></span>
+<span id="cb9-54"><a href="#cb9-54" tabindex="-1"></a><span class="co">#&gt; 50               U18321_at M59807_at 0.905131285911</span></span></code></pre></div>
+<p>This concludes the primary workflow for tgthresh! You can repeat any
+of the intermediate steps with different parameters to experiment with
+different analyses and thresholds for your input graph.</p>
+</div>
+</div>
+<div id="other_functions" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Other functions</h1>
+<p>The main workflow for tgthresh has been completed, but there are
+other minor utility functions included in tgthresh:</p>
+<div id="absolute_threshold-utility-for-directly-applying-an-absolute-threshold" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span>
+<code>absolute_threshold()</code>: utility for directly applying an
+absolute threshold</h2>
+<p><code>absolute_threshold</code> provides a simpler interface for
+thresholding a graph using an absolute threshold. The same functionality
+is provided by <code>threshold</code>, but this function is written in
+native R and allows for the sorting of output rows by default.</p>
+<p>Its usage is very similar to <code>threshold</code> with slightly
+different parameter names:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>abs_output_graph_path <span class="ot">=</span> <span class="st">&quot;./abs_thresh_demo_0.85&quot;</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">absolute_threshold</span>(input_graph_path,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                   abs_output_graph_path,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>                   <span class="at">threshold =</span> <span class="fl">0.85</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>                   <span class="at">overwrite =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>                   )</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Display the results of absolute thresholding at 0.82</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>first_50_thresholded_lines <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.csv</span>(abs_output_graph_path, <span class="at">nrows=</span><span class="dv">50</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">print</span>(first_50_thresholded_lines)</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;                   U86409_at.U31382_at.0.873261858314</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; 1                 U35234_at M34041_at 0.886253472304</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; 2                Y00796_at L05628_at -0.850292931284</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; 3                U79265_at M15990_at -0.868899571928</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; 4                X81372_at M64108_at -0.862352882997</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; 5  M57710_at AFFX-HSAC07/X00351_M_at -0.881311000783</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; 6         X85106_at HG3725-HT3981_at -0.885592282719</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; 7                 X81420_at U63090_at 0.910991354443</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; 8                X81832_at U34044_at -0.867416703206</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; 9                 X64037_at L13278_at 0.862936213489</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; 10                X94333_at U67733_at 0.877122119843</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; 11             X66894_at U22028_r_at -0.856280441914</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; 12               U49065_at L33930_at -0.853623239286</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; 13          U79275_at U52111_rna3_at -0.931890717025</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; 14                U67733_at D42038_at 0.885068738848</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; 15      X95095_at HG4557-HT4962_r_at -0.863050694421</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; 16           X89101_at U89336_cds3_at 0.905247026398</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt; 17                M67439_at BioB-3_at 0.868571584727</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="co">#&gt; 18                X58401_at M77016_at -0.91121124237</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt; 19           X16665_at M61827_rna1_at 0.851846372996</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="co">#&gt; 20                X99141_at U18467_at 0.880848173024</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="co">#&gt; 21           U83411_at M13934_cds1_at 0.867329748158</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt; 22                U77604_at M96956_at 0.861355683148</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt; 23           U66059_cds7_at U20582_at 0.872955503118</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt; 24               X86400_at U75272_at -0.866215298297</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt; 25                S72503_at D83597_at 0.861661570227</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt; 26               U79275_at M33336_at -0.859454283338</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt; 27               U30998_at J05032_at -0.857005073741</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt; 28   HG668-HT4793_at HG2414-HT2510_at 0.889733870597</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co">#&gt; 29         HG2465-HT4871_at D61380_at 0.860472672811</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt; 30                U53446_at U32114_at 0.861917407349</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt; 31                 X63759_at X58298_at 0.86780249911</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="co">#&gt; 32        U31382_at HG4310-HT4580_at -0.855697163934</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt; 33                X68486_at M86933_at 0.878548883674</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt; 34                U16127_at U05659_at 0.882021341156</span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="co">#&gt; 35          L48728_cds1_at D82343_at -0.881312456278</span></span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="co">#&gt; 36          Z68129_cds1_at X05299_at -0.907818662758</span></span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a><span class="co">#&gt; 37                M37583_at L40388_at 0.865404303315</span></span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co">#&gt; 38               U11877_at L76687_at -0.897942478633</span></span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a><span class="co">#&gt; 39           U66061_cds3_at L15189_at 0.883886721643</span></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co">#&gt; 40      HG2259-HT2348_at AC002077_at -0.875863596238</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="co">#&gt; 41               Y11709_at X75342_at -0.873901515398</span></span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a><span class="co">#&gt; 42           X99296_xpt1_at D79993_at 0.857826786259</span></span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a><span class="co">#&gt; 43              S83364_at AB006190_at 0.885283990659</span></span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a><span class="co">#&gt; 44               U48730_at U01147_at -0.878739402367</span></span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a><span class="co">#&gt; 45                M29335_at D88270_at 0.871530776555</span></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a><span class="co">#&gt; 46                U63455_at U59877_at -0.87360566072</span></span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt; 47              L14595_at AC002077_at 0.859977218321</span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="co">#&gt; 48               X83535_at U37689_at -0.887443392359</span></span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a><span class="co">#&gt; 49                Z48482_at X77922_at 0.939814934499</span></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a><span class="co">#&gt; 50               X97795_at D85815_at -0.865640509077</span></span></code></pre></div>
+</div>
+<div id="get_iter_t_vals-get_sig_t_vals-utilities-for-extracting-results-and-dataframes-from-analysis-files" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span>
+<code>get_iter_t_vals() / get_sig_t_vals()</code>: utilities for
+extracting results and dataframes from <code>analysis</code> files</h2>
+<p>These two functions work similarly to how <code>get_results</code>
+works, but for iterative and significance files respectively. Read their
+documentation pages <code>?get_iter_t_vals</code> and
+<code>?get_sig_t_vals</code> for more details.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Closing summary</h1>
+<p>Wrap this up</p>
+</div>
+<div id="references" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> References</h1>
+<p><a href="https://ulyngs.github.io/oxforddown/cites-and-refs.html#" class="uri">https://ulyngs.github.io/oxforddown/cites-and-refs.html#</a>:~:text=The%20usual%20way%20to%20include,bib%2C%20in%20BibTex%20format.&amp;text=Then%20reference%20the%20path%20to,YAML%20header%20with%20bibliography%3A%20example.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-JCB" class="csl-entry">
+Bleker, Carissa, Stephen K Grady, and Michael A Langston. 2024. <span>“A
+Comparative Study of Gene Co-Expression Thresholding Algorithms.”</span>
+<em>J. Comput. Biol.</em> 31 (6): 539–48.
+</div>
+<div id="ref-RCPP" class="csl-entry">
+Eddelbuettel, Dirk, and Romain François. 2011. <span>“<span>Rcpp</span>:
+Seamless <span>R</span> and <span>C++</span> Integration.”</span>
+<em>Journal of Statistical Software</em> 40 (8): 1–18. <a href="https://doi.org/10.18637/jss.v040.i08">https://doi.org/10.18637/jss.v040.i08</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
