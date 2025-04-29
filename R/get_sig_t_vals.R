@@ -39,6 +39,7 @@
 #' with the specified outfile_prefix and ends with ".iterative.txt".
 #' 
 #' @examples
+#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
@@ -51,6 +52,7 @@
 #'          overwrite = TRUE
 #' )
 #' get_sig_t_vals(outfile_prefix)
+#' }
 #' @export
 get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
   

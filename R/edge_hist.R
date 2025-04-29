@@ -36,7 +36,7 @@ edge_hist <- function(infile,
               infile, "..."))
   
   # Read in .ncol file - FOR LATER: handle errors on 
-  raw_data = read.table(infile, sep = sep, header=FALSE)
+  raw_data = utils::read.table(infile, sep = sep, header=FALSE)
   print("Success - weighted edge list read!")
   
   # Error check if file is in proper format

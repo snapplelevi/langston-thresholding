@@ -169,7 +169,7 @@ get_iterative_t_values <- function(files,
   
   # Giant cc down inflection
   diffs <- diff(df$largest.cc.size)
-  drop_cutoff <- sd(diffs)
+  drop_cutoff <- stats::sd(diffs)
   diffs_b <- ((abs(diffs) > drop_cutoff) & (diffs < 0))
   
   if(sum(diffs_b) > 0){
@@ -219,7 +219,7 @@ get_iterative_t_values <- function(files,
   if(!all(is.nan(subdf$almost.disconnected.component.count))){
     # possiblilites: fiedler < 2 (?)
     # R prepends X since variables can't start with number
-    max_ac <- subset(subdf, X2nd.eigenvalue < 2)
+    max_ac <- subset(subdf, second.eigenvalue < 2)
     if(nrow(max_ac) > 0){
       D$D['spectral_methods'] <- min(subset(max_ac, 
                                       almost.disconnected.component.count
@@ -379,7 +379,7 @@ get_iterative_t_values <- function(files,
     # first check: is there consistent increase in 
     # clustering coefficient?
     if(!any(is.na(diffs)) && sum(diffs > 0) > 3){
-      cutoff <- sd(diffs[diffs > 0], na.rm=TRUE) * 0.3
+      cutoff <- stats::sd(diffs[diffs > 0], na.rm=TRUE) * 0.3
       prev_prev_d <- diffs[1]
       prev_d <- diffs[2]
       i = 0
@@ -628,6 +628,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' passed to \code{analysis()}. Values will be valid (non-\code{NaN} and non-\code{Inf}). 
 #'
 #' @examples
+#' \dontrun{
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
 #' outfile_prefix = "./get_results_test"
@@ -638,6 +639,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #'          overwrite = TRUE
 #'          )
 #' thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
+#' }
 #' @export
 get_results <- function(outfile_prefix, 
                         plot_iterative = FALSE,
@@ -708,7 +710,7 @@ get_results <- function(outfile_prefix,
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
     writeLines("\n[get_results]: plot_t_vs_ev() called\n")
-    show(thresholding::plot_t_vs_ev(outfile_prefix))
+    methods::show(thresholding::plot_t_vs_ev(outfile_prefix))
   }
   
   

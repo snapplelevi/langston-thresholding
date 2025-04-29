@@ -16,6 +16,7 @@
 #' is printed to the screen after \code{analysis()} ends.
 #' @returns The \code{ggplot2} object to be shown with \code{show()} or to be customized afterwards. 
 #' @examples
+#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
@@ -27,6 +28,7 @@
 #'          overwrite = TRUE
 #'          )
 #' show(plot_t_vs_ev(outfile_prefix))
+#' }
 #' @export 
 plot_t_vs_ev <- function(iter_prefix){
   

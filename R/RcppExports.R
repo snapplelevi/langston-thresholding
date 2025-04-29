@@ -59,6 +59,7 @@
 #'        example output files already exist.
 #' @examples
 #' #######    Variable Set-Up     #######
+#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
 #' data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
@@ -70,7 +71,9 @@
 #'          lower = lower,
 #'          overwrite = TRUE
 #'          )
+#' } 
 #'
+#' \dontrun{ 
 #' #######    Example 2 - iterative and power/significance methods #######
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' methods <- c(8, 2, 3)    # select the three desired analysis methods
@@ -85,6 +88,8 @@
 #'          num_samples = num_samples,
 #'          overwrite = TRUE
 #'          )
+#' }
+#'
 #' \dontrun{
 #' #######    Example 3 - More Iterative methods #######
 #' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
@@ -103,7 +108,8 @@
 #'          overwrite = TRUE
 #'         )
 #'
-#' }
+#' } 
+#' # End "dontrun" block
 #' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, num_samples = 0L, significance_alpha = 0.01, overwrite = FALSE) {
     .Call(`_thresholding_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, num_samples, significance_alpha, overwrite)
@@ -116,7 +122,7 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #' are presented in the comparative study paper linked here: \url{https://pubmed.ncbi.nlm.nih.gov/38781420/}
 #' or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 #'
-#' @param infile string. The input \code{.ncol} graph file to be thresholded.
+#' @param infile string. The path of the input \code{.ncol} graph file to be thresholded.
 #' @param outfile string. The path of the output file where the thresholded grpah will be written to.
 #' @param method string. The method of thresholding can be one of these options:
 #' \enumerate{
@@ -125,10 +131,10 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #'     \item \strong{\code{"strict"}}: Retains edges that are strictly greater than \code{thresh} if
 #'           \code{thresh} >= \code{0}.  If \code{thresh} < \code{0}, all negative edges less than
 #'           \code{thresh} are retained.
-#'     \item \strong{\code{"local-global"}}: Local the global pruning method mentioned in the thresholding papers
+#'     \item \strong{\code{"local-global"}}: Local-global pruning method mentioned in the thresholding papers
 #'     \item \strong{\code{"rank"}}: Use the top ranked edges per vertex to threshold graph.
 #'     }
-#' @param thresh numeric. The value to threshold the graph. The affect of this value depends on the thresolding
+#' @param thresh numeric. The value to threshold the graph. The affect of this value depends on the thresholding
 #'        \code{method} used, which are described above. \strong{Only used in the \code{"strict"} and 
 #'        \code{"absolute"} thresholding methods.}
 #' @param local_global_alpha  numeric. Use local-global method to threshold with alpha = \code{local_global_alpha}. 
@@ -140,6 +146,7 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 #' the existing file without interruption from a workflow.
 #' @examples
+#' \dontrun{
 #' # Load the package
 #' library(thresholding)
 #'
@@ -152,6 +159,8 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #'                         overwrite = TRUE
 #'                         )
 #' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
+#' }
+#'
 #' \dontrun{
 #' ################ Example 2 ###################
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 

@@ -61,6 +61,7 @@ find_last <- function(str, str_to_find){
 #' with the specified outfile_prefix and ends with ".iterative.txt".
 #' 
 #' @examples
+#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' file.copy(data_file, "./")     # Copy the file to your working directory
@@ -73,7 +74,7 @@ find_last <- function(str, str_to_find){
 #'          overwrite = TRUE
 #' )
 #' get_iter_t_vals(outfile_prefix)
-#' 
+#' }
 #' @returns A list containing both a dataframe and a list. The dataframe contains the raw interative
 #' thresholding data at each threshold value for the requested methods. The nested list contains
 #' each requested method (for the particular analysis output file(s) found from the output prefix)

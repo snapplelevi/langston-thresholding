@@ -18,6 +18,7 @@
 #' @param sort_output boolean. Sorts the edges of the thresholded graph in descending order before
 #' writing them to \code{outfile} if set to \code{TRUE}. Otherwise, descending order is not guaranteed. 
 #' @examples
+#' \dontrun{
 #' library(thresholding)
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 #' thresholding::absolute_threshold(infile, 
@@ -27,6 +28,7 @@
 #'                                  overwrite = TRUE
 #'                                  )
 #' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
+#' }
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 #' @export
 absolute_threshold <- function(infile,
