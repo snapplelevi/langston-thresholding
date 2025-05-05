@@ -42,7 +42,6 @@ Returns the thresholding data frame created by the internal
 \code{get_significance_t_values()}.
 }
 \examples{
-\dontrun{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 file.copy(data_file, "./")     # Copy the file to your working directory
@@ -55,5 +54,5 @@ analysis(data_file,
          overwrite = TRUE
 )
 get_sig_t_vals(outfile_prefix)
-}
+
 }

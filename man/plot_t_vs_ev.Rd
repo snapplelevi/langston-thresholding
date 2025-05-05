@@ -26,7 +26,6 @@ thresholding curves are denoted by red and blue squares. The method name is anno
 concrete value of these thresholds.
 }
 \examples{
-\dontrun{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
 file.copy(data_file, "./")     # Copy the file to your working directory
@@ -38,5 +37,5 @@ analysis(data_file,
          overwrite = TRUE
          )
 show(plot_t_vs_ev(outfile_prefix))
-}
+
 }

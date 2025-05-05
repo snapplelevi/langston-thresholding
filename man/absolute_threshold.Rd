@@ -37,15 +37,13 @@ for a clear absolute thresholding use case as compared to \code{threshold()}, wh
 more general purpose thresholding function.
 }
 \examples{
-\dontrun{
 library(thresholding)
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-thresholding::absolute_threshold(infile, 
-                                 outfile = "./HCCS-ABSTHRESH.ncol",
-                                 threshold = 0.90,
-                                 sort_output = TRUE,
-                                 overwrite = TRUE
-                                 )
+absolute_threshold(infile, 
+                  outfile = "./HCCS-ABSTHRESH.ncol",
+                  threshold = 0.90,
+                  sort_output = TRUE,
+                  overwrite = TRUE
+                  )
 print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
-}
 }

@@ -1,0 +1,213 @@
+---
+# Thinking about tgthresh (transcriptomic graph thresholding)
+# thresholdhunter
+# thresholdtoolkit
+# thresholdtamer
+# Turbo Threshold Testbed
+# TurboThresholdTestbed
+# ThresholdTester
+# ThresholdTrekker
+# Threshold
+# ThresholdingTestbed
+# ThresholdTuner
+# ThresholdTactician
+# 
+# DescriptiveRepresentationCalculator
+
+title: "Using tgthresh for graph thresholding and analysis"
+author: "Levi Hochstetler"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  rmarkdown::html_vignette:
+      toc: true
+      number_sections: true
+classoption: twocolumn
+bibliography: "references.bib"
+link-citations: yes   
+vignette: >
+  %\VignetteIndexEntry{Using tgthresh for graph thresholding and analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!-- Options for how the R code blocks look in the manual -->
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+# Introduction {#introduction}
+
+Finna cite [@JCB] here. what does this look like?
+
+Introduce the package purpose and use case here 
+
+Mention the type of graph input file
+
+This R package is meant to wrap and adapt the functionality from an existing C++ command line tool for the same purpose. This original package was written by Dr. Carissa Bleker, and its code, shell script tools, and Jupyter notebooks can be found on [Github](https://github.com/carissableker/thresholding). These tools and features were adapted to better accommodate R's capabilities. Some features and function options were removed due to problems in the original tool. This package was written using the **Rcpp** Library [@RCPP] to more easily port the C++ logic to R code. 
+
+
+Input graphs need to be in **.ncol** format (https://lgl.sourceforge.net/#FileFormat) to be read correctly by the package's internal use of `igraph_read_graph_ncol()`. The format is defined by Large Graph Layout. In this application, it is a simple weighted, whitespace separated edge list. Furthermore, vertex names in the edge list cannot contain whitespace.
+
+
+# Standard tgthresh Workflow  {#workflow}
+A general workflow for utilizing tgthresh's functionalities will follow these outlined steps. Plotting functions in the tgthresh workflow are optional but provided in this workflow guide for a better understanding of the necessary input data they require.
+
+## Setup
+The package can be loaded to the workspace like other installed R packages. 
+The following tutorial will use the "*HumanCellCycleSubset.ncol*" graph file located in the package's `extdata` directory. Each row in this edge list contains two genes (vertices) that are connected with a Pearson Correlation value (edge weight) for how strong their relationship is.
+
+```{r}
+library(thresholding)
+input_graph_path <- system.file("extdata", "HumanCellCycleSubset.ncol", package="thresholding")
+```
+
+## `edge_hist()`: visualize graph edge weight distribution
+  Using `edge_hist` will provide a quick and simple way to display a histogram of
+the edge weight distribution of an input graph file (see [Introduction](#introduction) for more details about the *.ncol* format). 
+`edge_hist` takes in the path of the input graph files and several optional parameters that adjust the width of the histogram bins, additional control for the separator of the *.ncol* graph input file, and giving a title to the output plot.
+`edge_hist` returns a `ggplot2` object to allow for further modification of the graph's contents beyond what `edge_hist` provides.
+
+  Here is a simple example of using `edge_hist` using the sample graph data provided in tgthresh:
+
+```{r}
+edge_hist_plot <- edge_hist(input_graph_path, title="Demo of edge_hist")
+show(edge_hist_plot)
+```
+
+
+## `analysis()`: run thresholding method calculations and analyses
+  `analysis` can perform an assortment of thresholding algorithms during an iterative thresholding loop. These algorithms, or methods, are further described in [@JCB]. However, XXX and XXX were excluded from the current version of this package fo
+`analysis` writes the output of its operations to files ending with `.iterative.txt` or `.statistical.errors.txt` to conform with the behavior of the existing C++ package [cite pkg here again?]. *`analysis` will return the file path prefix that will later be used by `get_results` so it is recommended to store the output inside a variable for later use in script workflows.*
+
+  Like, `edge_hist` and the other functions, `analysis` will take the path of the input graph file as a mandatory argument. All other arguments are optional, but core functionality will greatly be impacted by `methods`, `lower`, `upper`, `increment`, and `num_samples` (only for the Significance and Power Calculations method). 
+As `analysis` forms a large portion of tgthresh's utility, more documentation about the additional parameters would not fit into a vignette guide. Please run `?tgthresh::analysis` in the R console for more details on the optional parameters. 
+
+  An example call to `analysis` is provided here. Many optional parameters were left as default, but this example is guaranteed to run quickly. Some methods may lead to longer run times depending on the size of the input graph and the method selected so it is best to keep in mind the `lower`, `upper`, and `increment` values in case the code takes longer than intended.
+
+```{r}
+methods <- c(8, 3, 2)       # select desired analysis methods
+starting_thresh <- 0.7   # choose lower bound thresholding value that thresholding loop 
+num_samples <- 13        # running sig. and power - need the number of samples from data set
+
+# Using overwrite = TRUE for vignette building purposes, read ?analysis for more 
+# on this optional parameter
+analysis_out_prefix <-analysis(input_graph_path, 
+                               methods = methods, 
+                               lower = starting_thresh,
+                               num_samples = num_samples,
+                               overwrite = TRUE
+                               )
+```
+
+## `get_results()`: extract ideal thresholds from raw output files of `analysis()`
+  `get_results` is used to identify promising thresholds from the raw output files generated by `analysis`. It takes in the output file prefix (return value of `analysis`) and runs additional threshold calculations.
+Without any optional parameters, it will return a list of corresponding thresholds for each method that was used when `analysis` ran. 
+
+
+`get_results` can also output the raw R dataframes from `analysis` and `show()` a plot a graph of where the promising thresholds overlayed over the graph's vertices and edges through the thresholding process (see [plot_t_vs_ev](#plot_t_vs_ev) for more details on this plot. The option to plot in `get_results` will not return the `ggplot2` object that `plot_t_vs_ev` does). 
+
+The most basic usage of `get_results` is shown here:
+
+```{r}
+get_results_out <- get_results(analysis_out_prefix)
+print(get_results_out)
+```
+
+  Individual threshold values can then be extracted from this list. 
+  
+```{r}
+chosen_threshold <- get_results_out[['scale_free']]
+# or
+chosen_threshold <- get_results_out$scale_free
+
+print(chosen_threshold)
+```
+
+If Method 2 (Significance and Power calculations) was used, then dedicated statistical methods will also be set. The names of these methods will vary, one of them depend on the `alpha` value passed to `analysis`. Since this guide uses the Significance and Power method with a default value for `alpha`, the corresponding method output names are given here:
+
+```{r}
+print(get_results_out[['TypeI-0.01']])
+print(get_results_out[['Power-0.8']])
+```
+
+## `plot_t_vs_ev()`: Plot Thresholding vs. Edges and Vertices {plot_t_vs_ev}
+  To get a clearer picture of where the recommended threshold values intersect with the input graph's vertices and edges, `plot_t_vs_ev` plots vertical lines across the edge and vertex curves from the thresholding loop. This function simply takes the prefix returned from `analysis` to make the plot. The outputted plot will only contain the **iterative** methods from the `analysis` results (no Significance and Power recommended values will be included on the plot.)
+  
+  
+  Similar to `edge_hist`, `plot_t_vs_ev` returns a `ggplot2` object so that the user can control further plot manipulation. An example of storing the `ggplot2` object and displaying the plot is provided: 
+```{r, fig.width=7.5, fig.height=6}
+results_plot <- plot_t_vs_ev(analysis_out_prefix)
+
+results_plot <- results_plot + ggplot2::ggtitle("Edge v. Vertices of Demo Graph")
+show(results_plot)
+```
+
+## `threshold()`: apply a threshold to a graph and save to an output file
+Now that there are several thresholds outputted, a threshold can now be applied to the input graph.
+`threshold` will ensure that a new graph file is outputted with the edges removed according to one
+of several thresholding methods:
+
+
+- "***absolute***" (default): Retains all edges that are greater than or equal to the absolute value of the threshold value. (weight >= | thresh |)
+- "***strict***": "strict": Retains edges that are strictly greater than thresh if thresh >= 0. If thresh < 0, all negative edges less than thresh are retained.
+- "***local-global***":  Local-global pruning method referenced in [@JCB].
+- "***rank***": Use the top ranked edges per vertex to threshold graph. Control the thresholding algorithm by varying the `rank` parameter to other integer values.
+
+You must provide both the input file path and output file paths to this function.
+The output graph file will have the edges removed from the graph according to the `thresh` value and the string `method` selected. 
+
+```{r}
+# Save the output file path for convenience
+output_graph_path = "./scale_free_threshold_0.82.ncol"
+threshold(input_graph_path,
+          outfile = output_graph_path,
+          method = "absolute",
+          thresh = chosen_threshold,
+          overwrite = TRUE   # included to ensure graph file gets written in vignette
+          )
+
+```
+
+
+The output graph file will now contain the thresholded graph. (Note that all the output edges have weights of less than or equal to -0.82, or greater than or equal to 0.82. These were controlled by the `thresh` parameter and the `"absolute"` method). 
+```{r}
+# Display the results of absolute thresholding at 0.82
+first_50_thresholded_lines <- utils::read.csv(output_graph_path, nrows=50)
+print(first_50_thresholded_lines)
+```
+
+This concludes the primary workflow for tgthresh! You can repeat any of the intermediate steps with different parameters to experiment with different analyses and thresholds for your input graph. 
+
+# Other functions {#other_functions} 
+The main workflow for tgthresh has been completed, but there are other minor utility functions included in tgthresh:
+
+## `absolute_threshold()`: utility for directly applying an absolute threshold
+`absolute_threshold` provides a simpler interface for thresholding a graph using an absolute threshold. The same functionality is provided by `threshold`, but this function is written in native R and allows for the sorting of output rows by default.
+
+Its usage is very similar to `threshold` with slightly different parameter names:
+
+```{r}
+abs_output_graph_path = "./abs_thresh_demo_0.85"
+absolute_threshold(input_graph_path,
+                   abs_output_graph_path,
+                   threshold = 0.85,
+                   overwrite = TRUE,
+                   )
+
+# Display the results of absolute thresholding at 0.82
+first_50_thresholded_lines <- utils::read.csv(abs_output_graph_path, nrows=50)
+print(first_50_thresholded_lines)
+```
+## `get_iter_t_vals() / get_sig_t_vals()`: utilities for extracting results and dataframes from `analysis` files
+These two functions work similarly to `get_results`, but for iterative and significance files respectively. Read their documentation pages `?get_iter_t_vals` and `?get_sig_t_vals` for more details.
+
+# Closing summary  {#conclusion}
+Wrap this up
+
+# References  {#references}
+https://ulyngs.github.io/oxforddown/cites-and-refs.html#:~:text=The%20usual%20way%20to%20include,bib%2C%20in%20BibTex%20format.&text=Then%20reference%20the%20path%20to,YAML%20header%20with%20bibliography%3A%20example.
+

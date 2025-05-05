@@ -55,8 +55,6 @@ are presented in the comparative study paper linked here: \url{https://pubmed.nc
 or in Carissa Bleker's dissertation: \url{https://trace.tennessee.edu/utk_graddiss/5894/}
 }
 \examples{
-\dontrun{
-# Load the package
 library(thresholding)
 
 ################ Example 1 ###################
@@ -68,7 +66,6 @@ thresholding::threshold(infile,
                         overwrite = TRUE
                         )
 print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
-}
 
 \dontrun{
 ################ Example 2 ###################

@@ -93,10 +93,9 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 }
 \examples{
 #######    Variable Set-Up     #######
-\dontrun{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
+data_prefix <- './HumanCellCycleSubset-analysis-ex'  # prefix used for output file(s)
 lower <- 0.6   
 
 #######    Example 1 - No methods #######
@@ -105,7 +104,6 @@ analysis(data_file,
          lower = lower,
          overwrite = TRUE
          )
-} 
 
 \dontrun{ 
 #######    Example 2 - iterative and power/significance methods #######
@@ -122,7 +120,7 @@ analysis(data_file,
          num_samples = num_samples,
          overwrite = TRUE
          )
-}
+} # End "dontrun" block
 
 \dontrun{
 #######    Example 3 - More Iterative methods #######
