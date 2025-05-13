@@ -2,3 +2,6 @@ external/*
 inst/igraph*
 inst/alglib*
 inst/lib*
+^([^/]+)*\.txt$
+^([^/]+)*\.ncol$
+^([^/]+)*\.wel$

@@ -1,6 +1,12 @@
 ^doc$
 ^Meta$
-example_files/*
-external/*
-README.md
-NEWS.md
+^([^/]+)*\.txt$
+^([^/]+)*\.ncol$
+^([^/]+)*\.wel$
+^example_files/
+^external/*
+^inst/igraph-0\.9\.9(/.*)?$
+^inst/alglib(/.*)?$
+^inst/libigraph.a$
+README\.md
+NEWS\.md
