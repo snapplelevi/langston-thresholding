@@ -140,19 +140,17 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'        example output files already exist.
 //' @examples
 //' #######    Variable Set-Up     #######
-//' \dontrun{
 //' library(thresholding)
 //' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-//' data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
+//' outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 //' lower <- 0.6   
 //'
 //' #######    Example 1 - No methods #######
 //' analysis(data_file, 
-//'          outfile_prefix = data_prefix,
+//'          outfile_prefix = outfile_prefix,
 //'          lower = lower,
 //'          overwrite = TRUE
 //'          )
-//' } 
 //'
 //' \dontrun{ 
 //' #######    Example 2 - iterative and power/significance methods #######
@@ -169,7 +167,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'          num_samples = num_samples,
 //'          overwrite = TRUE
 //'          )
-//' }
+//' } # End "dontrun" block
 //'
 //' \dontrun{
 //' #######    Example 3 - More Iterative methods #######

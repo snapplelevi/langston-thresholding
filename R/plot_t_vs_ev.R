@@ -16,11 +16,9 @@
 #' is printed to the screen after \code{analysis()} ends.
 #' @returns The \code{ggplot2} object to be shown with \code{show()} or to be customized afterwards. 
 #' @examples
-#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' file.copy(data_file, "./")     # Copy the file to your working directory
-#' outfile_prefix = "./plot_t_vs_ev_test"
+#' outfile_prefix <- tempfile('plot_t_vs_ev')
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
 #'          methods = c(2,3,8),
@@ -28,7 +26,7 @@
 #'          overwrite = TRUE
 #'          )
 #' show(plot_t_vs_ev(outfile_prefix))
-#' }
+#' 
 #' @export 
 plot_t_vs_ev <- function(iter_prefix){
   
@@ -291,44 +289,6 @@ plot_t_vs_ev <- function(iter_prefix){
   # Return the ggplot2 object for variable storage or direct plotting with show()
   return(PLOT)
   
-  # Translated roughly from the following matplotlib code in Carissa's package (see DESCRIPTION file)
-  #
-  # number vertices and number edges vs thresholds
-  # with sns.plotting_context("paper"):
-  #   fig, ax = plt.subplots(figsize=(12, 6)) # long, high
-  # 
-  # ax.plot(df_plot["vertex-count"], alpha=0.6, label="Vertex count")
-  # 
-  # ax.plot(np.nan, np.nan, alpha=0.6, label="Edge-count", color="orange")
-  # 
-  # ax_twin = ax.twinx()
-  # ax_twin.plot(df_plot["edge-count"], alpha=0.6, color="orange", label="Edge count")
-  # 
-  # xmin, xmax, ymin, ymax = ax.axis()
-  # y_txt = (ymax - ymin)/100 + 10
-  # 
-  # for key, value in annotations.items():
-  #   ax.plot(value, y_txt, 
-  #           marker=11, #"CARETDOWNBASE"
-  #           markersize=10,
-  #           color="red")
-  # 
-  # txt = " &\n".join(labels[key])
-  # ax.annotate(txt, (value, y_txt), 
-  #             rotation=-45, 
-  #             horizontalalignment='right', 
-  #             verticalalignment='bottom')
-  # 
-  # ax.set(xlabel="Threshold")
-  # ax.set(ylabel='Vertex count')
-  # ax_twin.set(ylabel="Edge count")
-  # ax_twin.grid(False)
-  # 
-  # ax.legend()
-  # ax.legend(loc=1)
-  # sns.despine(ax=ax,      right=True, left=False, bottom=True, top=True)
-  # 
-  # plt.tight_layout()
   
 }  # end of plot_t_vs_ev()
 

@@ -59,8 +59,9 @@ library(thresholding)
 
 ################ Example 1 ###################
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
+outfile <- tempfile(fileext = ".ncol")
 thresholding::threshold(infile, 
-                        outfile = "./HCCS-thresh-abs.ncol",
+                        outfile = outfile,
                         method = "absolute",
                         thresh = 0.8,
                         overwrite = TRUE

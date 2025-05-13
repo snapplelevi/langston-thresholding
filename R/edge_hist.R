@@ -13,8 +13,9 @@
 #' @param title string. Optional user-supplied name for title. Default title is "Edge Edge Weight Histogram for <INPUT_FILE>"
 #' 
 #' @examples
+#' library(thresholding)
 #' your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' plot_obj <- thresholding::edge_hist(your_file_name_here, bin_width = 0.01)
+#' plot_obj <- edge_hist(your_file_name_here, bin_width = 0.01)
 #' show(plot_obj)
 #' 
 #' @returns \code{ggplot2} object for modification and for showing with \code{show()}.
@@ -53,20 +54,20 @@ edge_hist <- function(infile,
   # Rename the column names for standardizing the columns 
   colnames(raw_data)[1] <- "V1"
   colnames(raw_data)[2] <- "V2"
-  colnames(raw_data)[3] <- "WEIGHT"
+  colnames(raw_data)[3] <- "weight_column"
   
   # Validate that the third column is of type double or integer
-  base::stopifnot(is.double(raw_data[["WEIGHT"]]) |
-                  is.integer(raw_data[["WEIGHT"]]))
+  base::stopifnot(is.double(raw_data[["weight_column"]]) |
+                  is.integer(raw_data[["weight_column"]]))
   
   # Check if the user has supplied a custom title, supply default if not
   if(title == ""){
     title <- paste("Edge Weight Histogram for ", infile)
   }
   
-  #############   Future feature (beyond ver 1.0.0   ###############
+  #############   Future feature (beyond ver 1.0.0)   ###############
   # Grab quantiles for histogram coloring
-  # quantiles <- quantile(raw_data$WEIGHT, 
+  # quantiles <- quantile(raw_data$weight_column, 
   #                       prob=c(0.25,0.5,0.75), 
   #                       names=FALSE)
   ##################################################################
@@ -74,7 +75,7 @@ edge_hist <- function(infile,
   #############   MAKING THE PLOT   ###############
   # This stores the plot object and edge_hist will automatically show the
   # final plot with show() below
-  plot_obj <- ggplot2::ggplot(raw_data, ggplot2::aes(WEIGHT)) + 
+  plot_obj <- ggplot2::ggplot(raw_data, ggplot2::aes(weight_column)) + 
               ggplot2::geom_histogram(binwidth=bin_width,
                                       fill="orange",
                                       color="black") +

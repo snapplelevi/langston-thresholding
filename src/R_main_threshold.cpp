@@ -57,20 +57,18 @@
 //' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 //' the existing file without interruption from a workflow.
 //' @examples
-//' \dontrun{
-//' # Load the package
 //' library(thresholding)
 //'
 //' ################ Example 1 ###################
 //' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
+//' outfile <- tempfile(fileext = ".ncol")
 //' thresholding::threshold(infile, 
-//'                         outfile = "./HCCS-thresh-abs.ncol",
+//'                         outfile = outfile,
 //'                         method = "absolute",
 //'                         thresh = 0.8,
 //'                         overwrite = TRUE
 //'                         )
 //' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
-//' }
 //'
 //' \dontrun{
 //' ################ Example 2 ###################

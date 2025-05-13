@@ -18,17 +18,16 @@
 #' @param sort_output boolean. Sorts the edges of the thresholded graph in descending order before
 #' writing them to \code{outfile} if set to \code{TRUE}. Otherwise, descending order is not guaranteed. 
 #' @examples
-#' \dontrun{
 #' library(thresholding)
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' thresholding::absolute_threshold(infile, 
-#'                                  outfile = "./HCCS-ABSTHRESH.ncol",
-#'                                  threshold = 0.90,
-#'                                  sort_output = TRUE,
-#'                                  overwrite = TRUE
-#'                                  )
-#' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
-#' }
+#' outfile <- tempfile(fileext = ".ncol")
+#' absolute_threshold(infile, 
+#'                   outfile = outfile,
+#'                   threshold = 0.90,
+#'                   sort_output = TRUE,
+#'                   overwrite = TRUE
+#'                   )
+#' print(paste0("Thresholded graph in '", outfile, ".'"))
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 #' @export
 absolute_threshold <- function(infile,
@@ -73,7 +72,7 @@ absolute_threshold <- function(infile,
   # Allow any form of white space as separator
   vertex_col_1 <- "V1"
   vertex_col_2 <- "V2"
-  threshold_col <- "TH"
+  threshold_col <- "threshold_column"
   in_df <- utils::read.table(infile, sep="", col.names=c(vertex_col_1,
                                                          vertex_col_2,
                                                          threshold_col))
@@ -85,14 +84,16 @@ absolute_threshold <- function(infile,
     stop(paste0("Incorrect number of rows from input file (", infile, ")."))
   }
   # Choose rows within the bounds of the absolute threshold
-  down_sel <- subset(in_df, (TH >= threshold) | (TH <= -1*threshold))
+  down_sel <- subset(in_df, 
+                     (threshold_column >= threshold) | (threshold_column <= -1*threshold)
+                     )
   
   # Sort the output from most negative weight to most positive weight
   # in case user wants to find most strongly connected vertices by looking
   # at the top or bottom of the file
   # Will sort in DESCENDING order by default
   if(sort_output){
-    down_sel$TH <- base::sort(down_sel$TH, decreasing = TRUE)
+    down_sel$threshold_column <- base::sort(down_sel$threshold_column, decreasing = TRUE)
   }
   
   # Write to the path specifed by outfile

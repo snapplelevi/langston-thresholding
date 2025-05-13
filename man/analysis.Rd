@@ -95,12 +95,12 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 #######    Variable Set-Up     #######
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-data_prefix <- './HumanCellCycleSubset-analysis-ex'  # prefix used for output file(s)
+outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 lower <- 0.6   
 
 #######    Example 1 - No methods #######
 analysis(data_file, 
-         outfile_prefix = data_prefix,
+         outfile_prefix = outfile_prefix,
          lower = lower,
          overwrite = TRUE
          )

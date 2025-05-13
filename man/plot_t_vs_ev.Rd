@@ -28,8 +28,7 @@ concrete value of these thresholds.
 \examples{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-file.copy(data_file, "./")     # Copy the file to your working directory
-outfile_prefix = "./plot_t_vs_ev_test"
+outfile_prefix <- tempfile('plot_t_vs_ev')
 analysis(data_file, 
          outfile_prefix = outfile_prefix,
          methods = c(2,3,8),

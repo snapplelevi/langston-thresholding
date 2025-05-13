@@ -49,8 +49,7 @@ edge counts, vertex counts, and other metrics computed as a result of the
 \examples{
 library(thresholding)
 data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-file.copy(data_file, "./")     # Copy the file to your working directory
-outfile_prefix = "./get_iter_t_vals_test"
+outfile_prefix = tempfile('get_iter_t_vals')
 
 analysis(data_file, 
          outfile_prefix = outfile_prefix,

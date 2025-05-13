@@ -628,18 +628,17 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' passed to \code{analysis()}. Values will be valid (non-\code{NaN} and non-\code{Inf}). 
 #'
 #' @examples
-#' \dontrun{
+#' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' file.copy(data_file, "./")     # Copy the file to your working directory
-#' outfile_prefix = "./get_results_test"
+#' outfile_prefix = tempfile('get_results')
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
 #'          methods = c(2,3,8),
 #'          num_samples = 13,
 #'          overwrite = TRUE
 #'          )
-#' thresholding::get_results(outfile_prefix, plot_iterative = TRUE)
-#' }
+#' get_results(outfile_prefix)
+#' 
 #' @export
 get_results <- function(outfile_prefix, 
                         plot_iterative = FALSE,

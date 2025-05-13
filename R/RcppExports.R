@@ -59,19 +59,17 @@
 #'        example output files already exist.
 #' @examples
 #' #######    Variable Set-Up     #######
-#' \dontrun{
 #' library(thresholding)
 #' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
-#' data_prefix <- './HumanCellCycleSubset-thresh-ex'  # prefix used for output file(s)
+#' outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 #' lower <- 0.6   
 #'
 #' #######    Example 1 - No methods #######
 #' analysis(data_file, 
-#'          outfile_prefix = data_prefix,
+#'          outfile_prefix = outfile_prefix,
 #'          lower = lower,
 #'          overwrite = TRUE
 #'          )
-#' } 
 #'
 #' \dontrun{ 
 #' #######    Example 2 - iterative and power/significance methods #######
@@ -88,7 +86,7 @@
 #'          num_samples = num_samples,
 #'          overwrite = TRUE
 #'          )
-#' }
+#' } # End "dontrun" block
 #'
 #' \dontrun{
 #' #######    Example 3 - More Iterative methods #######
@@ -146,20 +144,18 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 #' the existing file without interruption from a workflow.
 #' @examples
-#' \dontrun{
-#' # Load the package
 #' library(thresholding)
 #'
 #' ################ Example 1 ###################
 #' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
+#' outfile <- tempfile(fileext = ".ncol")
 #' thresholding::threshold(infile, 
-#'                         outfile = "./HCCS-thresh-abs.ncol",
+#'                         outfile = outfile,
 #'                         method = "absolute",
 #'                         thresh = 0.8,
 #'                         overwrite = TRUE
 #'                         )
 #' print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
-#' }
 #'
 #' \dontrun{
 #' ################ Example 2 ###################

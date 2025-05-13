@@ -39,11 +39,12 @@ more general purpose thresholding function.
 \examples{
 library(thresholding)
 infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+outfile <- tempfile(fileext = ".ncol")
 absolute_threshold(infile, 
-                  outfile = "./HCCS-ABSTHRESH.ncol",
+                  outfile = outfile,
                   threshold = 0.90,
                   sort_output = TRUE,
                   overwrite = TRUE
                   )
-print("Check the path specified by 'outfile' to find the output containing the thresholded graph.")
+print(paste0("Thresholded graph in '", outfile, ".'"))
 }
