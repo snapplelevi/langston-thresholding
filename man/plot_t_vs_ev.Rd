@@ -26,8 +26,8 @@ thresholding curves are denoted by red and blue squares. The method name is anno
 concrete value of these thresholds.
 }
 \examples{
-library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 outfile_prefix <- tempfile('plot_t_vs_ev')
 analysis(data_file, 
          outfile_prefix = outfile_prefix,

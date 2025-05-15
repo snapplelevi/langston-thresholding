@@ -1,28 +1,4 @@
 ##############################################################################
-#                         find_last()
-# Helper function to find the index of the last occurrence of a charcter
-# returns index of last character if found, returns -1 if not. 
-#
-# Used internally for finding multiple occurrences of file names the utility wrapper
-# functions ( get_iter_t_vals(), get_sig_t_vals(), get_local_global_alpha() )
-find_last <- function(str, str_to_find){
-  l = nchar(str)
-  ind = -1
-  
-  while(l > 0){
-    
-    if(substr(str, l, l) == str_to_find){
-      ind = l
-      break
-    }
-    
-    l <- l - 1
-  }
-  
-  return(ind)
-}
-
-##############################################################################
 #                          get_iter_t_vals()
 #'                          
 #' User wrapper function for the intenal \code{get_iterative_t_values()}
@@ -61,8 +37,8 @@ find_last <- function(str, str_to_find){
 #' with the specified outfile_prefix and ends with ".iterative.txt".
 #' 
 #' @examples
-#' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' outfile_prefix = tempfile('get_iter_t_vals')
 #' 
 #' analysis(data_file, 
@@ -79,34 +55,9 @@ find_last <- function(str, str_to_find){
 #' and its corresponding threshold value.
 #' @export
 get_iter_t_vals <- function(outfile_prefix, recursive=FALSE){
+  # Find all possible files with the given file prefix (same as get_results)
+  it_fnames <- Sys.glob(file.path(paste0(outfile_prefix, "*.iterative.txt")))
   
-  
-  # Strip out the file path (if it exists) so the subsequent Regex
-  # works properly
-  path_end <- find_last(outfile_prefix, "/")
-  path <- "."
-  
-  # Strip out directory path if there was a final '/' found in the outfile_prefix
-  if(path_end > 0){
-    
-    if(recursive==FALSE){
-      path <- base::substr(outfile_prefix, 1, path_end)
-    }
-    
-    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
-  }
-  
-  # Create regex pattern to match files with exact .iterative.txt format
-  # Allows for file names with prefix to be changed, but must keep the .iterative.txt
-  # format to work in this case.
-  patt <- paste0("^", outfile_prefix, ".*\\.iterative\\.txt$")
-  
-  # Find all possible files with the given file prefix
-  it_fnames <- list.files(path=path, 
-                          recursive=recursive, 
-                          pattern=patt,
-                          full.names = TRUE)
-
   # No files found for the given prefix
   if(length(it_fnames) == 0){
     pwd_mess <- ifelse(recursive, "PWD and subdirectories", "PWD")

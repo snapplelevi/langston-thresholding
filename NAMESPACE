@@ -1,6 +1,6 @@
 # Register the dynamic library for compiled thresholding code and allow the
-# compiled functions to be attached to the thresholding namespace
-useDynLib(thresholding, .registration = TRUE)
+# compiled functions to be attached to the ThresholdTuner namespace
+useDynLib(ThresholdTuner, .registration = TRUE)
 
 # Set up Rcpp when loading package using library(thresholding)
 importFrom(Rcpp, evalCpp)

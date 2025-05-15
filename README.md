@@ -1,9 +1,9 @@
-# thresholding - An R Package for Graph Thresholding and Analysis
+# ThresholdTuner - An R Package for Graph Thresholding and Analysis
 An R package for the [Langston Lab's](https://web.eecs.utk.edu/~mlangsto/) C++ graph thresholding techniques
 
 Based on the lab's [existing command line utility package](https://github.com/carissableker/thresholding) by Carissa Bleker
 
-Navigate to [installation section](#installing-the-thresholding-package)  if [the required system prerequisites](#system-prerequisites) are already installed.
+Navigate to [installation section](#installing-the-ThresholdTuner-package)  if [the required system prerequisites](#system-prerequisites) are already installed.
 
 
 ## System prerequisites
@@ -40,8 +40,8 @@ libraries and functions to the existing lab code. The [Rcpp package](https://www
        - If you have **homebrew** installed, you could run `brew install cmake` and ensure **cmake** is on your path.
        - This package was developed with CMake version = 3.27 if you aren't sure which version to install. As of July 31, 2024, the most recent Cmake version is 3.30.  
      
-## Installing the thresholding package
-Currently, there are two options for installing the `thresholding` package. The first (1) method outlined below is most recommended as of July 2024. After the package gets published to CRAN, this option will be removed as the recommended installation method.
+## Installing the ThresholdTuner package
+Currently, there are two options for installing the `ThresholdTuner` package. The first (1) method outlined below is most recommended as of July 2024. After the package gets published to CRAN, this option will be removed as the recommended installation method.
 1. **Install from devtools()** - ***RECOMMENDED***
 
    Use the following command in an R window if you have the `devtools` package installed already:
@@ -50,7 +50,7 @@ Currently, there are two options for installing the `thresholding` package. The 
 
    You can use `install.packages("devtools")` in the R window if `devtools` isn't installed already).
    
-   There are a few R packages that the **thresholding** package depends on and imports from. After running the `install_github` call, you will likely be prompted if you would like to *update* or *install* some of these packages. **Please install any packages if necessary.** For package updates, you can choose to take any action from the prompt including updating all packages, some packages, or no packages. You can skip the updating step by entering a blank input line (pressing the 'Enter' key once).
+   There are a few R packages that the **ThresholdTuner** package depends on and imports from. After running the `install_github` call, you will likely be prompted if you would like to *update* or *install* some of these packages. **Please install any packages if necessary.** For package updates, you can choose to take any action from the prompt including updating all packages, some packages, or no packages. You can skip the updating step by entering a blank input line (pressing the 'Enter' key once).
    
    `devtools::install_github()`  takes in the same arguments that you would pass to `install.packages()` which allows you to further specify how and where the package should be installed. 
 3. **Clone from GitHub and Install as a Source Package**
@@ -71,27 +71,27 @@ Currently, there are two options for installing the `thresholding` package. The 
 
     2. Afterwards, tar the cloned git repo directory using this command:
 
-       `tar -cvzf thresholding.tar.gz ./langston-thresholding`
+       `tar -cvzf ThresholdTuner.tar.gz ./langston-thresholding`
        
       This creates the tar.gz file of this package for R's `install.packages()` to install from source. This command assumes you are in the same directory of the cloned repo.
 
 
     3. After the tar.gz file for the package is created, run the `install.packages()` function with the newly created tar file:
    
-       `install.packages("./thresholding.tar.gz", type="source", repos=NULL)`
+       `install.packages("./ThresholdTuner.tar.gz", type="source", repos=NULL)`
   
        Note: this command will install to a default library (first entry in R's `.libPaths()`). To move the package installation to a specified location, run the command with:
        
-       `install.packages("./thresholding.tar.gz", type="source", repos=NULL, lib="/your/path/here")`
+       `install.packages("./ThresholdTuner.tar.gz", type="source", repos=NULL, lib="/your/path/here")`
 
-   4. After R finishes installing the package, the `thresholding.tar.gz` file can be deleted.
+   4. After R finishes installing the package, the `ThresholdTuner.tar.gz` file can be deleted.
 
        
-## Using the thresholding package
-Use the `help(package = thresholding)` command to see a list of the package's functions.
+## Using the ThresholdTuner package
+Use the `help(package = ThresholdTuner)` command to see a list of the package's functions.
 One the package is successfully installed, you can use the following methods to learn more about how to use a specific function in the package. 
-1. "?" Prefix before function name (example: `?thresholding::analysis`)
-2. "help()" function               (example: `help("analysis", package = "thresholding")`
+1. "?" Prefix before function name (example: `?ThresholdTuner::analysis`)
+2. "help()" function               (example: `help("analysis", package = "ThresholdTuner")`
 
 These commands would be entered in the R prompt and will open a documentation page inside your R IDE or in a new browser tab.
 

@@ -1,14 +1,15 @@
-Package: thresholding
+Package: ThresholdTuner
 Type: Package
 Title: Analyze and Threshold Graphs with the Langston Lab Graph Thresholding Suite
 Version: 1.0.0
-Date: 2025-04-15
+Date: 2025-04-30
 Encoding: UTF-8
 Authors@R: c(
-              person("Levi", "Hochstetler", email="lhochste@vols.utk.edu", role=c("cre", "aut")),
-              person("Carissa", "Bleker", role="aut")
+              person("Levi", "Hochstetler", email="levijhoch@gmail.com", role=c("cre", "aut")),
+              person("Carissa", "Bleker", role="aut"),
+              person("Stephen", "Grady", role="aut")
             )
-Maintainer: Levi Hochstetler <lhochste@vols.utk.edu>
+Maintainer: Levi Hochstetler <levijhoch@gmail.com>
 Description: An R wrapper of C++ code that encapsulates several graph thresholding utilities and analysis tools. 
     Thresholding a graph helps to iteratively remove lower significance edges from a graph, and potentially shrinking the graph by pruning off disconnected vertices. 
     These methods readily apply to biological data, Pearson and Spearman correlations, and other types of graph data. 

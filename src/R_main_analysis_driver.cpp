@@ -1,6 +1,6 @@
 // R_main_analysis_driver.cpp
 // Langston Lab Thresholding Methods
-// September 2024
+// May 2025
 
 #include <Rcpp.h>
 #include <igraph.h>
@@ -101,7 +101,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' @param infile string. File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 //' This file must be space delimited for this function to properly read in the graph's information.
 //' @param outfile_prefix string. Prefix of output file in which analysis will be redirected to. If this is not specified,
-//'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
+//'        \code{ThresholdTuner::analysis()} will auto generate the output file prefix to include the input file's 
 //'        prefix and the method numbers (in ascending order)
 //'          For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
 //'             \code{myfile-47.<method_name>.txt}. 
@@ -140,8 +140,8 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'        example output files already exist.
 //' @examples
 //' #######    Variable Set-Up     #######
-//' library(thresholding)
-//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+//' library(ThresholdTuner)
+//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner")   
 //' outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 //' lower <- 0.6   
 //'
@@ -154,7 +154,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //'
 //' \dontrun{ 
 //' #######    Example 2 - iterative and power/significance methods #######
-//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 //' methods <- c(8, 2, 3)    # select the three desired analysis methods
 //' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 //' num_samples <- 13        # ONLY FOR METHOD 2 - number of samples in data set
@@ -172,7 +172,7 @@ std::set<int> parse_methods_list(Rcpp::NumericVector methods){
 //' \dontrun{
 //' #######    Example 3 - More Iterative methods #######
 //' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
-//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+//' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 //' methods <- c(3,4,5,6)
 //' lower <- 0.7
 //' 
@@ -235,7 +235,6 @@ std::string analysis(std::string infile,
         Rcpp::Rcerr << "Error in threshold limits: ";
         Rcpp::Rcerr << "cannot have lower >= upper.\n";
         Rcpp::Rcerr << "Please restart with corrected lower and upper bounds." << '\n';
-        Rcpp::Rcerr << "Use thresholding::help() to get more information on analysis() inputs." << '\n';
         Rcpp::stop("invalid upper and lower limits. Ending analysis early.");
     }
 
@@ -664,10 +663,10 @@ std::string analysis(std::string infile,
   
     out.close();
     Rcpp::Rcout << "Thresholding and analysis completed!!!\n";
-    Rcpp::Rcout << "\nUse the thresholding::get_results() function along with the\n";
+    Rcpp::Rcout << "\nUse the ThresholdTuner::get_results() function along with the\n";
     Rcpp::Rcout << "output file PREFIX (which excludes the analysis method integers\n";
     Rcpp::Rcout << "and extension from the file path) to retrieve the recommended\n";
-    Rcpp::Rcout << "threshold for each requested method.\n";
+    Rcpp::Rcout << "threshold for each requested method. The prefix is also returned from this function.\n";
     Rcpp::Rcout << "\nExample: \n";
     Rcpp::Rcout << "\tFile name/path: " << outfile_name << '\n';
     Rcpp::Rcout << "\tPrefix:         " << stripped_prefix << '\n';

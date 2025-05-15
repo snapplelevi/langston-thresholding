@@ -27,9 +27,9 @@ second column contains rows of adjacent vertices, and the third column represent
 between the vertex in the first column one and the vertex in the second column.
 }
 \examples{
-library(thresholding)
-your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-plot_obj <- edge_hist(your_file_name_here, bin_width = 0.01)
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+plot_obj <- edge_hist(data_file, bin_width = 0.01)
 show(plot_obj)
 
 }

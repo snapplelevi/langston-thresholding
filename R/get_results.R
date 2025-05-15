@@ -1,32 +1,8 @@
 # Function index (in order of appearance)
-# 1. find_last()                    -> helper function , NOT exported
-# 2. get_iterative_t_vals()         -> NOT exported
-# 3. get_significance_t_vals()      -> NOT exported
-# 4. get_results()                  -> exported
+# 1. get_iterative_t_vals()         -> NOT exported
+# 2. get_significance_t_vals()      -> NOT exported
+# 3. get_results()                  -> exported
 
-##############################################################################
-#                         find_last()
-# Helper function to find the index of the last occurrence of a charcter
-# returns index of last character if found, returns -1 if not. 
-#
-# Used internally for finding multiple occurrences of file names the utility wrapper
-# functions ( get_iter_t_vals(), get_sig_t_vals() )
-find_last <- function(str, str_to_find){
-  l = nchar(str)
-  ind = -1
-  
-  while(l > 0){
-
-    if(substr(str, l, l) == str_to_find){
-      ind = l
-      break
-    }
-    
-    l <- l - 1
-  }
-  
-  return(ind)
-}
 
 ##############################################################################
 #                         remove_invalid_values()
@@ -54,10 +30,10 @@ remove_invalid_values <- function(input_list){
 # The link to the combine_analysis_results functions: 
 #   https://github.com/carissableker/thresholding/blob/master/example/combine_analysis_results.py
 
-# Helper function for thresholding::get_results()
+# Helper function for ThresholdTuner::get_results()
 # Gets thresholding values from the iterative results
 # Reads in tab the separated .iterative.txt files from 
-# thresholding::analysis
+# ThresholdTuner::analysis
 # 
 # @param files Vector of file paths or just one file path
 # @param D Optional argument that accepts a list. This can be used
@@ -483,7 +459,7 @@ get_iterative_t_values <- function(files,
 
 ################################################################################
 #                     get_significance_t_values()  -- internal helper function
-# Helper function for thresholding::get_results()
+# Helper function for ThresholdTuner::get_results()
 # Gets the significance thresholding values from significance results
 get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
  
@@ -583,7 +559,7 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 
 ##############################################################################
 #' Returns the resulting analysis method thresholding values
-#' after running \code{thresholding::analysis()}
+#' after running \code{ThresholdTuner::analysis()}
 #' 
 #' @description
 #' \strong{Note: modifying the column names of the output file(s) produced by} \code{analysis()} 
@@ -628,8 +604,8 @@ get_significance_t_values <- function(files, D, alpha=0.5, min_power=0.8){
 #' passed to \code{analysis()}. Values will be valid (non-\code{NaN} and non-\code{Inf}). 
 #'
 #' @examples
-#' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' outfile_prefix = tempfile('get_results')
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
@@ -709,7 +685,7 @@ get_results <- function(outfile_prefix,
   # instead of making seperate call to plot_t_vs_ev()
   if(plot_iterative == TRUE){
     writeLines("\n[get_results]: plot_t_vs_ev() called\n")
-    methods::show(thresholding::plot_t_vs_ev(outfile_prefix))
+    methods::show(ThresholdTuner::plot_t_vs_ev(outfile_prefix))
   }
   
   

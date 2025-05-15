@@ -13,9 +13,9 @@
 #' @param title string. Optional user-supplied name for title. Default title is "Edge Edge Weight Histogram for <INPUT_FILE>"
 #' 
 #' @examples
-#' library(thresholding)
-#' your_file_name_here <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' plot_obj <- edge_hist(your_file_name_here, bin_width = 0.01)
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+#' plot_obj <- edge_hist(data_file, bin_width = 0.01)
 #' show(plot_obj)
 #' 
 #' @returns \code{ggplot2} object for modification and for showing with \code{show()}.

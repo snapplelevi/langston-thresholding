@@ -18,8 +18,8 @@
 #' @param sort_output boolean. Sorts the edges of the thresholded graph in descending order before
 #' writing them to \code{outfile} if set to \code{TRUE}. Otherwise, descending order is not guaranteed. 
 #' @examples
-#' library(thresholding)
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' library(ThresholdTuner)
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' outfile <- tempfile(fileext = ".ncol")
 #' absolute_threshold(infile, 
 #'                   outfile = outfile,

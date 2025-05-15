@@ -20,7 +20,7 @@ http://www.fsf.org/licensing/licenses
 
 /*
  * Langston Lab - 2024
- * The <Rcpp.h> library is linked in as part of the thresholding R package.
+ * The <Rcpp.h> library is linked in as part of the ThresholdTuner R package.
  * This will only replace forbidden calls to rand(), abort(), exit(), and so
  * on that the Comprehensive R Archive Network (CRAN) does not allow. 
  * 

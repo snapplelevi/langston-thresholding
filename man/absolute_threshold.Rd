@@ -37,8 +37,8 @@ for a clear absolute thresholding use case as compared to \code{threshold()}, wh
 more general purpose thresholding function.
 }
 \examples{
-library(thresholding)
-infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+library(ThresholdTuner)
+infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 outfile <- tempfile(fileext = ".ncol")
 absolute_threshold(infile, 
                   outfile = outfile,

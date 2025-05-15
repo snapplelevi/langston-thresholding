@@ -16,8 +16,8 @@
 #' is printed to the screen after \code{analysis()} ends.
 #' @returns The \code{ggplot2} object to be shown with \code{show()} or to be customized afterwards. 
 #' @examples
-#' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' outfile_prefix <- tempfile('plot_t_vs_ev')
 #' analysis(data_file, 
 #'          outfile_prefix = outfile_prefix,
@@ -32,7 +32,7 @@ plot_t_vs_ev <- function(iter_prefix){
   
   # Get the results from analysis to get the D$D list
   #stripped_prefix <- stripped_list[[2]]
-  iter_results <- thresholding::get_iter_t_vals(iter_prefix)
+  iter_results <- ThresholdTuner::get_iter_t_vals(iter_prefix)
   plot_df <- iter_results$iter_df
   
   

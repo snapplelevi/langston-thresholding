@@ -20,7 +20,7 @@
 #' @param infile string. File path for .ncol graph file (\url{https://lgl.sourceforge.net/}) to read in for analysis. 
 #' This file must be space delimited for this function to properly read in the graph's information.
 #' @param outfile_prefix string. Prefix of output file in which analysis will be redirected to. If this is not specified,
-#'        \code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
+#'        \code{ThresholdTuner::analysis()} will auto generate the output file prefix to include the input file's 
 #'        prefix and the method numbers (in ascending order)
 #'          For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
 #'             \code{myfile-47.<method_name>.txt}. 
@@ -59,8 +59,8 @@
 #'        example output files already exist.
 #' @examples
 #' #######    Variable Set-Up     #######
-#' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner")   
 #' outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 #' lower <- 0.6   
 #'
@@ -73,7 +73,7 @@
 #'
 #' \dontrun{ 
 #' #######    Example 2 - iterative and power/significance methods #######
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' methods <- c(8, 2, 3)    # select the three desired analysis methods
 #' lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 #' num_samples <- 13        # ONLY FOR METHOD 2 - number of samples in data set
@@ -91,7 +91,7 @@
 #' \dontrun{
 #' #######    Example 3 - More Iterative methods #######
 #' # WARNING FOR EXAMPLES: this code may take a few minutes to run.
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' methods <- c(3,4,5,6)
 #' lower <- 0.7
 #' 
@@ -110,10 +110,10 @@
 #' # End "dontrun" block
 #' @returns Nothing. \code{analysis()} writes all output to a file. The file path and file prefixes are printed on standard output when `analysis()` terminates.
 analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lower = 0.5, upper = 0.99, increment = 0.01, window_size = 5L, min_partition_size = 10L, min_clique_size = 5L, num_samples = 0L, significance_alpha = 0.01, overwrite = FALSE) {
-    .Call(`_thresholding_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, num_samples, significance_alpha, overwrite)
+    .Call(`_ThresholdTuner_analysis`, infile, outfile_prefix, methods, lower, upper, increment, window_size, min_partition_size, min_clique_size, num_samples, significance_alpha, overwrite)
 }
 
-#' Strict thresholding for weighted graphs in \code{.ncol} format
+#' Thresholding methods for weighted graphs in \code{.ncol} format
 #'
 #' General graph thresholding function that reads in an \code{.ncol} graph file and writes
 #' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
@@ -144,12 +144,12 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 #' the existing file without interruption from a workflow.
 #' @examples
-#' library(thresholding)
+#' library(ThresholdTuner)
 #'
 #' ################ Example 1 ###################
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner")
 #' outfile <- tempfile(fileext = ".ncol")
-#' thresholding::threshold(infile, 
+#' ThresholdTuner::threshold(infile, 
 #'                         outfile = outfile,
 #'                         method = "absolute",
 #'                         thresh = 0.8,
@@ -159,22 +159,22 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #'
 #' \dontrun{
 #' ################ Example 2 ###################
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' thresholding::threshold(infile, 
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+#' ThresholdTuner::threshold(infile, 
 #'                         outfile = "./HCCS-thresh-strict.ncol",
 #'                         method = "strict",
 #'                         thresh = 0.8
 #'                         )
 #' ################ Example 3 ###################
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' thresholding::threshold(infile, 
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+#' ThresholdTuner::threshold(infile, 
 #'                         outfile = "./HCCS-thresh-local-global.ncol",
 #'                         method = "local-global",
 #'                         local_global_alpha = 0.5
 #'                         )
 #' ################ Example 4 ###################
-#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-#' thresholding::threshold(infile, 
+#' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+#' ThresholdTuner::threshold(infile, 
 #'                         outfile = "./HCCS-thresh-strict.ncol",
 #'                         method = "rank",
 #'                         rank = 2
@@ -182,6 +182,6 @@ analysis <- function(infile, outfile_prefix = "", methods = as.numeric( c()), lo
 #' }
 #' @returns Nothing. The thresholded graph is written to the file specified by outfile.
 threshold <- function(infile, outfile, method = "absolute", thresh = 0.0, local_global_alpha = 0.0, rank = 0L, overwrite = FALSE) {
-    .Call(`_thresholding_threshold`, infile, outfile, method, thresh, local_global_alpha, rank, overwrite)
+    .Call(`_ThresholdTuner_threshold`, infile, outfile, method, thresh, local_global_alpha, rank, overwrite)
 }
 

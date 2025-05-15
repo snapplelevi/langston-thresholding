@@ -3,7 +3,7 @@
 \name{get_results}
 \alias{get_results}
 \title{Returns the resulting analysis method thresholding values
-after running \code{thresholding::analysis()}}
+after running \code{ThresholdTuner::analysis()}}
 \usage{
 get_results(outfile_prefix, plot_iterative = FALSE, return_dfs = FALSE)
 }
@@ -54,8 +54,8 @@ When given the prefix of "\code{EXAMPLE_NAME}", \code{get_results()} will look a
 files and combine the results from each method into one data structure.
 }
 \examples{
-library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 outfile_prefix = tempfile('get_results')
 analysis(data_file, 
          outfile_prefix = outfile_prefix,

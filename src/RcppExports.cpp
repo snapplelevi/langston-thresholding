@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // analysis
 std::string analysis(std::string infile, std::string outfile_prefix, Rcpp::NumericVector methods, double lower, double upper, double increment, int window_size, int min_partition_size, int min_clique_size, int num_samples, double significance_alpha, bool overwrite);
-RcppExport SEXP _thresholding_analysis(SEXP infileSEXP, SEXP outfile_prefixSEXP, SEXP methodsSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP overwriteSEXP) {
+RcppExport SEXP _ThresholdTuner_analysis(SEXP infileSEXP, SEXP outfile_prefixSEXP, SEXP methodsSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP incrementSEXP, SEXP window_sizeSEXP, SEXP min_partition_sizeSEXP, SEXP min_clique_sizeSEXP, SEXP num_samplesSEXP, SEXP significance_alphaSEXP, SEXP overwriteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -34,7 +34,7 @@ END_RCPP
 }
 // threshold
 int threshold(std::string infile, std::string outfile, std::string method, double thresh, double local_global_alpha, int rank, bool overwrite);
-RcppExport SEXP _thresholding_threshold(SEXP infileSEXP, SEXP outfileSEXP, SEXP methodSEXP, SEXP threshSEXP, SEXP local_global_alphaSEXP, SEXP rankSEXP, SEXP overwriteSEXP) {
+RcppExport SEXP _ThresholdTuner_threshold(SEXP infileSEXP, SEXP outfileSEXP, SEXP methodSEXP, SEXP threshSEXP, SEXP local_global_alphaSEXP, SEXP rankSEXP, SEXP overwriteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,12 +51,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_thresholding_analysis", (DL_FUNC) &_thresholding_analysis, 12},
-    {"_thresholding_threshold", (DL_FUNC) &_thresholding_threshold, 7},
+    {"_ThresholdTuner_analysis", (DL_FUNC) &_ThresholdTuner_analysis, 12},
+    {"_ThresholdTuner_threshold", (DL_FUNC) &_ThresholdTuner_threshold, 7},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_thresholding(DllInfo *dll) {
+RcppExport void R_init_ThresholdTuner(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

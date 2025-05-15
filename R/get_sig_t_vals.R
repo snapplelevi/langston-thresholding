@@ -39,8 +39,8 @@
 #' with the specified outfile_prefix and ends with ".iterative.txt".
 #' 
 #' @examples
-#' library(thresholding)
-#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+#' library(ThresholdTuner)
+#' data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 #' outfile_prefix <- tempfile('get_sig_t_vals')
 #' 
 #' analysis(data_file, 
@@ -53,38 +53,11 @@
 #' 
 #' @export
 get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
-  
-  # Strip out the file path (if it exists) so the subsequent Regex
-  # works properly
-  # find_last defined in "get_results.R"
-  path_end <- find_last(outfile_prefix, "/")
-  path <- "."
-  
-  # Strip out directory path if there was a final '/' found in the outfile_prefix
-  if(path_end > 0){
-    
-    if(recursive==FALSE){
-      path <- base::substr(outfile_prefix, 1, path_end)
-    }
-    
-    outfile_prefix <- base::substr(outfile_prefix, path_end+1, nchar(outfile_prefix))
-    
-  }
-  
-  # Create regex pattern to match files with exact .iterative.txt format
-  # Allows for file names with prefix to be changed, but must keep the .iterative.txt
-  # format to work in this case.
-  patt <- paste0("^", outfile_prefix, ".*\\.statistical_errors\\.txt$")
-  
-  
-  # Find all possible files with the given file prefix
-  it_fnames <- list.files(path=path, 
-                          recursive=recursive, 
-                          pattern=patt,
-                          full.names = TRUE)
+  # Find all possible files with the given file prefix (same as get_results)
+  sig_fnames = Sys.glob(file.path(paste0(outfile_prefix, "*.statistical_errors.txt")))           
   
   # No files found for the given prefix
-  if(length(it_fnames) == 0){
+  if(length(sig_fnames) == 0){
     pwd_mess <- ifelse(recursive, "PWD and subdirectories", "PWD")
     message(paste0("No files found in ", pwd_mess, " for file prefix: \"", outfile_prefix, "\" ."))
     message("Please check the file prefix and try again.")
@@ -101,7 +74,7 @@ get_sig_t_vals <- function(outfile_prefix, recursive=FALSE){
   }
   
   # Run the iterative analysis on the found files
-  sig_df <- suppressWarnings(get_significance_t_values(it_fnames, list()))
+  sig_df <- suppressWarnings(get_significance_t_values(sig_fnames, list()))
   
   return(sig_df)
 }

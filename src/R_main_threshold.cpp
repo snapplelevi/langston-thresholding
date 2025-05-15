@@ -26,7 +26,7 @@
 // Manually exported in NAMESPACE
 //
 // 
-//' Strict thresholding for weighted graphs in \code{.ncol} format
+//' Thresholding methods for weighted graphs in \code{.ncol} format
 //'
 //' General graph thresholding function that reads in an \code{.ncol} graph file and writes
 //' the thresholded graph to the file specified by \code{outfile}. The methods for thresholding
@@ -57,12 +57,12 @@
 //' \code{outfile} already exists. Choosing \code{TRUE} will bypass this menu and overwrite
 //' the existing file without interruption from a workflow.
 //' @examples
-//' library(thresholding)
+//' library(ThresholdTuner)
 //'
 //' ################ Example 1 ###################
-//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner")
 //' outfile <- tempfile(fileext = ".ncol")
-//' thresholding::threshold(infile, 
+//' ThresholdTuner::threshold(infile, 
 //'                         outfile = outfile,
 //'                         method = "absolute",
 //'                         thresh = 0.8,
@@ -72,22 +72,22 @@
 //'
 //' \dontrun{
 //' ################ Example 2 ###################
-//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-//' thresholding::threshold(infile, 
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+//' ThresholdTuner::threshold(infile, 
 //'                         outfile = "./HCCS-thresh-strict.ncol",
 //'                         method = "strict",
 //'                         thresh = 0.8
 //'                         )
 //' ################ Example 3 ###################
-//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-//' thresholding::threshold(infile, 
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+//' ThresholdTuner::threshold(infile, 
 //'                         outfile = "./HCCS-thresh-local-global.ncol",
 //'                         method = "local-global",
 //'                         local_global_alpha = 0.5
 //'                         )
 //' ################ Example 4 ###################
-//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
-//' thresholding::threshold(infile, 
+//' infile <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
+//' ThresholdTuner::threshold(infile, 
 //'                         outfile = "./HCCS-thresh-strict.ncol",
 //'                         method = "rank",
 //'                         rank = 2

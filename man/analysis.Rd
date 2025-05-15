@@ -24,7 +24,7 @@ analysis(
 This file must be space delimited for this function to properly read in the graph's information.}
 
 \item{outfile_prefix}{string. Prefix of output file in which analysis will be redirected to. If this is not specified,
-\code{thresholding::analysis()} will auto generate the output file prefix to include the input file's 
+\code{ThresholdTuner::analysis()} will auto generate the output file prefix to include the input file's 
 prefix and the method numbers (in ascending order)
   For example if the user requests methods \code{4} and \code{7} with an input file named \code{"myfile.tsv"} would be:
      \code{myfile-47.<method_name>.txt}. 
@@ -93,8 +93,8 @@ Refer to Dr. Carissa Bleker's dissertation for more information about these anal
 }
 \examples{
 #######    Variable Set-Up     #######
-library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding")   
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner")   
 outfile_prefix <- tempfile('analysis')  # prefix used for output file(s)
 lower <- 0.6   
 
@@ -107,7 +107,7 @@ analysis(data_file,
 
 \dontrun{ 
 #######    Example 2 - iterative and power/significance methods #######
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 methods <- c(8, 2, 3)    # select the three desired analysis methods
 lower <- 0.6             # choose lower bound thresholding value the thresholding loop begins at
 num_samples <- 13        # ONLY FOR METHOD 2 - number of samples in data set
@@ -125,7 +125,7 @@ analysis(data_file,
 \dontrun{
 #######    Example 3 - More Iterative methods #######
 # WARNING FOR EXAMPLES: this code may take a few minutes to run.
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 methods <- c(3,4,5,6)
 lower <- 0.7
 

@@ -42,8 +42,8 @@ Returns the thresholding data frame created by the internal
 \code{get_significance_t_values()}.
 }
 \examples{
-library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 outfile_prefix <- tempfile('get_sig_t_vals')
 
 analysis(data_file, 

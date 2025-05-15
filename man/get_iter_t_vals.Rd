@@ -47,8 +47,8 @@ edge counts, vertex counts, and other metrics computed as a result of the
 \code{analysis()} function.
 }
 \examples{
-library(thresholding)
-data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "thresholding") 
+library(ThresholdTuner)
+data_file <- system.file('extdata', 'HumanCellCycleSubset.ncol', package = "ThresholdTuner") 
 outfile_prefix = tempfile('get_iter_t_vals')
 
 analysis(data_file, 
