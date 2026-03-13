@@ -55,11 +55,11 @@ eval_package_code <- extdata_existence_check != ""
 
 A brief introduction to the motivation of graph thresholding is introduced in [@JCB]:
 
-*"Finite, simple, undirected graphs are often used in biological data analysis. In this context, a vertex is typically used to denote a gene, protein, metabolite, or some other biological entity. An edge between two vertices represents some relationship between them and is typically weighted by an association metric computed over its endpoints. Thresholding is then applied to discard weak, dubious, or unconvincing relationships so that subsequent analysis can concentrate on the most significant experimental features of interest.*
+"*Finite, simple, undirected graphs are often used in biological data analysis. In this context, a vertex is typically used to denote a gene, protein, metabolite, or some other biological entity. An edge between two vertices represents some relationship between them and is typically weighted by an association metric computed over its endpoints. Thresholding is then applied to discard weak, dubious, or unconvincing relationships so that subsequent analysis can concentrate on the most significant experimental features of interest.*
 
-*Various graph theoretical strategies have been proposed in an effort to determine a most appropriate threshold, but no overall consensus has been reached as to which techniques are best suited to various graph classes* [@DISSERTATION]. *Given the vast abundance of gene–gene correlation data available and their use in innumerable life science studies, the class on which we focus here is the gene co-expression graph (sometimes called a gene co-expression network)."*
+*Various graph theoretical strategies have been proposed in an effort to determine a most appropriate threshold, but no overall consensus has been reached as to which techniques are best suited to various graph classes* [@DISSERTATION]."
 
-This  package is meant to wrap and adapt the functionality from an existing C++ command line tool for the same purpose. This original package was written by Dr. Carissa Bleker and provides programs for graph analysis, visualization, and thresholding. Its code, shell script tools, and Jupyter notebooks can be found on [Github](https://github.com/carissableker/thresholding). These tools and features were adapted to better accommodate R's capabilities and was written using the Rcpp library [@RCPP] to easily port the C++ logic to R code. The original C++ package bundled and statically linked against the igraph C library [@IGRAPH] upon installation. This R package also includes the igraph dependency and depends upon *cmake* and *GNU make* to build (these dependencies are included in R Tools for Windows, and can easily be installed with package managers in *Nix environments).   
+This  package is meant to wrap and adapt the functionality from an existing C++ command line tool for the same purpose. This original package was written by Dr. Carissa Bleker and Dr. Stephen Grady, and it provides programs for graph analysis, visualization, and thresholding. The command line package's code, shell script tools, and Jupyter notebooks can be found on [Github (https://github.com/carissableker/thresholding)](https://github.com/carissableker/thresholding). These tools were adapted to the R environment and was written using the Rcpp library [@RCPP] to easily port the C++ logic to R code. The original C++ package bundled and statically linked against the igraph C library [@IGRAPH] upon installation. This R package also includes the igraph dependency and depends upon *cmake* and *GNU make* to build (these dependencies are included in R Tools for Windows and can be easily installed with package managers in *Nix environments).   
 
 
 Input graphs for ThresholdTuner need to be in *.ncol* format, which is defined by Large Graph Layout. (https://lgl.sourceforge.net/#FileFormat). This is so that graph files are read properly by the package's internal use of `igraph_read_graph_ncol()`. In this application, an input graph is a simple weighted, whitespace separated edge list. Vertex names in the edge list cannot contain whitespace.
@@ -70,7 +70,9 @@ A general workflow for utilizing ThresholdTuner's functionalities will follow th
 
 ## Setup
 The package can be loaded to the workspace like other installed R packages. 
-The following tutorial will use the "*HumanCellCycleSubset.ncol*" graph file located in the package's `extdata` directory. Each row in this edge list contains two genes (vertices) that are connected with a Pearson Correlation value (edge weight) for how strong their relationship is.
+The following tutorial will use the "*HumanCellCycleSubset.ncol*" graph file located in the package's `extdata` directory. This file had to remove a significant number of edges to fit within the suggested 1 MB requirement, so some analyses are different for the full file. The contents of the entire data sets are linked in the Github repo for the original package (see [Introduction](#introduction)). 
+
+Each row in this edge list contains two genes (vertices) that are connected by a Pearson Correlation value (edge weight) representing the "strength" of the gene-gene correlation.
 
 ```{r, eval=eval_package_code}
 library(ThresholdTuner)
@@ -78,9 +80,9 @@ input_graph_path <- system.file("extdata", "HumanCellCycleSubset.ncol", package=
 ```
 
 ## `edge_hist()`: visualize graph edge weight distribution
-  Using `edge_hist` will provide a quick and simple way to display a histogram of
+  Using `edge_hist` will provide a simple way to display a histogram of
 the edge weight distribution of an input graph file (see [Introduction](#introduction) for more details about the *.ncol* format). 
-`edge_hist` takes in the path of the input graph files and several optional parameters that adjust the width of the histogram bins, additional control for the separator of the *.ncol* graph input file, and giving a title to the output plot.
+`edge_hist` takes in the path of the input graph file and several optional parameters that adjust the width of the histogram bins, additional control for the separator of the *.ncol* graph input file, and giving a title to the output plot.
 `edge_hist` returns a `ggplot2` object to allow for further modification of the graph's contents beyond what `edge_hist` provides.
 
   Here is a simple example of using `edge_hist` using the sample graph data provided with the package:
@@ -92,17 +94,17 @@ show(edge_hist_plot)
 
 
 ## `analysis()`: run thresholding method calculations and analyses
-  `analysis` can perform an assortment of thresholding algorithms during an iterative thresholding loop. These algorithms, or methods, are further described in [@JCB]. The list of implemented methods can be found by running `?analysis`. 
-`analysis` writes the output of its operations to files ending with `.iterative.txt` or `.statistical.errors.txt` to conform with the behavior of the existing C++ package [cite pkg here again?]. *`analysis` will return the file path prefix that will later be used by `get_results` so it is recommended to store the output inside a variable for later use in script workflows.*
+  `analysis` can perform an assortment of thresholding algorithms during an iterative thresholding loop. These algorithms, or methods, are further described in [@JCB] and [@DISSERTATION]. The list of implemented methods can be found by running `?analysis`. 
+`analysis` writes the output of its operations to files ending with `.iterative.txt` or `.statistical.errors.txt` to match the behavior of the existing C++ package. *`analysis` will return the file path prefix that will later be used by `get_results` so it is recommended to store the output inside a variable for later use in script workflows.*
 
-  Like, `edge_hist` and the other functions, `analysis` will take the path of the input graph file as a mandatory argument. All other arguments are optional, but core functionality will greatly be impacted by `methods`, `lower`, `upper`, `increment`, and `num_samples` (only for the Significance and Power Calculations method). 
-As `analysis` forms a large portion of ThresholdTuner's utility, more documentation about the additional parameters would not fit into a vignette guide. Run `?analysis` for more details on the optional parameters. 
+  Like other functions in the package, `analysis` will take the path of the input graph file as a mandatory argument. All other arguments are optional, but core functionality will greatly be impacted by `methods`, `lower`, `upper`, `increment`, and `num_samples` (only for the Significance and Power Calculations method). 
+As `analysis` forms a large portion of ThresholdTuner's utility, more documentation about the additional parameters would not fit into a vignette guide. Run `?analysis` for more details on the optional parameters and the cited papers for more technical details. 
 
   An example call to `analysis` is provided here. Many optional parameters were left as default, but this example is guaranteed to run quickly. Some methods may lead to longer run times depending on the size of the input graph and the method selected so it is best to keep in mind the `lower`, `upper`, and `increment` values in case the code takes longer than intended.
 
 ```{r, eval=eval_package_code}
-methods <- c(8, 3, 2)       # select desired analysis methods
-starting_thresh <- 0.7   # choose lower bound thresholding value that thresholding loop 
+methods <- c(8, 3, 2)    # select desired analysis methods
+starting_thresh <- 0.7   # choose lower bound value for thresholding loop to start from 
 num_samples <- 13        # running sig. and power - need the number of samples from data set
 
 # Using overwrite = TRUE for vignette building purposes, read ?analysis for more 
@@ -120,7 +122,7 @@ analysis_out_prefix <-analysis(input_graph_path,
 Without any optional parameters, it will return a list of corresponding thresholds for each method that was used when `analysis` ran. 
 
 
-`get_results` can also output the raw R dataframes from `analysis` and `show()` a plot a graph of where the promising thresholds overlayed over the graph's vertices and edges through the thresholding process (see [plot_t_vs_ev](#plot_t_vs_ev) for more details on this plot. The option to plot in `get_results` will not return the `ggplot2` object that `plot_t_vs_ev` does). 
+`get_results` can also output the raw R dataframes from `analysis` and `show()` a plot of where the promising thresholds overlayed over the graph's vertices and edges through the thresholding process (see [plot_t_vs_ev](#plot_t_vs_ev) for more details on this plot. The option to plot in `get_results` will not return the `ggplot2` object that `plot_t_vs_ev` does). 
 
 The most basic usage of `get_results` is shown here:
 
@@ -148,8 +150,8 @@ print(get_results_out[['TypeI-0.01']])
 print(get_results_out[['Power-0.8']])
 ```
 
-## `plot_t_vs_ev()`: plot thresholding vs. edges and vertices {plot_t_vs_ev}
-  To get a clearer picture of where the recommended threshold values intersect with the input graph's vertices and edges, `plot_t_vs_ev` plots vertical lines across the edge and vertex curves from the thresholding loop. This function simply takes the prefix returned from `analysis` to make the plot. The outputted plot will only contain the **iterative** methods from the `analysis` results (no Significance and Power recommended values will be included on the plot.)
+## `plot_t_vs_ev()`: plot thresholding vs. edges and vertices {#plot_t_vs_ev}
+  To get a clearer picture of where the recommended threshold values intersect with the input graph's vertices and edges, `plot_t_vs_ev` plots vertical lines across the edge and vertex curves from the thresholding loop. This function simply takes the prefix returned from `analysis` to make the plot. The output plot will only contain the **iterative** methods from the `analysis` results (no Significance and Power recommended values will be included on the plot.)
   
   
   Similar to `edge_hist`, `plot_t_vs_ev` returns a `ggplot2` object so that the user can control further plot manipulation. An example of storing the `ggplot2` object and displaying the plot is provided: 
@@ -161,9 +163,8 @@ show(results_plot)
 ```
 
 ## `threshold()`: apply a threshold to a graph and save to an output file
-Now that there are several thresholds outputted, a threshold can now be applied to the input graph.
-`threshold` will ensure that a new graph file is outputted with the edges removed according to one
-of several thresholding methods:
+Now that there are several thresholds computed, a threshold can now be applied to the input graph.
+`threshold` will ensure that a new graph file is created from an input graph file (the input graph will not altered in the process). The new  graph will be formed according to one of several thresholding methods that can be applied to the input graph:
 
 
 - "***absolute***" (default): Retains all edges that are greater than or equal to the absolute value of the threshold value. (weight >= | thresh |)
@@ -172,7 +173,7 @@ of several thresholding methods:
 - "***rank***": Use the top ranked edges per vertex to threshold graph. Control the thresholding algorithm by varying the `rank` parameter to other integer values.
 
 You must provide both the input file path and output file paths to this function.
-The output graph file will have the edges removed from the graph according to the `thresh` value and the string `method` selected. 
+The output graph file will have the edges removed from the input graph according to the `thresh` value and the string `method` selected. 
 
 ```{r, eval=eval_package_code}
 # Save the output file path for convenience
@@ -220,7 +221,7 @@ print(first_50_thresholded_lines)
 These two functions work similarly to `get_results`, but for iterative and significance files respectively. Read their documentation pages `?get_iter_t_vals` and `?get_sig_t_vals` for more details.
 
 # Closing summary  {#conclusion}
-ThresholdTuner provides graph thresholding utilities that can be incorporated into a standard R scripting workflow. The package includes functions  to identify ideal thresholds using analytical graph algorithms, visualize graph properties and iterative threshold results, and output thresholded graphs. ThresholdTuner would the Rcpp R library [@RCPP], igraph C library [@IGRAPH], and the ALGLIB library [@ALGLIB], which was used for statistical distributions.  And as restated from [@JCB]: *"A thresholding repository such as this has not, to the best of our knowledge, previously been curated and released to the scientific community."*
+ThresholdTuner provides graph thresholding utilities that can be incorporated into a standard R scripting workflow. The package includes functions  to identify ideal thresholds using analytical graph algorithms, visualize graph properties and iterative threshold results, and output thresholded graphs. ThresholdTuner used the Rcpp R library [@RCPP], igraph C library [@IGRAPH], and the ALGLIB library [@ALGLIB], which was used for statistical distributions.  And as restated from [@JCB]: *"A thresholding repository such as this has not, to the best of our knowledge, previously been curated and released to the scientific community."*
 
 <!-- References inserted during vignette building, stored in vignettes/references.bib-->
 # References  {#references}
