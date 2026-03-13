@@ -1,3 +1,0 @@
-threshold	vertex-count	edge-count	connected-component-count	density	density-orig-V	largest-cc-size	2nd-largest-cc-size	clustering-coefficient	random-clustering-coefficient	2nd-eigenvalue	almost-disconnected-component-count	maximal-clique-count	clique-number	poisson-chi2	poisson-pvalue	goe-chi2	goe-pvalue	scale-free-KS	scale-free-KS-p-value	scale-free-alpha
-0.5	7052	34594	-1	0.00139145	0.00138164	-1	-1	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	nan	nan	nan
-0.51	7040	32302	-1	0.00130369	0.0012901	-1	-1	nan	nan	nan	-1	-1	-1	nan	nan	nan	nan	nan	nan	nan
