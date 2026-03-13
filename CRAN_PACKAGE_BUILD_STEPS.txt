@@ -1,0 +1,43 @@
+************ THRESHOLDING PACKAGE BUILDING AND PREPPING FOR CRAN **************
+Follow the steps for a less headachy R CMD check --as-cran process....
+
+  Firstly: 
+        - Make sure the vignette files are in vignettes/ (so that they will be built manually
+          properly when running devtools::build_vignettes)
+        - Run roxygen2::roxygenize() to update the man folder (R documentation pages for functions)
+        - Make sure any miscellaenous files in the base directory or otherwise are removed
+  
+
+If you want the CRAN release package to be built / right easily:
+
+1. Check that the inst/igraph-0.9.9 folder is deleted or just the inst/igraph-0.9.9/build folder
+
+  Previous builds sometimes leave cached files that interrupts later builds
+  
+2. Run R CMD build <package_name>
+
+3. Run R CMD check --as-cran <package_name>.#_#_#.tar.gz
+
+  Just make sure there are as few notes as possible (no WARNINGS or ERRORs)
+        
+        
+        
+        
+        
+If you want the CRAN release to be built/checked fast:
+1. Bulid updated version of vignettes manually
+   devtools::build_vignettes()
+   
+ Run this in the base dir of the package
+ 
+ Copy the results from doc to inst/doc for the package (This way R CMD check later recognizes that vignettes have been built)
+ 
+2. On bash command line in the package's parent dir (..):
+   > R CMD build  <package_name>  --no-build-vignettes
+ 
+3. Also on bash, R CMD check --as-cran <package_name>_#_#_#.tar.gz
+
+  Example:  
+   > R CMD check --as-cran <package_name>_1.0.0.tar.gz
+    
+    Output files are in <pkgname>.Rcheck folder of package's parent dir
