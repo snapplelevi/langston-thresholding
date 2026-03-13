@@ -5,3 +5,4 @@ inst/lib*
 ^([^/]+)*\.txt$
 ^([^/]+)*\.ncol$
 ^([^/]+)*\.wel$
+^vignettes/.*\.log

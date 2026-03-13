@@ -102,7 +102,8 @@ extract_igraph:
 																		-DIGRAPH_USE_INTERNAL_GLPK=ON \
 																		-DIGRAPH_USE_INTERNAL_GMP=ON \
 																		-DIGRAPH_USE_INTERNAL_PLFIT=ON \
-																		-DBLA_VENDOR=OpenBLAS
+																		-DBLA_VENDOR=OpenBLAS \ 
+																		-DCMAKE_C_FLAGS="-Wno-alloc-size-larger-than"
 	cd $(IGRAPHDIR)/build && cmake --build . -j
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 # Use the GNU makefile macro foreach to go through all files and change

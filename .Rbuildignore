@@ -8,5 +8,6 @@
 ^inst/igraph-0\.9\.9(/.*)?$
 ^inst/alglib(/.*)?$
 ^inst/libigraph.a$
+^vignettes/.*\.log
 README\.md
 NEWS\.md

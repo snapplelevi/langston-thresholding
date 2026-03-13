@@ -74,7 +74,7 @@ extract_igraph:
 	@mkdir -p $(IGRAPHDIR)/build
 # This option works in Unix (Makevars) - so far Windows builds work without it
 # cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-	cd $(IGRAPHDIR)/build && cmake ..
+	cd $(IGRAPHDIR)/build && cmake .. -DCMAKE_C_FLAGS="-Wno-alloc-size-larger-than"
 	cd $(IGRAPHDIR)/build && cmake --build . -j 
 	mv $(IGRAPHDIR)/build/src/libigraph.a $(LIBDIR)
 # Use the GNU makefile macro foreach to go through all files and change

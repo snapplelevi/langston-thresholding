@@ -1,22 +1,22 @@
 Package: ThresholdTuner
 Type: Package
-Title: Analyze and Threshold Graphs with the Langston Lab Graph Thresholding Suite
+Title: Tools for Graph Analysis, Threshold Selection, and Thresholding
 Version: 1.0.0
-Date: 2025-04-30
+Date: 2025-07-29
 Encoding: UTF-8
 Authors@R: c(
               person("Levi", "Hochstetler", email="levijhoch@gmail.com", role=c("cre", "aut")),
               person("Carissa", "Bleker", role="aut"),
-              person("Stephen", "Grady", role="aut")
+              person("Stephen K.", "Grady", role="aut"),
+              person("Michael A.", "Langston", role="aut")
             )
 Maintainer: Levi Hochstetler <levijhoch@gmail.com>
-Description: An R wrapper of C++ code that encapsulates several graph thresholding utilities and analysis tools. 
-    Thresholding a graph helps to iteratively remove lower significance edges from a graph, and potentially shrinking the graph by pruning off disconnected vertices. 
-    These methods readily apply to biological data, Pearson and Spearman correlations, and other types of graph data. 
-    Our analysis tools take in a graph input file, and the user specifies what operations to perform on the graph to help determine the optimal threshold for the graph. 
-    These thresholding tools rely on the 'igraph' C library for graph creation and manipulation. Other functionalities are used from the 'alglib' mathematical library. 
-    After thresholding analysis through 'analysis()' is completed, a user can plot their results, extract the results from respective thresholding methods using 'get_results()', 
-    or the data frames produced from a specified method (iterative, local global, and significance values).
+Description: An R wrapper for C++ code that provides multiple graph thresholding utilities and analysis tools.
+    It implements a series of algorithms to identify a statistically significant threshold for edge weights, which can then be applied to remove edges below the threshold, 
+    simplifying the graph and pruning disconnected vertices. The methods are applicable to biological data, correlation networks (e.g., Pearson and Spearman), 
+    and other graph types. The tools accept a graph input file, and the user specifies the methods to determine an optimal threshold. The thresholding tools rely on the 
+    'igraph' C library for graph construction and manipulation, and the 'alglib' library for mathematical computations. Upon completing the analysis, users can visualize 
+    results, extract thresholds, and export a thresholded graph to a separate graph file.
 URL: https://github.com/snapplelevi/langston-thresholding,  https://github.com/carissableker/thresholding
 BugReports: https://github.com/snapplelevi/langston-thresholding/issues
 License: GPL (>= 2)
